@@ -2,9 +2,20 @@
 # Team Project
 
 ## Overview
-This repository contains the code and documentation for our team24 software project.
+This repository contains the codebase for our team software project.  
+It is built with Java and managed using Maven.
 
-## Team Members
-- Add names here
+## Tech Stack
+- Java 17+
+- Maven
+
+## Project Structure
+- `src/main/java` — main source code
+- `src/test/java` — unit tests
+- `src/main/resources` — configuration files
 
 ## How to Run
+(To be updated)
+
+## Team Members
+(Add names here)
