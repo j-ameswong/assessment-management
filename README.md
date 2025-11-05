@@ -18,4 +18,10 @@ It is built with Java and managed using Maven.
 (To be updated)
 
 ## Team Members
-(Add names here)
+Benjamin Grassie
+Connor McGough
+Olena Shevchenko
+Rhys Womack
+Cheng An Wong
+Jiaying Ye
+Wanlin Zhong
