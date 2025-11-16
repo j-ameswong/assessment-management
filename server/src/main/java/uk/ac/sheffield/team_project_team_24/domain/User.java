@@ -25,4 +25,6 @@ public class User {
     @Column(nullable = false)
     private int roleId;
 
+    @Column(nullable = false, unique = true)
+    private String username;
 }
