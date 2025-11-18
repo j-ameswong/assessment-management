@@ -1,13 +1,14 @@
 package uk.ac.sheffield.team_project_team_24.service;
 
-import uk.ac.sheffield.team_project_team_24.repository.UserRepository;
-import uk.ac.sheffield.team_project_team_24.domain.User;
+import java.util.List;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-import jakarta.transaction.Transactional;
 
-import java.util.List;
+import jakarta.transaction.Transactional;
+import uk.ac.sheffield.team_project_team_24.domain.User;
+import uk.ac.sheffield.team_project_team_24.repository.UserRepository;
 
 @Service
 @Transactional
