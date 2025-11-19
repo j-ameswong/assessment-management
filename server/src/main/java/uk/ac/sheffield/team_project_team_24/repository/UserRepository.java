@@ -9,10 +9,12 @@ import java.util.List;
 import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Long> {
-    @Query("select u from User u where u.username = :username")
-    List<User> findAllByUsername(@Param("username") String username);
+    @Query("select u from User u where u.email = :email")
+    List<User> findAllByEmailQuery(@Param("email") String email);
 
-    Optional<User> findByUsername(String username);
+    List<User> findAllByEmail(String email);
 
-    boolean existsUserByUsername(String username);
+    Optional<User> findByEmail(String email);
+
+    boolean existsUserByEmail(String email);
 }

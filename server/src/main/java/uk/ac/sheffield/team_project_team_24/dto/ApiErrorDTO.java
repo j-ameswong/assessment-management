@@ -1,8 +1,13 @@
 package uk.ac.sheffield.team_project_team_24.dto;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.List;
 import java.util.Map;
 
+@Setter
+@Getter
 public class ApiErrorDTO {
     private int status;
     private String message;
@@ -19,12 +24,5 @@ public class ApiErrorDTO {
         this.errors = errors;
     }
 
-    // Getters and setters
-    public int getStatus() { return status; }
-    public void setStatus(int status) { this.status = status; }
-    public String getMessage() { return message; }
-    public void setMessage(String message) { this.message = message; }
-    public Map<String, List<String>> getErrors() { return errors; }
-    public void setErrors(Map<String, List<String>> errors) { this.errors = errors; }
 }
 
