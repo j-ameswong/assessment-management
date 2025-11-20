@@ -1,10 +1,9 @@
 import React from 'react';
 import { Routes, Route, Link } from 'react-router-dom';
+import Login from "./pages/Login.jsx";
 
 function App() {
-  return (
-    <p>hey react is running!!</p>
-  );
+  return <Login />;
 }
 
 export default App;
