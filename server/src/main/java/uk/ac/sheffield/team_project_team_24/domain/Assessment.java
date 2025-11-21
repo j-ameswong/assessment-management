@@ -1,5 +1,6 @@
 package uk.ac.sheffield.team_project_team_24.domain;
 
+import uk.ac.sheffield.team_project_team_24.domain.user.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -19,22 +20,22 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class Assessment {
 
-    // Primary key
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long assessmentID;
+  // Primary key
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private long assessmentID;
 
-    @Column(unique = true, nullable = false)
-    private String assessmentName;
+  @Column(unique = true, nullable = false)
+  private String assessmentName;
 
-    @Column(nullable = false)
-    private String assessmentType;
+  @Column(nullable = false)
+  private String assessmentType;
 
-    @ManyToOne
-    @JoinColumn(name = "moduleCode")
-    private Module module;
+  @ManyToOne
+  @JoinColumn(name = "moduleCode")
+  private Module module;
 
-    @ManyToOne
-    @JoinColumn(name = "checkerID")
-    private User checker;
+  @ManyToOne
+  @JoinColumn(name = "checkerID")
+  private User checker;
 }
