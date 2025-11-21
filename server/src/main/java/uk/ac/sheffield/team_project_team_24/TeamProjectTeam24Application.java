@@ -8,8 +8,11 @@ import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 @SpringBootApplication
 public class TeamProjectTeam24Application {
 
-    public static void main(String[] args) {
-        SpringApplication.run(TeamProjectTeam24Application.class, args);
-    }
+  public static void main(String[] args) {
+    SpringApplication.run(TeamProjectTeam24Application.class, args);
+  }
+
+  @Bean
+  public CommandLineRunner commandLineRunner()
 
 }
