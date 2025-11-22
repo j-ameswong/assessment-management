@@ -11,23 +11,25 @@ import lombok.NoArgsConstructor;
 public class ModuleStaff {
 
   @EmbeddedId
-  private ModuleStaffId id = new ModuleStaffId();
+  private ModuleStaffId id;
 
   @ManyToOne
   @MapsId("moduleId")
   private Module module;
 
   @ManyToOne
-  @MapsId("teachingStaffId")
-  private TeachingStaff staff;
+  @MapsId("staffId")
+  private TeachingStaff teachingStaff;
 
   @Enumerated(EnumType.STRING)
   private ModuleRole role;
 
-  public ModuleStaff(Module module, TeachingStaff staff, ModuleRole role) {
-    this.module = module;
-    this.staff = staff;
-    this.role = role;
-    this.id = new ModuleStaffId(module.getId(), staff.getStaffId().getUserId());
-  }
+  // public ModuleStaff(Module module, TeachingStaff teachingStaff, ModuleRole
+  // role) {
+  // this.module = module;
+  // this.teachingStaff = teachingStaff;
+  // this.role = role;
+  // this.id = new ModuleStaffId(module.getId(),
+  // teachingStaff.getStaffId().getId());
+  // }
 }

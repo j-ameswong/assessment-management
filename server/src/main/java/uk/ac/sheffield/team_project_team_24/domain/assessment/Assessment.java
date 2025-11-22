@@ -1,14 +1,8 @@
-package uk.ac.sheffield.team_project_team_24.domain;
+package uk.ac.sheffield.team_project_team_24.domain.assessment;
 
 import uk.ac.sheffield.team_project_team_24.domain.user.User;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import uk.ac.sheffield.team_project_team_24.domain.module.Module;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -23,7 +17,7 @@ public class Assessment {
   // Primary key
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private long assessmentID;
+  private long assessmentId;
 
   @Column(unique = true, nullable = false)
   private String assessmentName;

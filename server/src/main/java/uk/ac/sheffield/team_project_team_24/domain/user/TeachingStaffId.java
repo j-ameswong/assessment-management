@@ -2,7 +2,7 @@ package uk.ac.sheffield.team_project_team_24.domain.user;
 
 import java.io.Serializable;
 
-import jakarta.persistence.Embeddable;
+import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -10,7 +10,8 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class TeachingStaffId implements Serializable {
-  private long userId;
+  // Primary key
+  private Long id;
   // private String moduleCode; TODO: Replace with List<Modules>
-  private String roleName;
+  // private String roleName;
 }

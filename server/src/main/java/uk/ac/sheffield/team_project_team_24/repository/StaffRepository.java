@@ -4,15 +4,15 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import uk.ac.sheffield.team_project_team_24.domain.Staff;
-import uk.ac.sheffield.team_project_team_24.domain.StaffID;
+import uk.ac.sheffield.team_project_team_24.domain.user.TeachingStaff;
+import uk.ac.sheffield.team_project_team_24.domain.user.TeachingStaffId;
 
-public interface StaffRepository extends JpaRepository<Staff, StaffID> {
+public interface StaffRepository extends JpaRepository<TeachingStaff, TeachingStaffId> {
 
-    List<Staff> findByStaffIDUserID(Long userID);
+  // List<TeachingStaff> findByStaffIdUserId(Long userId);
 
-    List<Staff> findByStaffIDRoleName(String role);
-
-    List<Staff> findByStaffIDModuleCode(String moduleCode);
+  // List<TeachingStaff> findByStaffIDRoleName(String role);
+  //
+  // List<TeachingStaff> findByStaffIDModuleCode(String moduleCode);
 
 }
