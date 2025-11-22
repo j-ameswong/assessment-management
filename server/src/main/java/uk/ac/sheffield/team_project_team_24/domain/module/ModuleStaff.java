@@ -29,4 +29,9 @@ public class ModuleStaff {
 
   @Enumerated(EnumType.STRING)
   private ModuleRole role;
+
+  // public ModuleStaff(Module module, User user) {
+  // this.module = module;
+  // this.user = user;
+  // }
 }

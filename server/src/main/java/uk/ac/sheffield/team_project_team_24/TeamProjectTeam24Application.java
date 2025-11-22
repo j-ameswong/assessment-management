@@ -1,6 +1,7 @@
 package uk.ac.sheffield.team_project_team_24;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.boot.CommandLineRunner;
@@ -15,7 +16,9 @@ import com.github.javafaker.Faker;
 
 import uk.ac.sheffield.team_project_team_24.domain.user.User;
 import uk.ac.sheffield.team_project_team_24.domain.user.UserRole;
+import uk.ac.sheffield.team_project_team_24.service.ModuleService;
 import uk.ac.sheffield.team_project_team_24.service.UserService;
+import uk.ac.sheffield.team_project_team_24.domain.module.Module;
 
 @ConfigurationPropertiesScan
 @SpringBootApplication
@@ -25,6 +28,8 @@ public class TeamProjectTeam24Application {
     SpringApplication.run(TeamProjectTeam24Application.class, args);
   }
 
+  // Bean to disable Spring Security for legacy h2-console access
+  @SuppressWarnings("removal")
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
@@ -38,10 +43,13 @@ public class TeamProjectTeam24Application {
     return http.build();
   }
 
+  // Generate fake data for testing
   @Bean
-  public CommandLineRunner commandLineRunner(UserService userService) {
+  public CommandLineRunner commandLineRunner(UserService userService, ModuleService moduleService) {
     return args -> {
       Faker faker = new Faker();
+
+      // Populate Usr table with users
       List<User> users = new ArrayList<>();
       // Set as needed for testing
       final int NUM_USERS = 50;
@@ -49,7 +57,8 @@ public class TeamProjectTeam24Application {
       for (int i = 0; i < NUM_USERS; i++) {
         String forename = faker.name().firstName();
         String surname = faker.name().lastName();
-        String email = (forename + surname).substring(0, 6) + "@sheffield.ac.uk";
+        String email = (forename + surname).substring(0, 6)
+            + String.format("%.0f", Math.random() * 100) + "@sheffield.ac.uk";
         String password = faker.crypto().toString();
         UserRole role;
         if (i < NUM_TEACHING_SUPPORT_TEAM) {
@@ -63,8 +72,28 @@ public class TeamProjectTeam24Application {
         User newUser = new User(forename, surname, email, password, role);
         users.add(newUser);
       }
-
       userService.createUsers(users);
+
+      // Populate Module table
+      List<Module> modules = new ArrayList<>();
+      final int NUM_MODULES = 5;
+      List<String> startWith = Arrays.asList("Introduction to",
+          "Advanced", "Analysis of");
+      List<String> endWith = Arrays.asList("Software Engineering",
+          "Data Science", "Algorithms");
+
+      for (int i = 0; i < NUM_MODULES; i++) {
+        String moduleCode = "COM100" + i;
+        String moduleName = startWith.get(Math.floorDiv(i, startWith.size() - 1))
+            + " " + endWith.get(i % (endWith.size() - 1));
+        Module newModule = new Module(moduleCode, moduleName);
+        modules.add(newModule);
+
+        // Assign module staff to each module
+
+      }
+
+      moduleService.createModules(modules);
     };
   }
 }

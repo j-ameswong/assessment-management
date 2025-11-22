@@ -2,7 +2,7 @@ package uk.ac.sheffield.team_project_team_24.repository;
 
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import uk.ac.sheffield.team_project_team_24.domain.user.User;
+import uk.ac.sheffield.team_project_team_24.domain.user.*;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
@@ -17,4 +17,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
   Optional<User> findByEmail(String email);
 
   boolean existsUserByEmail(String email);
+
+  List<User> findAllByRole(UserRole userRole);
+
+  Optional<User> findByRole(UserRole userRole);
 }
