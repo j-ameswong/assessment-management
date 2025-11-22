@@ -18,8 +18,8 @@ public class ModuleStaff {
   private Module module;
 
   @ManyToOne
-  @MapsId("staffId")
-  private TeachingStaff teachingStaff;
+  @MapsId("id")
+  private User user;
 
   @Enumerated(EnumType.STRING)
   private ModuleRole role;
