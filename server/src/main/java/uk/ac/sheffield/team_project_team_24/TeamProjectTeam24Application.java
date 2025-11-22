@@ -79,8 +79,6 @@ public class TeamProjectTeam24Application {
       userService.createUsers(users);
 
       // Populate Module and ModuleStaff table
-      List<Module> modules = new ArrayList<>();
-
       final int NUM_MODULES = 5;
       List<User> availableStaff = userService.getUsers(UserRole.ACADEMIC_STAFF);
       final int STAFF_PER_MODULE = Math.floorDiv(availableStaff.size(), NUM_MODULES);
@@ -94,6 +92,7 @@ public class TeamProjectTeam24Application {
         String moduleName = startWith.get(Math.floorDiv(i, startWith.size() - 1))
             + " " + endWith.get(i % (endWith.size() - 1));
         Module newModule = new Module(moduleCode, moduleName);
+        moduleService.createModule(newModule);
 
         int offset = 0;
         if (i > 0) {
@@ -107,12 +106,9 @@ public class TeamProjectTeam24Application {
           moduleStaff.add(new ModuleStaff(newModule, availableStaff.get(j), ModuleRole.STAFF));
         }
 
-        newModule.setModuleStaff(moduleStaff);
-
-        modules.add(newModule);
+        moduleStaffService.assignModuleStaff(moduleStaff);
       }
 
-      moduleService.createModules(modules);
     };
   }
 }
