@@ -28,10 +28,12 @@ public class ModuleStaff {
   private User user;
 
   @Enumerated(EnumType.STRING)
-  private ModuleRole role;
+  private ModuleRole moduleRole;
 
-  // public ModuleStaff(Module module, User user) {
-  // this.module = module;
-  // this.user = user;
-  // }
+  public ModuleStaff(Module module, User user, ModuleRole moduleRole) {
+    this.module = module;
+    this.user = user;
+    this.moduleRole = moduleRole;
+    this.id = new ModuleStaffId(user.getId(), module.getId());
+  }
 }

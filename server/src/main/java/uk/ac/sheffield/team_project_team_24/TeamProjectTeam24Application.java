@@ -17,8 +17,11 @@ import com.github.javafaker.Faker;
 import uk.ac.sheffield.team_project_team_24.domain.user.User;
 import uk.ac.sheffield.team_project_team_24.domain.user.UserRole;
 import uk.ac.sheffield.team_project_team_24.service.ModuleService;
+import uk.ac.sheffield.team_project_team_24.service.ModuleStaffService;
 import uk.ac.sheffield.team_project_team_24.service.UserService;
 import uk.ac.sheffield.team_project_team_24.domain.module.Module;
+import uk.ac.sheffield.team_project_team_24.domain.module.ModuleRole;
+import uk.ac.sheffield.team_project_team_24.domain.module.ModuleStaff;
 
 @ConfigurationPropertiesScan
 @SpringBootApplication
@@ -45,7 +48,8 @@ public class TeamProjectTeam24Application {
 
   // Generate fake data for testing
   @Bean
-  public CommandLineRunner commandLineRunner(UserService userService, ModuleService moduleService) {
+  public CommandLineRunner commandLineRunner(UserService userService, ModuleService moduleService,
+      ModuleStaffService moduleStaffService) {
     return args -> {
       Faker faker = new Faker();
 
@@ -74,9 +78,12 @@ public class TeamProjectTeam24Application {
       }
       userService.createUsers(users);
 
-      // Populate Module table
+      // Populate Module and ModuleStaff table
       List<Module> modules = new ArrayList<>();
+
       final int NUM_MODULES = 5;
+      List<User> availableStaff = userService.getUsers(UserRole.ACADEMIC_STAFF);
+      final int STAFF_PER_MODULE = Math.floorDiv(availableStaff.size(), NUM_MODULES);
       List<String> startWith = Arrays.asList("Introduction to",
           "Advanced", "Analysis of");
       List<String> endWith = Arrays.asList("Software Engineering",
@@ -87,10 +94,22 @@ public class TeamProjectTeam24Application {
         String moduleName = startWith.get(Math.floorDiv(i, startWith.size() - 1))
             + " " + endWith.get(i % (endWith.size() - 1));
         Module newModule = new Module(moduleCode, moduleName);
-        modules.add(newModule);
 
+        int offset = 0;
+        if (i > 0) {
+          offset = (i * STAFF_PER_MODULE) - 1;
+        }
         // Assign module staff to each module
+        List<ModuleStaff> moduleStaff = new ArrayList<>();
+        moduleStaff.add(new ModuleStaff(newModule, availableStaff.get(offset), ModuleRole.MODULE_LEAD));
+        moduleStaff.add(new ModuleStaff(newModule, availableStaff.get(offset + 1), ModuleRole.MODERATOR));
+        for (int j = offset + 2; j < offset + STAFF_PER_MODULE - 2; j++) {
+          moduleStaff.add(new ModuleStaff(newModule, availableStaff.get(j), ModuleRole.STAFF));
+        }
 
+        newModule.setModuleStaff(moduleStaff);
+
+        modules.add(newModule);
       }
 
       moduleService.createModules(modules);
