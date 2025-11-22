@@ -22,6 +22,7 @@ public class Assessment {
   @Column(unique = true, nullable = false)
   private String assessmentName;
 
+  // TODO: Make this an enum
   @Column(nullable = false)
   private String assessmentType;
 

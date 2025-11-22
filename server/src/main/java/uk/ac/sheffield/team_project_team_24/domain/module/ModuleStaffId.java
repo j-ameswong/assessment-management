@@ -13,5 +13,5 @@ import lombok.NoArgsConstructor;
 @Data
 public class ModuleStaffId implements Serializable {
   private Long moduleId;
-  private Long id;
+  private Long staffId;
 }
