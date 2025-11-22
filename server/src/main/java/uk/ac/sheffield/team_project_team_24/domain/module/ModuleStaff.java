@@ -12,6 +12,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ModuleStaff {
+  // The way this composite key is implemented,
+  // there can only be one row per member of staff,
+  // which allows multiple instances of the same role,
+  // but never multiple roles for one staff member
   @EmbeddedId
   private ModuleStaffId id;
 
