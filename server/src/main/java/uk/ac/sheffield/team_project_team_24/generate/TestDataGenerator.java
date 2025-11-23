@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.github.javafaker.Faker;
 
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import uk.ac.sheffield.team_project_team_24.domain.module.Module;
 import uk.ac.sheffield.team_project_team_24.domain.module.ModuleRole;
 import uk.ac.sheffield.team_project_team_24.domain.module.ModuleStaff;
@@ -35,6 +36,7 @@ public class TestDataGenerator {
   }
 
   public void generateUsers(UserService userService) {
+    BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
     // Populate Usr table with users
     List<User> users = new ArrayList<>();
     // Set as needed for testing
@@ -53,7 +55,10 @@ public class TestDataGenerator {
         role = UserRole.EXAMS_OFFICER;
       }
 
-      User newUser = new User(forename, surname, email, password, role);
+      String rawPassword = email; // user email for password when logging in
+      String hashedPassword = passwordEncoder.encode(rawPassword);
+
+      User newUser = new User(forename, surname, email, hashedPassword, role);
       users.add(newUser);
     }
 
