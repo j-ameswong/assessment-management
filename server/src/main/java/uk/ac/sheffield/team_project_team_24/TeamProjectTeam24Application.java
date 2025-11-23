@@ -10,6 +10,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 import com.github.javafaker.Faker;
@@ -32,26 +34,38 @@ public class TeamProjectTeam24Application {
     SpringApplication.run(TeamProjectTeam24Application.class, args);
   }
 
-  // Bean to disable Spring Security for legacy h2-console access
-  @SuppressWarnings("removal")
   @Bean
-  public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-
-    http
-        .authorizeHttpRequests(auth -> auth
-            .requestMatchers("/h2-console/**").permitAll()
-            .anyRequest().authenticated())
-        .csrf(csrf -> csrf.disable())
-        .headers(headers -> headers.frameOptions().disable());
-
-    return http.build();
+  public PasswordEncoder passwordEncoder() {
+    return new BCryptPasswordEncoder();
   }
 
   // Generate fake data for testing
   @Bean
-  public CommandLineRunner commandLineRunner(UserService userService, ModuleService moduleService,
-      ModuleStaffService moduleStaffService) {
+  public CommandLineRunner commandLineRunner(UserService userService,
+                                             ModuleService moduleService,
+                                             ModuleStaffService moduleStaffService,
+                                             PasswordEncoder passwordEncoder) {
     return args -> {
+
+      // Checkign if the user exists
+      boolean testUserExists = userService.getUsers()
+              .stream()
+              .anyMatch(u -> u.getEmail().equals("test@sheffield.ac.uk"));
+
+      // Generate main user test for login purposes
+      if (!testUserExists) {
+        User testUser = new User();
+        testUser.setEmail("test@sheffield.ac.uk"); // input email
+        testUser.setPassword(passwordEncoder.encode("test")); // input password
+        testUser.setRole(UserRole.ACADEMIC_STAFF); // can be changed for testing different roles
+        testUser.setForename("Test");
+        testUser.setSurname("User");
+
+        userService.createUser(testUser);
+        System.out.println("Created Test User: test@sheffield.ac.uk / test");
+      }
+
+      // All other generated users
       TestDataGenerator testDataGenerator = new TestDataGenerator();
       testDataGenerator.generateUsers(userService);
       testDataGenerator.GenerateModules(userService, moduleService, moduleStaffService);

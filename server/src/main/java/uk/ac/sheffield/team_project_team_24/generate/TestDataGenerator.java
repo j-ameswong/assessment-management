@@ -22,7 +22,9 @@ public class TestDataGenerator {
   private final int STAFF_PER_MODULE;
   private final int NUM_MODULES;
 
+
   public TestDataGenerator() {
+
     this.faker = new Faker();
 
     // default values
