@@ -77,7 +77,9 @@ public class TestDataGenerator {
       String moduleCode = "COM100" + i;
       String moduleName = startWith.get(Math.floorDiv(i, startWith.size() - 1)) + " "
           + endWith.get(i % (endWith.size() - 1));
-      Module newModule = new Module(moduleCode, moduleName);
+      Module newModule = new Module();
+      newModule.setModuleCode(moduleCode);
+      newModule.setModuleName(moduleName);
       moduleService.createModule(newModule);
 
       int offset = i * STAFF_PER_MODULE;
