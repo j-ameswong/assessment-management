@@ -30,27 +30,27 @@ public class AssessmentService {
     private static final String ASSESSMENT_NOT_FOUND = "Assessment does not exist";
 
     public AssessmentService(AssessmentRepository assessmentRepository) {
-    this.assessmentRepository = assessmentRepository;
+        this.assessmentRepository = assessmentRepository;
     }
 
     public Assessment createAssessment(Assessment newAssessment) {
-     return assessmentRepository.save(newAssessment);
+        return assessmentRepository.save(newAssessment);
     }
 
     public List<Assessment> getAssessments() {
-    return assessmentRepository.findAll();
+        return assessmentRepository.findAll();
     }
 
     public Assessment getAssessment(Long assessmentId) {
-    return assessmentRepository.findById(assessmentId)
-        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, ASSESSMENT_NOT_FOUND));
+        return assessmentRepository.findById(assessmentId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, ASSESSMENT_NOT_FOUND));
     }
 
     public void deleteAssessment(Long assessmentId) {
-    if (!assessmentRepository.existsById(assessmentId)) {
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND, ASSESSMENT_NOT_FOUND);
-    }
-    assessmentRepository.deleteById(assessmentId);
+        if (!assessmentRepository.existsById(assessmentId)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, ASSESSMENT_NOT_FOUND);
+        }
+        assessmentRepository.deleteById(assessmentId);
     }
 
     public Assessment updateAssessment(Long id, AssessmentDTO dto) {
@@ -64,31 +64,29 @@ public class AssessmentService {
         return assessmentRepository.save(a);
     }
 
-
     public Assessment advanceStatus(Long id, AssessmentStatus targetStatus, Long actorId, String note) {
 
-    Assessment assessment = assessmentRepository.findById(id)
-            .orElseThrow(() -> new ResponseStatusException(
-                    HttpStatus.NOT_FOUND, "Assessment not found"));
+        Assessment assessment = assessmentRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "Assessment not found"));
 
-    User actor = userRepository.findById(actorId)
-            .orElseThrow(() -> new ResponseStatusException(
-                    HttpStatus.NOT_FOUND, "User not found"));
+        User actor = userRepository.findById(actorId)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "User not found"));
 
-    assessment.setStatus(targetStatus);
+        assessment.setStatus(targetStatus);
 
+        AssessmentStageLog log = new AssessmentStageLog();
+        log.setAssessment(assessment);
+        log.setStatus(targetStatus);
+        log.setActedBy(actor);
+        log.setChangedAt(LocalDateTime.now());
+        log.setNote(note);
 
-    AssessmentStageLog log = new AssessmentStageLog();
-    log.setAssessment(assessment);
-    log.setStatus(targetStatus);
-    log.setActedBy(actor);
-    log.setChangedAt(LocalDateTime.now());
-    log.setNote(note);
+        logRepository.save(log);
+        assessmentRepository.save(assessment);
 
-    logRepository.save(log);
-    assessmentRepository.save(assessment);
-
-    return assessment;
+        return assessment;
     }
 
     public List<AssessmentStageLog> getHistory(Long id) {
@@ -98,6 +96,5 @@ public class AssessmentService {
 
         return logRepository.findByAssessmentOrderByChangedAtAsc(assessment);
     }
-
 
 }

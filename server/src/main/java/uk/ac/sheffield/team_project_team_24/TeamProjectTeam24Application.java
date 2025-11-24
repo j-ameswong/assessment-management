@@ -1,31 +1,21 @@
 package uk.ac.sheffield.team_project_team_24;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 import org.springframework.context.annotation.Bean;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.SecurityFilterChain;
-
-import com.github.javafaker.Faker;
 
 import uk.ac.sheffield.team_project_team_24.domain.user.User;
 import uk.ac.sheffield.team_project_team_24.domain.user.UserRole;
 import uk.ac.sheffield.team_project_team_24.generate.TestDataGenerator;
 import uk.ac.sheffield.team_project_team_24.service.AssessmentService;
+import uk.ac.sheffield.team_project_team_24.service.AssessmentStageLogService;
 import uk.ac.sheffield.team_project_team_24.service.ModuleService;
 import uk.ac.sheffield.team_project_team_24.service.ModuleStaffService;
 import uk.ac.sheffield.team_project_team_24.service.UserService;
-import uk.ac.sheffield.team_project_team_24.domain.module.Module;
-import uk.ac.sheffield.team_project_team_24.domain.module.ModuleRole;
-import uk.ac.sheffield.team_project_team_24.domain.module.ModuleStaff;
 
 @ConfigurationPropertiesScan
 @SpringBootApplication
@@ -46,6 +36,7 @@ public class TeamProjectTeam24Application {
             ModuleService moduleService,
             ModuleStaffService moduleStaffService,
             AssessmentService assessmentService,
+            AssessmentStageLogService assessmentStageLogService,
             PasswordEncoder passwordEncoder) {
         return args -> {
 
@@ -73,7 +64,8 @@ public class TeamProjectTeam24Application {
             testDataGenerator.generateModules(userService, moduleService, moduleStaffService);
             testDataGenerator.generateAssessments(moduleService,
                     moduleStaffService,
-                    assessmentService);
+                    assessmentService,
+                    assessmentStageLogService);
         };
     }
 }

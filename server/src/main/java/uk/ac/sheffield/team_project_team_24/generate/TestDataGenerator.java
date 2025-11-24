@@ -10,6 +10,7 @@ import com.github.javafaker.Faker;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import uk.ac.sheffield.team_project_team_24.domain.assessment.Assessment;
+import uk.ac.sheffield.team_project_team_24.domain.assessment.AssessmentStageLog;
 import uk.ac.sheffield.team_project_team_24.domain.assessment.AssessmentStatus;
 import uk.ac.sheffield.team_project_team_24.domain.assessment.AssessmentType;
 import uk.ac.sheffield.team_project_team_24.domain.module.Module;
@@ -17,7 +18,9 @@ import uk.ac.sheffield.team_project_team_24.domain.module.ModuleRole;
 import uk.ac.sheffield.team_project_team_24.domain.module.ModuleStaff;
 import uk.ac.sheffield.team_project_team_24.domain.user.User;
 import uk.ac.sheffield.team_project_team_24.domain.user.UserRole;
+import uk.ac.sheffield.team_project_team_24.repository.AssessmentStageLogRepository;
 import uk.ac.sheffield.team_project_team_24.service.AssessmentService;
+import uk.ac.sheffield.team_project_team_24.service.AssessmentStageLogService;
 import uk.ac.sheffield.team_project_team_24.service.ModuleService;
 import uk.ac.sheffield.team_project_team_24.service.ModuleStaffService;
 import uk.ac.sheffield.team_project_team_24.service.UserService;
@@ -111,26 +114,38 @@ public class TestDataGenerator {
         }
     }
 
+    // Mant fields/logic have yet to be implemented
     public void generateAssessments(ModuleService moduleService,
             ModuleStaffService moduleStaffService,
-            AssessmentService assessmentService) {
+            AssessmentService assessmentService,
+            AssessmentStageLogService assessmentStageLogService) {
         List<Module> modules = moduleService.getModules();
 
         for (Module m : modules) {
-            Assessment newAssessment = new Assessment();
-            newAssessment.setModule(m);
-            newAssessment.setSetter(moduleStaffService.getUserByRole(m.getId(),
-                    ModuleRole.MODULE_LEAD));
-            newAssessment.setChecker(moduleStaffService.getUserByRole(m.getId(),
-                    ModuleRole.MODERATOR));
-            newAssessment.setAssessmentType(AssessmentType.getAllTypes().get(
-                    new Random().nextInt(2)));
-            newAssessment.setAssessmentName(m.getModuleCode() + "_TEST_" +
-                    newAssessment.getAssessmentType().toString());
-            // TODO: Have to discuss how we're implementing assessment status/stages
-            newAssessment.setStatus(AssessmentStatus.TEST_CREATED);
+            for (int i = 0; i < 3; i++) {
+                Assessment newAssessment = new Assessment();
+                newAssessment.setModule(m);
+                newAssessment.setSetter(moduleStaffService.getUserByRole(m.getId(),
+                        ModuleRole.MODULE_LEAD));
+                newAssessment.setChecker(moduleStaffService.getUserByRole(m.getId(),
+                        ModuleRole.MODERATOR));
+                newAssessment.setAssessmentType(AssessmentType.getAllTypes().get(
+                        new Random().nextInt(2)));
+                // this will cause problems occasionally skull:
+                newAssessment.setAssessmentName(m.getModuleCode()
+                        + "_" + new Random().nextInt(100, 999)
+                        + "_" + newAssessment.getAssessmentType().toString());
+                // TODO: Have to discuss how we're implementing assessment status/stages
+                newAssessment.setStatus(AssessmentStatus.TEST_CREATED);
 
-            assessmentService.createAssessment(newAssessment);
+                assessmentService.createAssessment(newAssessment);
+                AssessmentStageLog log = new AssessmentStageLog();
+                log.setAssessment(newAssessment);
+                log.setStatus(newAssessment.getStatus());
+                log.setActedBy(newAssessment.getSetter());
+                log.setNote("Created as part of test data");
+                assessmentStageLogService.createAssessmentStageLog(log);
+            }
         }
     }
 }
