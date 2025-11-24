@@ -34,6 +34,10 @@ public enum AssessmentStatus {
     EXAM_STANDARDISATION_DONE,
     EXAM_MARKING_DONE,
     ADMIN_CHECK_DONE,
-    EXAM_MODERATION_DONE
-}
+    EXAM_MODERATION_DONE,
 
+    // public AssessmentStatus getFirstStep(AssessmentType assessmentType) {
+    // return AssessmentStatus.;
+    // }
+
+}

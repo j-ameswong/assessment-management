@@ -1,6 +1,7 @@
 package uk.ac.sheffield.team_project_team_24.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,35 +23,38 @@ public class UserService {
     private static final String USER_NOT_FOUND = "User does not exist";
 
     public UserService(UserRepository userRepository) {
-    this.userRepository = userRepository;
+        this.userRepository = userRepository;
     }
 
     public User createUser(User newUser) {
-       return userRepository.save(newUser);
+        return userRepository.save(newUser);
     }
 
     public void createUsers(List<User> newUsers) {
         userRepository.saveAll(newUsers);
     }
 
-
     public List<User> getUsers() {
-    return userRepository.findAll();
+        return userRepository.findAll();
     }
 
     public List<User> getUsers(UserRole userRole) {
-    return userRepository.findAllByRole(userRole);
+        return userRepository.findAllByRole(userRole);
     }
 
     public User getUser(Long id) {
-    return userRepository.findById(id)
-        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, USER_NOT_FOUND));
+        return userRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, USER_NOT_FOUND));
+    }
+
+    public Optional<User> getUser(String email) {
+        return userRepository.findByEmail(email);
     }
 
     public void deleteUser(Long id) {
-    if (!userRepository.existsById(id)) {
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND, USER_NOT_FOUND);
-    }
-    userRepository.deleteById(id);
+        if (!userRepository.existsById(id)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, USER_NOT_FOUND);
+        }
+        userRepository.deleteById(id);
     }
 }

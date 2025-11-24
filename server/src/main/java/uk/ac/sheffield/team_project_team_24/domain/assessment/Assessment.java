@@ -16,50 +16,49 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class Assessment {
 
-  // Primary key
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private long assessmentId;
+    // Primary key
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long assessmentId;
 
-  @Column(unique = true, nullable = false)
-  private String assessmentName;
+    @Column(unique = true, nullable = false)
+    private String assessmentName;
 
-  // TODO: Make this an enum
-  @Enumerated(EnumType.STRING)
-  private AssessmentType assessmentType;
+    @Enumerated(EnumType.STRING)
+    private AssessmentType assessmentType;
 
-  @Enumerated(EnumType.STRING)
-  private AssessmentStatus status;
+    @Enumerated(EnumType.STRING)
+    private AssessmentStatus status;
 
-  @ManyToOne
-  @JoinColumn(name = "module_id")
-  private Module module;
+    @ManyToOne
+    @JoinColumn(name = "module_id")
+    private Module module;
 
-  @ManyToOne
-  @JoinColumn(name = "setter_id")
-  private User setter;
+    @ManyToOne
+    @JoinColumn(name = "setter_id")
+    private User setter;
 
-  @ManyToOne
-  @JoinColumn(name = "checker_id")
-  private User checker;
+    @ManyToOne
+    @JoinColumn(name = "checker_id")
+    private User checker;
 
-  @ManyToOne
-  @JoinColumn(name = "moderator_id")
-  private User moderator;
+    @ManyToOne
+    @JoinColumn(name = "moderator_id")
+    private User moderator;
 
-  @ManyToOne
-  @JoinColumn(name = "external_examiner_id")
-  private User externalExaminer;
+    @ManyToOne
+    @JoinColumn(name = "external_examiner_id")
+    private User externalExaminer;
 
-  private LocalDateTime releaseDate;
+    private LocalDateTime releaseDate;
 
-  private LocalDateTime deadline;
+    private LocalDateTime deadline;
 
-  private LocalDateTime examDate;
+    private LocalDateTime examDate;
 
-  @Column(length = 2000)
+    @Column(length = 2000)
     private String checkerFeedback; // Do not save the content
 
-  @Column(length = 2000)
+    @Column(length = 2000)
     private String setterResponse; // setter responses to external examiner
 }

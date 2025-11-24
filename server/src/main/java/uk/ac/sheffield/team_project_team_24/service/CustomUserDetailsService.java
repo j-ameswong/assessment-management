@@ -1,5 +1,7 @@
 package uk.ac.sheffield.team_project_team_24.service;
 
+import java.util.Optional;
+
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -18,12 +20,18 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        User user = userService.getUsers()
-                .stream()
-                .filter(u -> u.getEmail().equals(email))
-                .findFirst()
-                .orElseThrow(() -> new UsernameNotFoundException("User not found: " + email));
+        // User user = userService.getUsers()
+        // .stream()
+        // .filter(u -> u.getEmail().equals(email))
+        // .findFirst()
+        // .orElseThrow(() -> new UsernameNotFoundException("User not found: " +
+        // email));
 
-        return new CustomUserDetails(user);
+        Optional<User> user = userService.getUser(email);
+        if (user.isPresent()) {
+            return new CustomUserDetails(user.get());
+        } else {
+            throw new UsernameNotFoundException("User not found: " + email);
+        }
     }
 }
