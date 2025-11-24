@@ -64,7 +64,7 @@ public class TestDataGenerator {
                     + "@sheffield.ac.uk";
             UserRole role;
             if (i < NUM_ADMINS) {
-                role = UserRole.TEACHING_SUPPORT_TEAM;
+                role = UserRole.ADMIN;
             } else if (i < (NUM_USERS - 1)) {
                 role = UserRole.ACADEMIC_STAFF;
             } else {
