@@ -32,10 +32,9 @@ public class ModuleService {
         return moduleRepository.findAll();
     }
 
-
     public Module getModule(String moduleCode) {
-    return moduleRepository.findByModuleCode(moduleCode)
-        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, MODULE_NOT_FOUND));
+        return moduleRepository.findByModuleCode(moduleCode)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, MODULE_NOT_FOUND));
     }
 
     public void deleteModule(String moduleCode) {

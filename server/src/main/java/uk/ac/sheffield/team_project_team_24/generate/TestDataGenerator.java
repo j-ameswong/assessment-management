@@ -10,6 +10,7 @@ import com.github.javafaker.Faker;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import uk.ac.sheffield.team_project_team_24.domain.assessment.Assessment;
+import uk.ac.sheffield.team_project_team_24.domain.assessment.AssessmentStatus;
 import uk.ac.sheffield.team_project_team_24.domain.assessment.AssessmentType;
 import uk.ac.sheffield.team_project_team_24.domain.module.Module;
 import uk.ac.sheffield.team_project_team_24.domain.module.ModuleRole;
@@ -80,7 +81,7 @@ public class TestDataGenerator {
         userService.createUsers(users);
     }
 
-    public void GenerateModules(UserService userService, ModuleService moduleService,
+    public void generateModules(UserService userService, ModuleService moduleService,
             ModuleStaffService moduleStaffService) {
         List<User> availableStaff = userService.getUsers(UserRole.ACADEMIC_STAFF);
         List<String> startWith = Arrays.asList("Introduction to", "Advanced", "Analysis of");
@@ -111,16 +112,25 @@ public class TestDataGenerator {
     }
 
     public void generateAssessments(ModuleService moduleService,
+            ModuleStaffService moduleStaffService,
             AssessmentService assessmentService) {
         List<Module> modules = moduleService.getModules();
 
         for (Module m : modules) {
             Assessment newAssessment = new Assessment();
-            long moduleId = m.getId();
-            AssessmentType assessmentType = AssessmentType.getAllTypes().get(
-                    new Random().nextInt(2));
-            String assessmentName = m.getModuleCode() + "_TEST_" + moduleId;
+            newAssessment.setModule(m);
+            newAssessment.setSetter(moduleStaffService.getUserByRole(m.getId(),
+                    ModuleRole.MODULE_LEAD));
+            newAssessment.setChecker(moduleStaffService.getUserByRole(m.getId(),
+                    ModuleRole.MODERATOR));
+            newAssessment.setAssessmentType(AssessmentType.getAllTypes().get(
+                    new Random().nextInt(2)));
+            newAssessment.setAssessmentName(m.getModuleCode() + "_TEST_" +
+                    newAssessment.getAssessmentType().toString());
+            // TODO: Have to discuss how we're implementing assessment status/stages
+            newAssessment.setStatus(AssessmentStatus.TEST_CREATED);
 
+            assessmentService.createAssessment(newAssessment);
         }
     }
 }

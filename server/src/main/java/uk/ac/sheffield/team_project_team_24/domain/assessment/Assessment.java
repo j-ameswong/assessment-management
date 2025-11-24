@@ -43,10 +43,6 @@ public class Assessment {
     private User checker;
 
     @ManyToOne
-    @JoinColumn(name = "moderator_id")
-    private User moderator;
-
-    @ManyToOne
     @JoinColumn(name = "external_examiner_id")
     private User externalExaminer;
 
