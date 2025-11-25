@@ -40,13 +40,8 @@ public class TeamProjectTeam24Application {
             PasswordEncoder passwordEncoder) {
         return args -> {
 
-            // Checkign if the user exists
-            boolean testUserExists = userService.getUsers()
-                    .stream()
-                    .anyMatch(u -> u.getEmail().equals("test@sheffield.ac.uk"));
-
             // Generate main user test for login purposes
-            if (!testUserExists) {
+            if (!userService.existsUserByEmail("test@sheffield.ac.uk")) {
                 User testUser = new User();
                 testUser.setEmail("test@sheffield.ac.uk"); // input email
                 testUser.setPassword(passwordEncoder.encode("test")); // input password

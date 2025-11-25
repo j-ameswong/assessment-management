@@ -51,6 +51,10 @@ public class UserService {
         return userRepository.findByEmail(email);
     }
 
+    public boolean existsUserByEmail(String email) {
+        return userRepository.existsUserByEmail(email);
+    }
+
     public void deleteUser(Long id) {
         if (!userRepository.existsById(id)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, USER_NOT_FOUND);
