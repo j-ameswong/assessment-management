@@ -11,4 +11,5 @@ public interface AssessmentStageRepository extends JpaRepository<AssessmentStage
     Optional<AssessmentStage> findById(Long id);
 
     AssessmentStage findFirstByAssessmentType(AssessmentType assessmentType);
+
 }

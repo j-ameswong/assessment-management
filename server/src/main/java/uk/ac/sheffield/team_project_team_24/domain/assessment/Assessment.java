@@ -28,7 +28,8 @@ public class Assessment {
     @Enumerated(EnumType.STRING)
     private AssessmentType assessmentType;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "current_assessment_stage")
     private AssessmentStage assessmentStage;
 
     @ManyToOne
