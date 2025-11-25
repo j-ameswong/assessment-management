@@ -10,6 +10,7 @@ import com.github.javafaker.Faker;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import uk.ac.sheffield.team_project_team_24.domain.assessment.Assessment;
+import uk.ac.sheffield.team_project_team_24.domain.assessment.AssessmentStage;
 import uk.ac.sheffield.team_project_team_24.domain.assessment.AssessmentStageLog;
 import uk.ac.sheffield.team_project_team_24.domain.assessment.AssessmentStatus;
 import uk.ac.sheffield.team_project_team_24.domain.assessment.AssessmentType;
@@ -21,18 +22,19 @@ import uk.ac.sheffield.team_project_team_24.domain.user.UserRole;
 import uk.ac.sheffield.team_project_team_24.repository.AssessmentStageLogRepository;
 import uk.ac.sheffield.team_project_team_24.service.AssessmentService;
 import uk.ac.sheffield.team_project_team_24.service.AssessmentStageLogService;
+import uk.ac.sheffield.team_project_team_24.service.AssessmentStageService;
 import uk.ac.sheffield.team_project_team_24.service.ModuleService;
 import uk.ac.sheffield.team_project_team_24.service.ModuleStaffService;
 import uk.ac.sheffield.team_project_team_24.service.UserService;
 
-public class TestDataGenerator {
+public class DataGenerator {
     private Faker faker;
     private final int NUM_USERS;
     private final int NUM_ADMINS;
     private final int STAFF_PER_MODULE;
     private final int NUM_MODULES;
 
-    public TestDataGenerator() {
+    public DataGenerator() {
 
         this.faker = new Faker();
 
@@ -43,7 +45,7 @@ public class TestDataGenerator {
         this.NUM_MODULES = 5;
     }
 
-    public TestDataGenerator(int numUsers, int numAdmins, int staffPerModule,
+    public DataGenerator(int numUsers, int numAdmins, int staffPerModule,
             int numModules)
 
     {
@@ -135,7 +137,6 @@ public class TestDataGenerator {
                 newAssessment.setAssessmentName(m.getModuleCode()
                         + "_" + new Random().nextInt(100, 999)
                         + "_" + newAssessment.getAssessmentType().toString());
-                // TODO: Have to discuss how we're implementing assessment status/stages
                 newAssessment.setStatus(AssessmentStatus.TEST_CREATED);
 
                 assessmentService.createAssessment(newAssessment);
@@ -146,6 +147,67 @@ public class TestDataGenerator {
                 log.setNote("Created as part of test data");
                 assessmentStageLogService.createAssessmentStageLog(log);
             }
+        }
+    }
+
+    public void populateAssessmentStages(AssessmentStageService assessmentStageService) {
+        List<String> cwStageNames = Arrays.asList(
+                "CW_SPEC_CREATED",
+                "CW_SPEC_CHECKED",
+                "CW_SPEC_MODIFIED",
+                "CW_SPEC_RELEASED",
+                "CW_DEADLINE_PASSED",
+                "CW_STANDARDISATION_DONE",
+                "CW_MARKING_DONE",
+                "CW_MODERATION_DONE",
+                "CW_FEEDBACK_RETURNED");
+
+        for (String stageName : cwStageNames) {
+            AssessmentStage newStage = new AssessmentStage();
+            newStage.setAssessmentType(AssessmentType.COURSEWORK);
+            newStage.setStageName(stageName);
+            newStage.setStep(cwStageNames.indexOf(stageName) + 1);
+            assessmentStageService.createAssessmentStage(newStage);
+        }
+
+        List<String> examStageNames = Arrays.asList(
+                "EXAM_CREATED",
+                "EXAM_CHECKED",
+                "EXAM_MODIFIED",
+                "EXAM_OFFICER_CHECKED",
+                "EXTERNAL_EXAMINER_FEEDBACK",
+                "SETTER_RESPONSE_SUBMITTED",
+                "FINAL_EXAM_OFFICER_CHECK",
+                "EXAM_TAKEN",
+                "EXAM_STANDARDISATION_DONE",
+                "EXAM_MARKING_DONE",
+                "ADMIN_CHECK_DONE",
+                "EXAM_MODERATION_DONE");
+
+        for (String stageName : examStageNames) {
+            AssessmentStage newStage = new AssessmentStage();
+            newStage.setAssessmentType(AssessmentType.EXAM);
+            newStage.setStageName(stageName);
+            newStage.setStep(examStageNames.indexOf(stageName) + 1);
+            assessmentStageService.createAssessmentStage(newStage);
+        }
+
+        List<String> testStageNames = Arrays.asList(
+                "TEST_CREATED",
+                "TEST_CHECKED",
+                "TEST_MODIFIED",
+                "TEST_TAKEN",
+                "TEST_STANDARDISATION_DONE",
+                "TEST_MARKING_DONE",
+                "TEST_MODERATION_DONE",
+                "TEST_RESULTS_RETURNED");
+
+        for (String stageName : testStageNames) {
+            AssessmentStage newStage = new AssessmentStage();
+            newStage.setAssessmentType(AssessmentType.TEST);
+            newStage.setStageName(stageName);
+            newStage.setStep(testStageNames.indexOf(stageName) + 1);
+            assessmentStageService.createAssessmentStage(newStage);
         }
     }
 }

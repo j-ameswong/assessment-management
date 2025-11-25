@@ -21,6 +21,7 @@ import uk.ac.sheffield.team_project_team_24.repository.UserRepository;
 @Service
 @Transactional
 public class AssessmentService {
+    @Autowired
     private final AssessmentRepository assessmentRepository;
     @Autowired
     private AssessmentStageLogRepository logRepository;

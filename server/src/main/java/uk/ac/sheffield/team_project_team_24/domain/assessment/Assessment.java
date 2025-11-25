@@ -32,6 +32,9 @@ public class Assessment {
     private AssessmentStatus status;
 
     @ManyToOne
+    private AssessmentStage assessmentStage;
+
+    @ManyToOne
     @JoinColumn(name = "module_id")
     private Module module;
 
