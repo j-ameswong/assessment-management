@@ -12,14 +12,12 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import uk.ac.sheffield.team_project_team_24.domain.assessment.Assessment;
 import uk.ac.sheffield.team_project_team_24.domain.assessment.AssessmentStage;
 import uk.ac.sheffield.team_project_team_24.domain.assessment.AssessmentStageLog;
-import uk.ac.sheffield.team_project_team_24.domain.assessment.AssessmentStatus;
 import uk.ac.sheffield.team_project_team_24.domain.assessment.AssessmentType;
 import uk.ac.sheffield.team_project_team_24.domain.module.Module;
 import uk.ac.sheffield.team_project_team_24.domain.module.ModuleRole;
 import uk.ac.sheffield.team_project_team_24.domain.module.ModuleStaff;
 import uk.ac.sheffield.team_project_team_24.domain.user.User;
 import uk.ac.sheffield.team_project_team_24.domain.user.UserRole;
-import uk.ac.sheffield.team_project_team_24.repository.AssessmentStageLogRepository;
 import uk.ac.sheffield.team_project_team_24.service.AssessmentService;
 import uk.ac.sheffield.team_project_team_24.service.AssessmentStageLogService;
 import uk.ac.sheffield.team_project_team_24.service.AssessmentStageService;
@@ -120,6 +118,7 @@ public class DataGenerator {
     public void generateAssessments(ModuleService moduleService,
             ModuleStaffService moduleStaffService,
             AssessmentService assessmentService,
+            AssessmentStageService assessmentStageService,
             AssessmentStageLogService assessmentStageLogService) {
         List<Module> modules = moduleService.getModules();
 
@@ -137,12 +136,13 @@ public class DataGenerator {
                 newAssessment.setAssessmentName(m.getModuleCode()
                         + "_" + new Random().nextInt(100, 999)
                         + "_" + newAssessment.getAssessmentType().toString());
-                newAssessment.setStatus(AssessmentStatus.TEST_CREATED);
+                newAssessment.setAssessmentStage(assessmentStageService.getFirstStage(
+                        newAssessment.getAssessmentType()));
 
                 assessmentService.createAssessment(newAssessment);
                 AssessmentStageLog log = new AssessmentStageLog();
                 log.setAssessment(newAssessment);
-                log.setStatus(newAssessment.getStatus());
+                log.setAssessmentStage(newAssessment.getAssessmentStage());
                 log.setActedBy(newAssessment.getSetter());
                 log.setNote("Created as part of test data");
                 assessmentStageLogService.createAssessmentStageLog(log);

@@ -28,9 +28,6 @@ public class Assessment {
     @Enumerated(EnumType.STRING)
     private AssessmentType assessmentType;
 
-    @Enumerated(EnumType.STRING)
-    private AssessmentStatus status;
-
     @ManyToOne
     private AssessmentStage assessmentStage;
 

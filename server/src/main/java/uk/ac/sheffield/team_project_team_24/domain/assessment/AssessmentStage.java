@@ -28,6 +28,9 @@ public class AssessmentStage {
     @OneToMany
     private List<Assessment> assessment;
 
+    @OneToMany
+    private List<AssessmentStageLog> assessmentStageLogs;
+
     @Enumerated(EnumType.STRING)
     private AssessmentType assessmentType;
 

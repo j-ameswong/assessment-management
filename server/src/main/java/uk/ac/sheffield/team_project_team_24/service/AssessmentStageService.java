@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
 import uk.ac.sheffield.team_project_team_24.domain.assessment.AssessmentStage;
+import uk.ac.sheffield.team_project_team_24.domain.assessment.AssessmentType;
 import uk.ac.sheffield.team_project_team_24.repository.AssessmentStageRepository;
 
 @Service
@@ -21,7 +22,7 @@ public class AssessmentStageService {
         return assessmentStageRepository.save(assessmentStage);
     }
 
-    // public AssessmentStage getFirstStage(AssessmentType assessmentType) {
-    // return
-    // }
+    public AssessmentStage getFirstStage(AssessmentType assessmentType) {
+        return assessmentStageRepository.findFirstByAssessmentType(assessmentType);
+    }
 }

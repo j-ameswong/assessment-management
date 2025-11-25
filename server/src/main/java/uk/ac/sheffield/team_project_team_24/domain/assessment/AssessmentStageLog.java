@@ -21,8 +21,8 @@ public class AssessmentStageLog {
     @ManyToOne
     private Assessment assessment;
 
-    @Enumerated(EnumType.STRING)
-    private AssessmentStatus status;
+    @ManyToOne
+    private AssessmentStage assessmentStage;
 
     @ManyToOne
     private User actedBy;

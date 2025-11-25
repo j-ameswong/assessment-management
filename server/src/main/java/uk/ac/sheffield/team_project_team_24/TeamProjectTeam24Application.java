@@ -57,14 +57,16 @@ public class TeamProjectTeam24Application {
 
             // All other generated users
             DataGenerator testDataGenerator = new DataGenerator();
+            // create lookup table first
+            testDataGenerator.populateAssessmentStages(assessmentStageService);
             testDataGenerator.generateUsers(userService);
             testDataGenerator.generateModules(userService, moduleService, moduleStaffService);
             testDataGenerator.generateAssessments(moduleService,
                     moduleStaffService,
                     assessmentService,
+                    assessmentStageService,
                     assessmentStageLogService);
 
-            testDataGenerator.populateAssessmentStages(assessmentStageService);
         };
     }
 }
