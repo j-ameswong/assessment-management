@@ -10,8 +10,8 @@ import org.springframework.web.server.ResponseStatusException;
 
 import jakarta.transaction.Transactional;
 import uk.ac.sheffield.team_project_team_24.domain.assessment.Assessment;
+import uk.ac.sheffield.team_project_team_24.domain.assessment.AssessmentStage;
 import uk.ac.sheffield.team_project_team_24.domain.assessment.AssessmentStageLog;
-import uk.ac.sheffield.team_project_team_24.domain.assessment.AssessmentStatus;
 import uk.ac.sheffield.team_project_team_24.domain.user.User;
 import uk.ac.sheffield.team_project_team_24.dto.AssessmentDTO;
 import uk.ac.sheffield.team_project_team_24.repository.AssessmentRepository;
@@ -21,6 +21,7 @@ import uk.ac.sheffield.team_project_team_24.repository.UserRepository;
 @Service
 @Transactional
 public class AssessmentService {
+    @Autowired
     private final AssessmentRepository assessmentRepository;
     @Autowired
     private AssessmentStageLogRepository logRepository;
@@ -59,12 +60,12 @@ public class AssessmentService {
 
         a.setAssessmentName(dto.getName());
         a.setAssessmentType(dto.getType());
-        a.setStatus(dto.getStatus());
+        a.setAssessmentStage(dto.getAssessmentStage());
 
         return assessmentRepository.save(a);
     }
 
-    public Assessment advanceStatus(Long id, AssessmentStatus targetStatus, Long actorId, String note) {
+    public Assessment advanceStage(Long id, AssessmentStage assessmentStage, Long actorId, String note) {
 
         Assessment assessment = assessmentRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(
@@ -74,11 +75,11 @@ public class AssessmentService {
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND, "User not found"));
 
-        assessment.setStatus(targetStatus);
+        assessment.setAssessmentStage(assessmentStage);
 
         AssessmentStageLog log = new AssessmentStageLog();
         log.setAssessment(assessment);
-        log.setStatus(targetStatus);
+        log.setAssessmentStage(assessmentStage);
         log.setActedBy(actor);
         log.setChangedAt(LocalDateTime.now());
         log.setNote(note);
