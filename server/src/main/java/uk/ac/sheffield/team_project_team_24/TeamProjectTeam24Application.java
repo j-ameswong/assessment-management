@@ -10,9 +10,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import uk.ac.sheffield.team_project_team_24.domain.user.User;
 import uk.ac.sheffield.team_project_team_24.domain.user.UserRole;
-import uk.ac.sheffield.team_project_team_24.generate.TestDataGenerator;
+import uk.ac.sheffield.team_project_team_24.generate.DataGenerator;
 import uk.ac.sheffield.team_project_team_24.service.AssessmentService;
 import uk.ac.sheffield.team_project_team_24.service.AssessmentStageLogService;
+import uk.ac.sheffield.team_project_team_24.service.AssessmentStageService;
 import uk.ac.sheffield.team_project_team_24.service.ModuleService;
 import uk.ac.sheffield.team_project_team_24.service.ModuleStaffService;
 import uk.ac.sheffield.team_project_team_24.service.UserService;
@@ -37,6 +38,7 @@ public class TeamProjectTeam24Application {
             ModuleStaffService moduleStaffService,
             AssessmentService assessmentService,
             AssessmentStageLogService assessmentStageLogService,
+            AssessmentStageService assessmentStageService,
             PasswordEncoder passwordEncoder) {
         return args -> {
 
@@ -54,13 +56,15 @@ public class TeamProjectTeam24Application {
             }
 
             // All other generated users
-            TestDataGenerator testDataGenerator = new TestDataGenerator();
+            DataGenerator testDataGenerator = new DataGenerator();
             testDataGenerator.generateUsers(userService);
             testDataGenerator.generateModules(userService, moduleService, moduleStaffService);
             testDataGenerator.generateAssessments(moduleService,
                     moduleStaffService,
                     assessmentService,
                     assessmentStageLogService);
+
+            testDataGenerator.populateAssessmentStages(assessmentStageService);
         };
     }
 }
