@@ -1,15 +1,39 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import "./Login.css";
 import Footer from "../components/Footer.jsx";
 
 
 function Login() {
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    // Real login logic will be added
-    console.log("Login form submitted");
-  };
+    const navigate = useNavigate();
+
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [message, setMessage] = useState("");
+
+    const handleSubmit = async (event) => {
+        event.preventDefault();
+        console.log("Login form submitted");
+
+        try {
+            const response = await fetch("http://localhost:8080/api/auth/login", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email, password })
+            });
+
+            if (!response.ok) {
+                setMessage("Invalid email or password");
+            } else {
+                setMessage("Login successful");
+                navigate("/home");
+            }
+
+        } catch (error) {
+            console.error(error);
+            setMessage("Cannot connect to server");
+        }
+};
 
   return (
     <div className="login-page">
@@ -42,6 +66,8 @@ function Login() {
                   type="email"
                   className="login-input"
                   placeholder="name@sheffield.ac.uk"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   required
                 />
               </div>
@@ -52,6 +78,8 @@ function Login() {
                   id="password"
                   type="password"
                   className="login-input"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                   required
                 />
               </div>
