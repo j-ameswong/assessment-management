@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "Assessment")
@@ -43,12 +44,11 @@ public class Assessment {
     private User checker;
 
     @ManyToOne
-    @JoinColumn(name = "moderator_id")
-    private User moderator;
-
-    @ManyToOne
     @JoinColumn(name = "external_examiner_id")
     private User externalExaminer;
+
+    @OneToMany(mappedBy = "assessment", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<AssessmentStageLog> log;
 
     private LocalDateTime releaseDate;
 

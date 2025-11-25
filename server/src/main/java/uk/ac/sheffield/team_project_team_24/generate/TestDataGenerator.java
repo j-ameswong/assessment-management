@@ -10,13 +10,17 @@ import com.github.javafaker.Faker;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import uk.ac.sheffield.team_project_team_24.domain.assessment.Assessment;
+import uk.ac.sheffield.team_project_team_24.domain.assessment.AssessmentStageLog;
+import uk.ac.sheffield.team_project_team_24.domain.assessment.AssessmentStatus;
 import uk.ac.sheffield.team_project_team_24.domain.assessment.AssessmentType;
 import uk.ac.sheffield.team_project_team_24.domain.module.Module;
 import uk.ac.sheffield.team_project_team_24.domain.module.ModuleRole;
 import uk.ac.sheffield.team_project_team_24.domain.module.ModuleStaff;
 import uk.ac.sheffield.team_project_team_24.domain.user.User;
 import uk.ac.sheffield.team_project_team_24.domain.user.UserRole;
+import uk.ac.sheffield.team_project_team_24.repository.AssessmentStageLogRepository;
 import uk.ac.sheffield.team_project_team_24.service.AssessmentService;
+import uk.ac.sheffield.team_project_team_24.service.AssessmentStageLogService;
 import uk.ac.sheffield.team_project_team_24.service.ModuleService;
 import uk.ac.sheffield.team_project_team_24.service.ModuleStaffService;
 import uk.ac.sheffield.team_project_team_24.service.UserService;
@@ -63,7 +67,7 @@ public class TestDataGenerator {
                     + "@sheffield.ac.uk";
             UserRole role;
             if (i < NUM_ADMINS) {
-                role = UserRole.TEACHING_SUPPORT_TEAM;
+                role = UserRole.ADMIN;
             } else if (i < (NUM_USERS - 1)) {
                 role = UserRole.ACADEMIC_STAFF;
             } else {
@@ -80,7 +84,7 @@ public class TestDataGenerator {
         userService.createUsers(users);
     }
 
-    public void GenerateModules(UserService userService, ModuleService moduleService,
+    public void generateModules(UserService userService, ModuleService moduleService,
             ModuleStaffService moduleStaffService) {
         List<User> availableStaff = userService.getUsers(UserRole.ACADEMIC_STAFF);
         List<String> startWith = Arrays.asList("Introduction to", "Advanced", "Analysis of");
@@ -110,17 +114,38 @@ public class TestDataGenerator {
         }
     }
 
+    // Mant fields/logic have yet to be implemented
     public void generateAssessments(ModuleService moduleService,
-            AssessmentService assessmentService) {
+            ModuleStaffService moduleStaffService,
+            AssessmentService assessmentService,
+            AssessmentStageLogService assessmentStageLogService) {
         List<Module> modules = moduleService.getModules();
 
         for (Module m : modules) {
-            Assessment newAssessment = new Assessment();
-            long moduleId = m.getId();
-            AssessmentType assessmentType = AssessmentType.getAllTypes().get(
-                    new Random().nextInt(2));
-            String assessmentName = m.getModuleCode() + "_TEST_" + moduleId;
+            for (int i = 0; i < 3; i++) {
+                Assessment newAssessment = new Assessment();
+                newAssessment.setModule(m);
+                newAssessment.setSetter(moduleStaffService.getUserByRole(m.getId(),
+                        ModuleRole.MODULE_LEAD));
+                newAssessment.setChecker(moduleStaffService.getUserByRole(m.getId(),
+                        ModuleRole.MODERATOR));
+                newAssessment.setAssessmentType(AssessmentType.getAllTypes().get(
+                        new Random().nextInt(2)));
+                // this will cause problems occasionally skull:
+                newAssessment.setAssessmentName(m.getModuleCode()
+                        + "_" + new Random().nextInt(100, 999)
+                        + "_" + newAssessment.getAssessmentType().toString());
+                // TODO: Have to discuss how we're implementing assessment status/stages
+                newAssessment.setStatus(AssessmentStatus.TEST_CREATED);
 
+                assessmentService.createAssessment(newAssessment);
+                AssessmentStageLog log = new AssessmentStageLog();
+                log.setAssessment(newAssessment);
+                log.setStatus(newAssessment.getStatus());
+                log.setActedBy(newAssessment.getSetter());
+                log.setNote("Created as part of test data");
+                assessmentStageLogService.createAssessmentStageLog(log);
+            }
         }
     }
 }

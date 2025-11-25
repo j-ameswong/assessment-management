@@ -28,19 +28,19 @@ public class ModuleStaffService {
     private UserRepository userRepository;
 
     public ModuleStaffService(ModuleStaffRepository moduleStaffRepository,
-                              ModuleRepository moduleRepository,
-                              UserRepository userRepository) {
+            ModuleRepository moduleRepository,
+            UserRepository userRepository) {
         this.moduleStaffRepository = moduleStaffRepository;
         this.moduleRepository = moduleRepository;
         this.userRepository = userRepository;
     }
 
     public void assignModuleStaff(ModuleStaff moduleStaff) {
-    moduleStaffRepository.save(moduleStaff);
+        moduleStaffRepository.save(moduleStaff);
     }
 
     public void assignModuleStaff(List<ModuleStaff> moduleStaff) {
-    moduleStaffRepository.saveAll(moduleStaff);
+        moduleStaffRepository.saveAll(moduleStaff);
     }
 
     public void assignUserToModule(Long moduleId, Long userId, ModuleRole role) {
@@ -60,8 +60,21 @@ public class ModuleStaffService {
         moduleStaffRepository.save(ms);
     }
 
-}
+    public User getUserByRole(Long moduleId, ModuleRole moduleRole) {
+        Optional<ModuleStaff> moduleStaff = moduleStaffRepository.findFirstByModuleRoleAndModuleId(moduleRole,
+                moduleId);
+        if (moduleStaff.isPresent()) {
+            return moduleStaff.get()
+                    .getUser();
+        } else {
+            // TODO: exception handling
+            // throw new Exception();
+            // please remove this ASAP
+            return new User();
+        }
+    }
 
+}
 
 // TODO: ideas on what to implement:
 // 1. get all users from a module by module id

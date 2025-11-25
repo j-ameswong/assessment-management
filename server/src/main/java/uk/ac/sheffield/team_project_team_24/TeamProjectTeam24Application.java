@@ -1,74 +1,71 @@
 package uk.ac.sheffield.team_project_team_24;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 import org.springframework.context.annotation.Bean;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.SecurityFilterChain;
-
-import com.github.javafaker.Faker;
 
 import uk.ac.sheffield.team_project_team_24.domain.user.User;
 import uk.ac.sheffield.team_project_team_24.domain.user.UserRole;
 import uk.ac.sheffield.team_project_team_24.generate.TestDataGenerator;
+import uk.ac.sheffield.team_project_team_24.service.AssessmentService;
+import uk.ac.sheffield.team_project_team_24.service.AssessmentStageLogService;
 import uk.ac.sheffield.team_project_team_24.service.ModuleService;
 import uk.ac.sheffield.team_project_team_24.service.ModuleStaffService;
 import uk.ac.sheffield.team_project_team_24.service.UserService;
-import uk.ac.sheffield.team_project_team_24.domain.module.Module;
-import uk.ac.sheffield.team_project_team_24.domain.module.ModuleRole;
-import uk.ac.sheffield.team_project_team_24.domain.module.ModuleStaff;
 
 @ConfigurationPropertiesScan
 @SpringBootApplication
 public class TeamProjectTeam24Application {
 
-  public static void main(String[] args) {
-    SpringApplication.run(TeamProjectTeam24Application.class, args);
-  }
+    public static void main(String[] args) {
+        SpringApplication.run(TeamProjectTeam24Application.class, args);
+    }
 
-  @Bean
-  public PasswordEncoder passwordEncoder() {
-    return new BCryptPasswordEncoder();
-  }
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 
-  // Generate fake data for testing
-  @Bean
-  public CommandLineRunner commandLineRunner(UserService userService,
-                                             ModuleService moduleService,
-                                             ModuleStaffService moduleStaffService,
-                                             PasswordEncoder passwordEncoder) {
-    return args -> {
+    // Generate fake data for testing
+    @Bean
+    public CommandLineRunner commandLineRunner(UserService userService,
+            ModuleService moduleService,
+            ModuleStaffService moduleStaffService,
+            AssessmentService assessmentService,
+            AssessmentStageLogService assessmentStageLogService,
+            PasswordEncoder passwordEncoder) {
+        return args -> {
 
-      // Checkign if the user exists
-      boolean testUserExists = userService.getUsers()
-              .stream()
-              .anyMatch(u -> u.getEmail().equals("test@sheffield.ac.uk"));
+            // Checkign if the user exists
+            boolean testUserExists = userService.getUsers()
+                    .stream()
+                    .anyMatch(u -> u.getEmail().equals("test@sheffield.ac.uk"));
 
-      // Generate main user test for login purposes
-      if (!testUserExists) {
-        User testUser = new User();
-        testUser.setEmail("test@sheffield.ac.uk"); // input email
-        testUser.setPassword(passwordEncoder.encode("test")); // input password
-        testUser.setRole(UserRole.ACADEMIC_STAFF); // can be changed for testing different roles
-        testUser.setForename("Test");
-        testUser.setSurname("User");
+            // Generate main user test for login purposes
+            if (!testUserExists) {
+                User testUser = new User();
+                testUser.setEmail("test@sheffield.ac.uk"); // input email
+                testUser.setPassword(passwordEncoder.encode("test")); // input password
+                testUser.setRole(UserRole.ADMIN); // can be changed for testing different roles
+                testUser.setForename("Test");
+                testUser.setSurname("User");
 
-        userService.createUser(testUser);
-        System.out.println("Created Test User: test@sheffield.ac.uk / test");
-      }
+                userService.createUser(testUser);
+                System.out.println("Created Test User: test@sheffield.ac.uk / test");
+            }
 
-      // All other generated users
-      TestDataGenerator testDataGenerator = new TestDataGenerator();
-      testDataGenerator.generateUsers(userService);
-      testDataGenerator.GenerateModules(userService, moduleService, moduleStaffService);
-    };
-  }
+            // All other generated users
+            TestDataGenerator testDataGenerator = new TestDataGenerator();
+            testDataGenerator.generateUsers(userService);
+            testDataGenerator.generateModules(userService, moduleService, moduleStaffService);
+            testDataGenerator.generateAssessments(moduleService,
+                    moduleStaffService,
+                    assessmentService,
+                    assessmentStageLogService);
+        };
+    }
 }
