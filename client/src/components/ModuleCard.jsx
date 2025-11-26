@@ -1,5 +1,6 @@
 import React from "react";
 import { useState } from 'react';
+import "./ModuleCard.css"
 
 const ModuleCard = (props) => {
     const [ddOpen, setDdOpen] = useState(false);
