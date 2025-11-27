@@ -11,6 +11,7 @@ import jakarta.transaction.Transactional;
 import uk.ac.sheffield.team_project_team_24.domain.assessment.Assessment;
 import uk.ac.sheffield.team_project_team_24.domain.assessment.AssessmentStageLog;
 import uk.ac.sheffield.team_project_team_24.exception.EmptyRepositoryException;
+import uk.ac.sheffield.team_project_team_24.exception.assessmentStageLog.AssessmentStageLogNotFoundException;
 import uk.ac.sheffield.team_project_team_24.repository.AssessmentRepository;
 import uk.ac.sheffield.team_project_team_24.repository.AssessmentStageLogRepository;
 import uk.ac.sheffield.team_project_team_24.repository.UserRepository;
@@ -51,6 +52,17 @@ public class AssessmentStageLogService {
         List<AssessmentStageLog> logs = assessmentStageLogRepository.findAll();
         if (logs.isEmpty()) {
             throw new EmptyRepositoryException("AssesmentStageLogRepository");
+        } else {
+            return logs;
+        }
+    }
+
+    public List<AssessmentStageLog> getLogs(Assessment assessment) {
+        List<AssessmentStageLog> logs = assessmentStageLogRepository
+                .findByAssessmentOrderByChangedAtAsc(assessment);
+        if (logs.isEmpty()) {
+            throw new AssessmentStageLogNotFoundException(
+                    "No logs found for assessment " + assessment.getAssessmentId());
         } else {
             return logs;
         }

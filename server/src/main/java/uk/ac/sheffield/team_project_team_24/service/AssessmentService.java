@@ -1,6 +1,5 @@
 package uk.ac.sheffield.team_project_team_24.service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,14 +23,16 @@ public class AssessmentService {
     @Autowired
     private final AssessmentRepository assessmentRepository;
     @Autowired
-    private AssessmentStageLogRepository logRepository;
+    private final AssessmentStageLogRepository logRepository;
     @Autowired
     private UserRepository userRepository;
 
     private static final String ASSESSMENT_NOT_FOUND = "Assessment does not exist";
 
-    public AssessmentService(AssessmentRepository assessmentRepository) {
+    public AssessmentService(AssessmentRepository assessmentRepository,
+            AssessmentStageLogRepository logRepository) {
         this.assessmentRepository = assessmentRepository;
+        this.logRepository = logRepository;
     }
 
     public Assessment createAssessment(Assessment newAssessment) {
@@ -70,9 +71,6 @@ public class AssessmentService {
 
         Assessment assessment = getAssessment(id);
 
-        UserService userService = new UserService(userRepository);
-        User actor = userService.getUser(actorId);
-
         assessment.setAssessmentStage(assessmentStage);
         assessmentRepository.save(assessment);
 
@@ -83,11 +81,12 @@ public class AssessmentService {
     }
 
     public List<AssessmentStageLog> getHistory(Long id) {
-        Assessment assessment = assessmentRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND, "Assessment not found"));
-
-        return logRepository.findByAssessmentOrderByChangedAtAsc(assessment);
+        return new AssessmentStageLogService(logRepository, userRepository)
+                .getLogs(getAssessment(id));
     }
 
+    public List<AssessmentStageLog> getHistory(Assessment assessment) {
+        return new AssessmentStageLogService(logRepository, userRepository)
+                .getLogs(assessment);
+    }
 }

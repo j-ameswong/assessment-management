@@ -12,7 +12,7 @@ import jakarta.transaction.Transactional;
 import uk.ac.sheffield.team_project_team_24.domain.user.User;
 import uk.ac.sheffield.team_project_team_24.domain.user.UserRole;
 import uk.ac.sheffield.team_project_team_24.exception.EmptyRepositoryException;
-import uk.ac.sheffield.team_project_team_24.exception.UserNotFoundException;
+import uk.ac.sheffield.team_project_team_24.exception.user.UserNotFoundException;
 import uk.ac.sheffield.team_project_team_24.repository.UserRepository;
 
 @Service
