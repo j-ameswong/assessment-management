@@ -61,8 +61,8 @@ public class ModuleStaffService {
     }
 
     public User getUserByRole(Long moduleId, ModuleRole moduleRole) {
-        Optional<ModuleStaff> moduleStaff = moduleStaffRepository.findFirstByModuleRoleAndModuleId(moduleRole,
-                moduleId);
+        Optional<ModuleStaff> moduleStaff = moduleStaffRepository
+                .findFirstByModuleRoleAndModuleId(moduleRole, moduleId);
         if (moduleStaff.isPresent()) {
             return moduleStaff.get()
                     .getUser();

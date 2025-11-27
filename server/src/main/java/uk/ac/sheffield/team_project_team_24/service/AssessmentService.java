@@ -38,7 +38,7 @@ public class AssessmentService {
         return assessmentRepository.save(newAssessment);
     }
 
-    public List<Assessment> getAssessments() {
+    public List<Assessment> getAllAssessments() {
         return assessmentRepository.findAll();
     }
 
@@ -65,27 +65,19 @@ public class AssessmentService {
         return assessmentRepository.save(a);
     }
 
-    public Assessment advanceStage(Long id, AssessmentStage assessmentStage, Long actorId, String note) {
+    public Assessment advanceStage(Long id, AssessmentStage assessmentStage,
+            Long actorId, String note) {
 
-        Assessment assessment = assessmentRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND, "Assessment not found"));
+        Assessment assessment = getAssessment(id);
 
-        User actor = userRepository.findById(actorId)
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND, "User not found"));
+        UserService userService = new UserService(userRepository);
+        User actor = userService.getUser(actorId);
 
         assessment.setAssessmentStage(assessmentStage);
-
-        AssessmentStageLog log = new AssessmentStageLog();
-        log.setAssessment(assessment);
-        log.setAssessmentStage(assessmentStage);
-        log.setActedBy(actor);
-        log.setChangedAt(LocalDateTime.now());
-        log.setNote(note);
-
-        logRepository.save(log);
         assessmentRepository.save(assessment);
+
+        new AssessmentStageLogService(logRepository, userRepository)
+                .generateLogFromAssessment(assessment, actorId, note);
 
         return assessment;
     }
