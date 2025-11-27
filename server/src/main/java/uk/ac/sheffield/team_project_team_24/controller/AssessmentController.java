@@ -30,8 +30,7 @@ public class AssessmentController {
     @GetMapping("/assessments/{id}")
     public ResponseEntity<AssessmentDTO> get(@PathVariable Long id) {
         return ResponseEntity.ok(
-                AssessmentDTO.fromEntity(assessmentService.getAssessment(id))
-        );
+                AssessmentDTO.fromEntity(assessmentService.getAssessment(id)));
     }
 
     // Get all assessments
@@ -40,8 +39,7 @@ public class AssessmentController {
         return ResponseEntity.ok(
                 assessmentService.getAssessments().stream()
                         .map(AssessmentDTO::fromEntity)
-                        .toList()
-        );
+                        .toList());
     }
 
     // Update assessment
@@ -68,11 +66,12 @@ public class AssessmentController {
             @RequestBody AdvanceRequestDTO request,
             @AuthenticationPrincipal CustomUserDetails currentUser) {
 
-        Assessment updated = assessmentService.advanceStatus(
+        Assessment updated = assessmentService.advanceStage(
                 id,
-                request.getAssessmentStatus(),
+                request.getAssessmentStage(),
                 currentUser.getId(),
                 request.getNote()
+
         );
 
         return ResponseEntity.ok(AssessmentDTO.fromEntity(updated));

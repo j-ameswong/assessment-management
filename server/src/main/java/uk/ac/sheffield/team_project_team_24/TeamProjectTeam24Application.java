@@ -10,9 +10,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import uk.ac.sheffield.team_project_team_24.domain.user.User;
 import uk.ac.sheffield.team_project_team_24.domain.user.UserRole;
-import uk.ac.sheffield.team_project_team_24.generate.TestDataGenerator;
+import uk.ac.sheffield.team_project_team_24.generate.DataGenerator;
 import uk.ac.sheffield.team_project_team_24.service.AssessmentService;
 import uk.ac.sheffield.team_project_team_24.service.AssessmentStageLogService;
+import uk.ac.sheffield.team_project_team_24.service.AssessmentStageService;
 import uk.ac.sheffield.team_project_team_24.service.ModuleService;
 import uk.ac.sheffield.team_project_team_24.service.ModuleStaffService;
 import uk.ac.sheffield.team_project_team_24.service.UserService;
@@ -37,16 +38,12 @@ public class TeamProjectTeam24Application {
             ModuleStaffService moduleStaffService,
             AssessmentService assessmentService,
             AssessmentStageLogService assessmentStageLogService,
+            AssessmentStageService assessmentStageService,
             PasswordEncoder passwordEncoder) {
         return args -> {
 
-            // Checkign if the user exists
-            boolean testUserExists = userService.getUsers()
-                    .stream()
-                    .anyMatch(u -> u.getEmail().equals("test@sheffield.ac.uk"));
-
             // Generate main user test for login purposes
-            if (!testUserExists) {
+            if (!userService.existsUserByEmail("test@sheffield.ac.uk")) {
                 User testUser = new User();
                 testUser.setEmail("test@sheffield.ac.uk"); // input email
                 testUser.setPassword(passwordEncoder.encode("test")); // input password
@@ -59,13 +56,17 @@ public class TeamProjectTeam24Application {
             }
 
             // All other generated users
-            TestDataGenerator testDataGenerator = new TestDataGenerator();
+            DataGenerator testDataGenerator = new DataGenerator();
+            // create lookup table first
+            testDataGenerator.populateAssessmentStages(assessmentStageService);
             testDataGenerator.generateUsers(userService);
             testDataGenerator.generateModules(userService, moduleService, moduleStaffService);
             testDataGenerator.generateAssessments(moduleService,
                     moduleStaffService,
                     assessmentService,
+                    assessmentStageService,
                     assessmentStageLogService);
+
         };
     }
 }

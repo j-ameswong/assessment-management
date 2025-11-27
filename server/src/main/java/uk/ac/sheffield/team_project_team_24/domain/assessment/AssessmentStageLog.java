@@ -21,8 +21,9 @@ public class AssessmentStageLog {
     @ManyToOne
     private Assessment assessment;
 
-    @Enumerated(EnumType.STRING)
-    private AssessmentStatus status;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "assessment_stage")
+    private AssessmentStage assessmentStage;
 
     @ManyToOne
     private User actedBy;

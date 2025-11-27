@@ -28,8 +28,9 @@ public class Assessment {
     @Enumerated(EnumType.STRING)
     private AssessmentType assessmentType;
 
-    @Enumerated(EnumType.STRING)
-    private AssessmentStatus status;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "current_assessment_stage")
+    private AssessmentStage assessmentStage;
 
     @ManyToOne
     @JoinColumn(name = "module_id")
