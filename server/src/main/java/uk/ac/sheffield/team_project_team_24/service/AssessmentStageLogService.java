@@ -1,6 +1,7 @@
 package uk.ac.sheffield.team_project_team_24.service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Service;
 import jakarta.transaction.Transactional;
 import uk.ac.sheffield.team_project_team_24.domain.assessment.Assessment;
 import uk.ac.sheffield.team_project_team_24.domain.assessment.AssessmentStageLog;
+import uk.ac.sheffield.team_project_team_24.exception.EmptyRepositoryException;
 import uk.ac.sheffield.team_project_team_24.repository.AssessmentRepository;
 import uk.ac.sheffield.team_project_team_24.repository.AssessmentStageLogRepository;
 import uk.ac.sheffield.team_project_team_24.repository.UserRepository;
@@ -43,5 +45,14 @@ public class AssessmentStageLogService {
         log.setNote(note);
 
         return assessmentStageLogRepository.save(log);
+    }
+
+    public List<AssessmentStageLog> getAllLogs() {
+        List<AssessmentStageLog> logs = assessmentStageLogRepository.findAll();
+        if (logs.isEmpty()) {
+            throw new EmptyRepositoryException("AssesmentStageLogRepository");
+        } else {
+            return logs;
+        }
     }
 }
