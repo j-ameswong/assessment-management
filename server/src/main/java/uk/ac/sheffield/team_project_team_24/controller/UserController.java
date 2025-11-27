@@ -30,7 +30,7 @@ public class UserController {
     // Get all users
     @GetMapping("/users")
     public ResponseEntity<List<User>> list() {
-        return ResponseEntity.ok(userService.getUsers());
+        return ResponseEntity.ok(userService.getAllUsers());
     }
 
     // Delete user
