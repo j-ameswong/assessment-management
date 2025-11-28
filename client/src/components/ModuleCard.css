@@ -167,7 +167,7 @@
     flex-wrap: wrap;
     justify-content: space-between;
 
-    width: 30vw;
+    width: auto;
 
     margin: 25px auto;
     margin-left: 0;
@@ -190,10 +190,7 @@
   .dropdown-btn {
     padding: 16px;
     font-size: 16px;
-    margin: auto 10px;
-
-    min-height: 44px;
-    min-width: 44px;
+    margin: auto 0;
   }
 
   .dropdown {
