@@ -45,7 +45,7 @@ public class LoginController {
         return ResponseEntity.ok("Login Success");
     }
 
-    @GetMapping("test")
+    @GetMapping("/test")
     public String test() {
         return "Backend OK";
     }
