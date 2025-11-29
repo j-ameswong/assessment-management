@@ -22,17 +22,23 @@ import uk.ac.sheffield.team_project_team_24.repository.UserRepository;
 public class AssessmentService {
     @Autowired
     private final AssessmentRepository assessmentRepository;
-    @Autowired
-    private final AssessmentStageLogRepository logRepository;
-    @Autowired
-    private UserRepository userRepository;
+
+    private final AssessmentStageService assessmentStageService;
+
+    private final AssessmentStageLogService assessmentStageLogService;
+
+    private final UserService userService;
 
     private static final String ASSESSMENT_NOT_FOUND = "Assessment does not exist";
 
     public AssessmentService(AssessmentRepository assessmentRepository,
-            AssessmentStageLogRepository logRepository) {
+            AssessmentStageService assessmentStageService,
+            AssessmentStageLogService assessmentStageLogService,
+            UserService userService) {
         this.assessmentRepository = assessmentRepository;
-        this.logRepository = logRepository;
+        this.assessmentStageService = assessmentStageService;
+        this.assessmentStageLogService = assessmentStageLogService;
+        this.userService = userService;
     }
 
     public Assessment createAssessment(Assessment newAssessment) {
@@ -66,27 +72,25 @@ public class AssessmentService {
         return assessmentRepository.save(a);
     }
 
-    public Assessment advanceStage(Long id, AssessmentStage assessmentStage,
+    public Assessment advanceStage(Long id,
             Long actorId, String note) {
 
         Assessment assessment = getAssessment(id);
 
-        assessment.setAssessmentStage(assessmentStage);
+        assessment.setAssessmentStage(
+                assessmentStageService.getNextStage(assessment.getAssessmentStage()));
         assessmentRepository.save(assessment);
 
-        new AssessmentStageLogService(logRepository, userRepository)
-                .generateLogFromAssessment(assessment, actorId, note);
+        assessmentStageLogService.generateLogFromAssessment(assessment, actorId, note);
 
         return assessment;
     }
 
     public List<AssessmentStageLog> getHistory(Long id) {
-        return new AssessmentStageLogService(logRepository, userRepository)
-                .getLogs(getAssessment(id));
+        return assessmentStageLogService.getLogs(getAssessment(id));
     }
 
     public List<AssessmentStageLog> getHistory(Assessment assessment) {
-        return new AssessmentStageLogService(logRepository, userRepository)
-                .getLogs(assessment);
+        return assessmentStageLogService.getLogs(assessment);
     }
 }

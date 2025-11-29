@@ -69,7 +69,6 @@ public class AssessmentController {
 
         Assessment updated = assessmentService.advanceStage(
                 id,
-                request.getAssessmentStage(),
                 currentUser.getId(),
                 request.getNote()
 
