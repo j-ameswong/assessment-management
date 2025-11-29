@@ -3,19 +3,14 @@ package uk.ac.sheffield.team_project_team_24.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import jakarta.transaction.Transactional;
 import uk.ac.sheffield.team_project_team_24.domain.assessment.Assessment;
-import uk.ac.sheffield.team_project_team_24.domain.assessment.AssessmentStage;
 import uk.ac.sheffield.team_project_team_24.domain.assessment.AssessmentStageLog;
-import uk.ac.sheffield.team_project_team_24.domain.user.User;
 import uk.ac.sheffield.team_project_team_24.dto.AssessmentDTO;
+import uk.ac.sheffield.team_project_team_24.exception.assessment.AssessmentNotFoundException;
 import uk.ac.sheffield.team_project_team_24.repository.AssessmentRepository;
-import uk.ac.sheffield.team_project_team_24.repository.AssessmentStageLogRepository;
-import uk.ac.sheffield.team_project_team_24.repository.UserRepository;
 
 @Service
 @Transactional
@@ -28,8 +23,6 @@ public class AssessmentService {
     private final AssessmentStageLogService assessmentStageLogService;
 
     private final UserService userService;
-
-    private static final String ASSESSMENT_NOT_FOUND = "Assessment does not exist";
 
     public AssessmentService(AssessmentRepository assessmentRepository,
             AssessmentStageService assessmentStageService,
@@ -51,12 +44,12 @@ public class AssessmentService {
 
     public Assessment getAssessment(Long assessmentId) {
         return assessmentRepository.findById(assessmentId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, ASSESSMENT_NOT_FOUND));
+                .orElseThrow(() -> new AssessmentNotFoundException(assessmentId));
     }
 
     public void deleteAssessment(Long assessmentId) {
         if (!assessmentRepository.existsById(assessmentId)) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, ASSESSMENT_NOT_FOUND);
+            throw new AssessmentNotFoundException(assessmentId);
         }
         assessmentRepository.deleteById(assessmentId);
     }
