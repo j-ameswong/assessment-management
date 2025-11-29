@@ -38,7 +38,7 @@ public class AssessmentController {
     @GetMapping("/assessments")
     public ResponseEntity<List<AssessmentDTO>> list() {
         return ResponseEntity.ok(
-                assessmentService.getAssessments().stream()
+                assessmentService.getAllAssessments().stream()
                         .map(AssessmentDTO::fromEntity)
                         .toList());
     }

@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Optional;
 
 public interface AssessmentStageLogRepository extends JpaRepository<AssessmentStageLog, Long> {
+    List<AssessmentStageLog> findAll();
+
     Optional<AssessmentStageLog> findAssessmentStageLogById(Long id);
 
     List<AssessmentStageLog> findByAssessmentOrderByChangedAtAsc(Assessment assessment);

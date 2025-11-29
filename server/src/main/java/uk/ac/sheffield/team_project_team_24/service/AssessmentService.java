@@ -1,6 +1,5 @@
 package uk.ac.sheffield.team_project_team_24.service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,21 +23,23 @@ public class AssessmentService {
     @Autowired
     private final AssessmentRepository assessmentRepository;
     @Autowired
-    private AssessmentStageLogRepository logRepository;
+    private final AssessmentStageLogRepository logRepository;
     @Autowired
     private UserRepository userRepository;
 
     private static final String ASSESSMENT_NOT_FOUND = "Assessment does not exist";
 
-    public AssessmentService(AssessmentRepository assessmentRepository) {
+    public AssessmentService(AssessmentRepository assessmentRepository,
+            AssessmentStageLogRepository logRepository) {
         this.assessmentRepository = assessmentRepository;
+        this.logRepository = logRepository;
     }
 
     public Assessment createAssessment(Assessment newAssessment) {
         return assessmentRepository.save(newAssessment);
     }
 
-    public List<Assessment> getAssessments() {
+    public List<Assessment> getAllAssessments() {
         return assessmentRepository.findAll();
     }
 
@@ -65,37 +66,27 @@ public class AssessmentService {
         return assessmentRepository.save(a);
     }
 
-    public Assessment advanceStage(Long id, AssessmentStage assessmentStage, Long actorId, String note) {
+    public Assessment advanceStage(Long id, AssessmentStage assessmentStage,
+            Long actorId, String note) {
 
-        Assessment assessment = assessmentRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND, "Assessment not found"));
-
-        User actor = userRepository.findById(actorId)
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND, "User not found"));
+        Assessment assessment = getAssessment(id);
 
         assessment.setAssessmentStage(assessmentStage);
-
-        AssessmentStageLog log = new AssessmentStageLog();
-        log.setAssessment(assessment);
-        log.setAssessmentStage(assessmentStage);
-        log.setActedBy(actor);
-        log.setChangedAt(LocalDateTime.now());
-        log.setNote(note);
-
-        logRepository.save(log);
         assessmentRepository.save(assessment);
+
+        new AssessmentStageLogService(logRepository, userRepository)
+                .generateLogFromAssessment(assessment, actorId, note);
 
         return assessment;
     }
 
     public List<AssessmentStageLog> getHistory(Long id) {
-        Assessment assessment = assessmentRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND, "Assessment not found"));
-
-        return logRepository.findByAssessmentOrderByChangedAtAsc(assessment);
+        return new AssessmentStageLogService(logRepository, userRepository)
+                .getLogs(getAssessment(id));
     }
 
+    public List<AssessmentStageLog> getHistory(Assessment assessment) {
+        return new AssessmentStageLogService(logRepository, userRepository)
+                .getLogs(assessment);
+    }
 }
