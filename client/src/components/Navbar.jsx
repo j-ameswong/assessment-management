@@ -12,7 +12,7 @@ export default function Navbar({
         left: 0,
         width: "100%",
         zIndex: 1000,
-        background: "#4b0082",
+        background: "#2d0c73",
         color: "#fff",
       }}
     >
