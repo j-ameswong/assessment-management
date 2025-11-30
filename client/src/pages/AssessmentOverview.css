@@ -1,0 +1,75 @@
+.ao-wrap {
+  padding: 24px;
+  background: #f4f0ff;
+  min-height: 100vh;
+}
+
+
+
+.ao-subtitle {
+  margin: 20px 8px 12px;
+  font-size: 20px;
+  color: #2b2250;
+  font-weight: 800;
+}
+
+.ao-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(220px, 1fr));
+  gap: 20px;
+}
+
+.ao-card {
+  background: #fff;
+  border-radius: 18px;
+  padding: 18px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+  position: relative;
+  min-height: 50vh; 
+}
+
+.ao-card-title {
+  margin: 0 0 16px;
+  color: #2b2250;
+}
+
+.ao-pill {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: inline-block;
+  padding: 10px 18px;
+  border-radius: 999px;
+  font-weight: 700;
+}
+
+.ao-pill.ok { background: #4f7f2b; color: #fff; }
+.ao-pill.warn { background: #f08a21; color: #fff; }
+.ao-pill.danger { background: #b91818; color: #fff; }
+
+.ao-arrow {
+  position: absolute;
+  right: 16px;
+  bottom: 14px;
+  border: none;
+  background: transparent;
+  font-size: 22px;
+  color: #6d679b;
+  cursor: pointer;
+}
+
+.ao-primary {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  background: #2d0c73;
+  color: #fff;
+  border: none;
+  padding: 16px 22px;
+  border-radius: 16px;
+  font-weight: 800;
+  box-shadow: 0 10px 24px rgba(0,0,0,0.15);
+  cursor: pointer;
+}
+.ao-primary:hover { opacity: 0.92; }

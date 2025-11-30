@@ -2,6 +2,7 @@ package uk.ac.sheffield.team_project_team_24.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import uk.ac.sheffield.team_project_team_24.domain.module.Module;
@@ -19,8 +20,9 @@ public class ModuleController {
     private final ModuleService moduleService;
     private final ModuleStaffService moduleStaffService;
 
-
     // Create module
+    // TODO: use module DTOs, only authorize admins
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/modules")
     public ResponseEntity<Module> createModule(@RequestBody Module module) {
         return ResponseEntity.ok(moduleService.createModule(module));
