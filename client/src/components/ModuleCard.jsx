@@ -1,8 +1,8 @@
 import React from "react";
 import { useState } from 'react';
-import "./ModuleCard.css"
+import "../componentStyles/ModuleCard.css"
 
-const ModuleCard = (props) => {
+export default function ModuleCard({ moduleCode, moduleTitle }) {
     const [ddOpen, setDdOpen] = useState(false);
 
     const toggleDropdown = () => {
@@ -11,24 +11,24 @@ const ModuleCard = (props) => {
 
     return (
         <div className="module-box">
-            <h2 className="module-code">{props.moduleCode}</h2>
+            <h2 className="module-code">{moduleCode}</h2>
             <div className="module-info">
-                <h2 className="module-title">{props.moduleTitle}</h2>
-                <div className="dropdown">
-                    <button className="dropdown-btn" onClick={toggleDropdown}>
-                        Dropdown
-                    </button>
-                    { ddOpen && (
-                        <div className="dropdown-content">
-                            <a href="#">Go to module</a>
-                            <a href="#">Edit module</a>
-                            <a href="#">Delete module</a>
-                        </div>
-                    )}
+                <div className="module-title-dropdown-row">
+                    <h2 className="module-title">{moduleTitle}</h2>
+                    <div className="dropdown">
+                        <button className="dropdown-btn" onClick={toggleDropdown}>
+                            Dropdown
+                        </button>
+                        { ddOpen && (
+                            <div className="dropdown-content">
+                                <a href="#">Go to module</a>
+                                <a href="#">Edit module</a>
+                                <a href="#">Delete module</a>
+                            </div>
+                        )}
+                    </div>
                 </div>
             </div>
         </div>
     );
-};
-
-export default ModuleCard
+}
