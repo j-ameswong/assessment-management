@@ -67,6 +67,11 @@ public class ModuleStaffService {
         moduleStaffRepository.save(ms);
     }
 
+    public List<ModuleStaff> getAllModuleStaffInModule(Long moduleId) {
+        return moduleStaffRepository.findByModuleId(moduleId)
+                .orElseThrow(() -> new UserNotFoundException("No users in module"));
+    }
+
     public ModuleStaff getUserInModule(Long userId, Long moduleId) {
         return moduleStaffRepository.findByUserAndModule(
                 userService.getUser(userId), moduleService.getModule(moduleId))
