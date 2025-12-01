@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import "./CreateAssessment.css"
 import Navbar from "../components/Navbar.jsx";
@@ -12,6 +12,13 @@ export default function CreateAssessment() {
     const [csvFile, setCsvFile] = useState(null);
     const [attachment, setAttachment] = useState(null);
 
+    // fetch modules from api
+    const [modules, setModules] = useState([]);
+    useEffect(() => {
+        fetch("http://localhost:8080/api/modules")
+            .then(res => res.json())
+            .then(data => setModules(data));
+    })
 
 
     const Create = async () => {
