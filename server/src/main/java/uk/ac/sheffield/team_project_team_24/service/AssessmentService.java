@@ -11,7 +11,6 @@ import uk.ac.sheffield.team_project_team_24.domain.assessment.AssessmentStageLog
 import uk.ac.sheffield.team_project_team_24.domain.module.Module;
 import uk.ac.sheffield.team_project_team_24.domain.module.ModuleRole;
 import uk.ac.sheffield.team_project_team_24.dto.AssessmentDTO;
-import uk.ac.sheffield.team_project_team_24.dto.CreateAssessmentDTO;
 import uk.ac.sheffield.team_project_team_24.exception.assessment.AssessmentNotFoundException;
 import uk.ac.sheffield.team_project_team_24.repository.AssessmentRepository;
 
@@ -24,14 +23,6 @@ public class AssessmentService {
     private final AssessmentStageLogService assessmentStageLogService;
     private final ModuleService moduleService;
     private final UserService userService;
-
-    public Assessment createAssessment(CreateAssessmentDTO req) {
-        Assessment a = new Assessment();
-        a.setAssessmentName(req.getName());
-        a.setDescription(req.getDescription());
-        a.setAssessmentType(req.getType());
-        return assessmentRepository.save(a);
-    }
 
     public Assessment createAssessment(AssessmentDTO req) {
         Assessment a = new Assessment();

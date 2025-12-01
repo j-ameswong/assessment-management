@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import "./CreateAssessment.css"
 import Navbar from "../components/Navbar.jsx";
+import { Dropdown } from "bootstrap";
 
 
 export default function CreateAssessment() {
@@ -14,12 +15,13 @@ export default function CreateAssessment() {
 
     // fetch modules from api
     const [modules, setModules] = useState([]);
+    // TODO: only fetch modules that have the user/all for admin
     useEffect(() => {
         fetch("http://localhost:8080/api/modules")
             .then(res => res.json())
             .then(data => setModules(data));
     })
-
+    const [moduleId, setModuleId] = useState(0);
 
     const Create = async () => {
         try {
@@ -31,6 +33,9 @@ export default function CreateAssessment() {
             const payload = {
                 name: name,
                 type: type.toUpperCase(),
+                // moduleId
+                // setterId 
+                // checkerId
                 description: description
             };
 
@@ -82,6 +87,13 @@ export default function CreateAssessment() {
                     <label className="label">Assessment Name</label>
                     <input
                         className="input"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                    />
+
+                    <label className="label">For Module</label>
+                    <Dropdown
+                        className="dropdown"
                         value={name}
                         onChange={(e) => setName(e.target.value)}
                     />

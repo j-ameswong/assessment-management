@@ -23,6 +23,7 @@ public class ModuleController {
 
     // Create module
     // TODO: use module DTOs, only authorize admins
+    // TODO: only fetch modules that have the user/all for admin
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/modules")
     public ResponseEntity<Module> createModule(@RequestBody Module module) {
