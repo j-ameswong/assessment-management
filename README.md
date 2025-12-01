@@ -15,7 +15,14 @@ It is built with Java and managed using Maven.
 - `src/main/resources` — configuration files
 
 ## How to Run
-(To be updated)
+To run backend:
+- Navigate to directory 'server'
+- On Linux/Mac run: ./mvnw spring-boot:run in CLI
+- On Windows run: .\mvnw spring-boot:run in CLI
+
+To run frontend:
+- Navigate to directory 'client'
+- Run 'npm run dev' in CLI (dev command currently)
 
 ## Team Members
 Benjamin Grassie
