@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-TeamProjectTeam24Application<team-project-team-24>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "uk.ac.sheffield.team_project_team_24.TeamProjectTeam24Application",
+            "projectName": "team-project-team-24",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}
