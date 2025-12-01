@@ -13,6 +13,7 @@ import uk.ac.sheffield.team_project_team_24.service.ModuleStaffService;
 import java.util.List;
 
 @RestController
+@RequestMapping("/api")
 @RequiredArgsConstructor
 @CrossOrigin(origins = "http://localhost:5173")
 public class ModuleController {

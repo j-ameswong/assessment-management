@@ -21,6 +21,8 @@ public class Assessment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long assessmentId;
+    private String description;
+
 
     @Column(unique = true, nullable = false)
     private String assessmentName;
