@@ -60,6 +60,11 @@ public class ModuleStaffService {
         moduleStaffRepository.save(ms);
     }
 
+    public ModuleStaff getUserInModule(Long userId, Long moduleId) {
+        return moduleStaffRepository.findByStaffIdAndModuleId(userId, moduleId)
+                .orElseThrow(() -> new UserNotFoundException("No such module staff exists"));
+    }
+
     public User getUserByRole(Long moduleId, ModuleRole moduleRole) {
         Optional<ModuleStaff> moduleStaff = moduleStaffRepository
                 .findFirstByModuleRoleAndModuleId(moduleRole, moduleId);

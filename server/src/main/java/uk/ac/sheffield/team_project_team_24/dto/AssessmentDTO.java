@@ -14,7 +14,7 @@ public class AssessmentDTO {
     private Long id;
     private String name;
     private AssessmentType type;
-    private AssessmentStage assessmentStage;
+    private Long assessmentStageId;
     private Long moduleId;
     private Long setterId;
     private Long checkerId;
@@ -24,19 +24,15 @@ public class AssessmentDTO {
                 a.getAssessmentId(),
                 a.getAssessmentName(),
                 a.getAssessmentType(),
-                a.getAssessmentStage(),
+                a.getAssessmentStage().getId(),
                 a.getModule() != null ? a.getModule().getId() : null,
                 a.getSetter() != null ? a.getSetter().getId() : null,
                 a.getChecker() != null ? a.getChecker().getId() : null);
     }
 
-    public Assessment toEntity() {
-        Assessment a = new Assessment();
-        a.setAssessmentId(id);
-        a.setAssessmentName(name);
-        a.setAssessmentType(type);
-        a.setAssessmentStage(assessmentStage);
-        return a;
-    }
-
+    // public Assessment toEntity() {
+    // Assessment a = new Assessment();
+    // return a;
+    // }
+    //
 }

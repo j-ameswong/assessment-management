@@ -12,6 +12,8 @@ public interface ModuleStaffRepository extends JpaRepository<ModuleStaff, Module
     // find all staff in this module
     public ModuleStaff findAllByModuleId(Long moduleId);
 
+    public Optional<ModuleStaff> findByStaffIdAndModuleId(Long userId, Long moduleId);
+
     // this query works because staff can only have one role per module
     public Optional<ModuleStaff> findFirstByModuleRoleAndModuleId(
             ModuleRole moduleRole, Long moduleId);
