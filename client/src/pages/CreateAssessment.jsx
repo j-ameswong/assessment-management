@@ -22,7 +22,7 @@ export default function CreateAssessment() {
             .then(data => setModules(data));
     })
 
-    // this is for later, get list of staff to set as setter/checker
+    // TODO: this is for later, get list of staff to set as setter/checker
     // const [moduleStaff, setModuleStaff] = useState([]);
     // useEffect(() => {
     //     fetch("http://localhost:8080/" + currentModuleId + "/modules")
@@ -47,8 +47,8 @@ export default function CreateAssessment() {
                 name: name,
                 type: type.toUpperCase(),
                 moduleId: moduleId,
-                // setterId 
-                // checkerId
+                setterId: 12, // temp setterId 
+                checkerId: 13, // checkerId
                 description: description
             };
 
@@ -113,6 +113,10 @@ export default function CreateAssessment() {
                                     </option>
                                 ))}
                             </select>
+
+                            {/* TODO: Create hidden dropdowns to select setter and getters, */}
+                            {/*       on selecting module, initialize setterId and getterId with  */}
+                            {/*       filtering moduleStaff to find moduleRole === MODULE_LEAD/MODERATOR */}
 
                             <label className="label">Assessment Type</label>
                             <div className="type-buttons">
