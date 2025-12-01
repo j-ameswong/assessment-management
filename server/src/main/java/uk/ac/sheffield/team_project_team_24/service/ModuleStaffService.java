@@ -27,12 +27,19 @@ public class ModuleStaffService {
     @Autowired
     private UserRepository userRepository;
 
+    private final UserService userService;
+    private final ModuleService moduleService;
+
     public ModuleStaffService(ModuleStaffRepository moduleStaffRepository,
             ModuleRepository moduleRepository,
-            UserRepository userRepository) {
+            UserRepository userRepository,
+            UserService userService,
+            ModuleService moduleService) {
         this.moduleStaffRepository = moduleStaffRepository;
         this.moduleRepository = moduleRepository;
         this.userRepository = userRepository;
+        this.userService = userService;
+        this.moduleService = moduleService;
     }
 
     public void assignModuleStaff(ModuleStaff moduleStaff) {
@@ -61,7 +68,8 @@ public class ModuleStaffService {
     }
 
     public ModuleStaff getUserInModule(Long userId, Long moduleId) {
-        return moduleStaffRepository.findByStaffIdAndModuleId(userId, moduleId)
+        return moduleStaffRepository.findByUserAndModule(
+                userService.getUser(userId), moduleService.getModule(moduleId))
                 .orElseThrow(() -> new UserNotFoundException("No such module staff exists"));
     }
 
