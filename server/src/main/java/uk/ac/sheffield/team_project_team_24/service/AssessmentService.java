@@ -36,6 +36,7 @@ public class AssessmentService {
     public Assessment createAssessment(AssessmentDTO req) {
         Assessment a = new Assessment();
         Module m = moduleService.getModule(req.getModuleId());
+
         a.setModule(m);
         a.setSetter(userService.getUser(req.getSetterId()));
         a.setChecker(userService.getUser(req.getCheckerId()));
@@ -44,6 +45,8 @@ public class AssessmentService {
         // createAssessment should always set to first stage
         a.setAssessmentStage(assessmentStageService.getFirstStage(
                 a.getAssessmentType()));
+
+        createAssessment(a);
         return a;
     }
 

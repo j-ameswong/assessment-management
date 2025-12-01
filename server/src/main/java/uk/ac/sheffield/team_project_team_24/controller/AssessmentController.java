@@ -34,8 +34,11 @@ public class AssessmentController {
 
     // Create an assessment
     @PostMapping("/assessments")
-    public Assessment create(@RequestBody CreateAssessmentDTO req) {
-        return assessmentService.createAssessment(req);
+    public ResponseEntity<AssessmentDTO> create(@RequestBody AssessmentDTO req) {
+        return ResponseEntity.ok(AssessmentDTO
+                .fromEntity(assessmentService.createAssessment(req)
+            )
+        );
     }
 
 
