@@ -104,7 +104,6 @@
   display: block;
   top: 140px;
   border-radius: 20px;
-  position: absolute;
   background-color: #f1f1f1;
   width: 30vw;
   box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
@@ -208,14 +207,14 @@
     display: block;
     position: absolute;
     top: 50px;
-    right: 250px;
+    right: -25px;
     border-radius: 20px;
-    width: 60vw;
+    width: 68vw;
     box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
     z-index: 100;
   }
 
-  .dropdown-content a {
+  .dropdown-link {
     padding: 12px 16px;
   }
 }

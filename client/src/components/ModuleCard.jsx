@@ -1,5 +1,6 @@
 import React from "react";
 import { useState } from 'react';
+import { Link } from "react-router-dom";
 import "../componentStyles/ModuleCard.css"
 
 export default function ModuleCard({ moduleCode, moduleTitle }) {
@@ -21,9 +22,9 @@ export default function ModuleCard({ moduleCode, moduleTitle }) {
                         </button>
                         { ddOpen && (
                             <div className="dropdown-content">
-                                <a href="#">Go to module</a>
-                                <a href="#">Edit module</a>
-                                <a href="#">Delete module</a>
+                                <Link to="/modules/assessments" className="dropdown-link">See assignments</Link>
+                                <Link to="/modules/assessments" className="dropdown-link">Edit module details</Link>
+                                <Link to="/modules/assessments" className="dropdown-link">Delete modules</Link>
                             </div>
                         )}
                     </div>
