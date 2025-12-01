@@ -1,0 +1,204 @@
+.assessment-page {
+    padding: 40px;
+    background: #f4f0ff;
+    min-height: 100vh;
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+}
+
+
+.title {
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 30px;
+}
+
+
+.grid-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 150px;
+}
+
+
+.left-column,
+.right-column {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+.right-column {
+    align-items: flex-start;
+}
+
+
+.label {
+    font-size: 16px;
+    font-weight: 600;
+}
+
+
+.input,
+.csv-input,
+.attach-input,
+.textarea {
+    width: 100%;
+    max-width: 400px;
+    padding: 14px;
+    border: 1px solid #ccc;
+    border-radius: 20px;
+    background: white;
+    font-size: 15px;
+    box-sizing: border-box;
+    height: 50px;
+}
+
+
+.textarea {
+    height: 180px;
+    resize: none;
+}
+
+/* Assessment Type */
+.type-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.type-btn {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 18px;
+    border-radius: 20px;
+    border: 1px solid #ccc;
+    background: white;
+    width: 400px;
+    font-size: 15px;
+    cursor: pointer;
+    transition: 0.15s;
+}
+
+.type-btn.selected {
+    background: #7da66b;
+    border-color: #6f935f;
+}
+
+.circle {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    border: 2px solid #000000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+.circle.checked {
+    background: #ffffff;
+    border-color: #000000;
+}
+
+
+.tick {
+    font-size: 14px;
+    font-weight: bold;
+    color: #000000;
+}
+
+
+.or {
+    text-align: center;
+    font-weight: 600;
+    margin: 0 auto;
+    width: 400px;
+    display: flex;
+    justify-content: center;
+}
+
+
+.csv-wrapper, .attach-wrapper {
+    position: relative;
+    width: 400px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    border: 1px solid #ccc;
+    background: white;
+    border-radius: 18px;
+    overflow: hidden;
+}
+
+
+.attach-btn{
+    position: absolute;
+    top: 50%;
+    right: 0;
+    transform: translateY(-50%);
+
+    padding: 12px 26px;
+    background: #392fa0;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 16px;
+    white-space: nowrap;
+    width: 150px;
+    height: 50px;
+    z-index: 2;
+
+}
+
+.create-btn {
+    margin-left: 100px;
+    padding: 12px 26px;
+    background: #392fa0;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 16px;
+    white-space: nowrap;
+    width: 200px;
+
+}
+
+.csv-input, .attach-input {
+    position: absolute;
+    left: 0;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+    z-index: 3;
+}
+
+
+.file-display {
+    position: absolute;
+    left: 0;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    padding-left: 16px;
+    gap: 10px;
+    pointer-events: none;
+}
+
+.file-icon {
+    width: 20px;
+    height: 20px;
+    opacity: 0.7;
+}
+
+
+.attach-btn:hover,
+.create-btn:hover {
+    background: #2e2480;
+}
+.type-btn:hover {
+    background: #6f935f;
+}

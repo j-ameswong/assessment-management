@@ -2,41 +2,38 @@ package uk.ac.sheffield.team_project_team_24.service;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
 import uk.ac.sheffield.team_project_team_24.domain.assessment.Assessment;
 import uk.ac.sheffield.team_project_team_24.domain.assessment.AssessmentStageLog;
 import uk.ac.sheffield.team_project_team_24.dto.AssessmentDTO;
+import uk.ac.sheffield.team_project_team_24.dto.CreateAssessmentDTO;
 import uk.ac.sheffield.team_project_team_24.exception.assessment.AssessmentNotFoundException;
 import uk.ac.sheffield.team_project_team_24.repository.AssessmentRepository;
 
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class AssessmentService {
-    @Autowired
     private final AssessmentRepository assessmentRepository;
-
     private final AssessmentStageService assessmentStageService;
-
     private final AssessmentStageLogService assessmentStageLogService;
 
-    private final UserService userService;
-
-    public AssessmentService(AssessmentRepository assessmentRepository,
-            AssessmentStageService assessmentStageService,
-            AssessmentStageLogService assessmentStageLogService,
-            UserService userService) {
-        this.assessmentRepository = assessmentRepository;
-        this.assessmentStageService = assessmentStageService;
-        this.assessmentStageLogService = assessmentStageLogService;
-        this.userService = userService;
+    public Assessment createAssessment(CreateAssessmentDTO req) {
+        Assessment a = new Assessment();
+        a.setAssessmentName(req.getName());
+        a.setDescription(req.getDescription());
+        a.setAssessmentType(req.getType());
+        return assessmentRepository.save(a);
     }
 
-    public Assessment createAssessment(Assessment newAssessment) {
-        return assessmentRepository.save(newAssessment);
+    public Assessment createAssessment(Assessment a) {
+        return assessmentRepository.save(a);
     }
+
+
 
     public List<Assessment> getAllAssessments() {
         return assessmentRepository.findAll();
@@ -60,8 +57,6 @@ public class AssessmentService {
 
         a.setAssessmentName(dto.getName());
         a.setAssessmentType(dto.getType());
-        a.setAssessmentStage(dto.getAssessmentStage());
-
         return assessmentRepository.save(a);
     }
 
@@ -86,4 +81,13 @@ public class AssessmentService {
     public List<AssessmentStageLog> getHistory(Assessment assessment) {
         return assessmentStageLogService.getLogs(assessment);
     }
+
+    public List<Assessment> saveAll(List<Assessment> assessments) {
+        return assessmentRepository.saveAll(assessments);
+    }
+
+    public List<Assessment> getAll() {
+        return assessmentRepository.findAll();
+    }
+
 }

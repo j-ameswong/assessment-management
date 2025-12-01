@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
 export default function Home() {
     const [message, setMessage] = useState("");
@@ -14,6 +15,7 @@ export default function Home() {
         <div>
             <h1>Home Page</h1>
             <p>{message}</p>
+            <Link to="/add-assessment">Create Assessment</Link>
         </div>
     );
 }

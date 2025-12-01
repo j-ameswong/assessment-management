@@ -9,7 +9,7 @@ function Login() {
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [message, setMessage] = useState("");
+    const [, setMessage] = useState("");
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -29,13 +29,14 @@ function Login() {
                 navigate("/home");
             }
 
+
         } catch (error) {
             console.error(error);
             setMessage("Cannot connect to server");
         }
 };
 
-  return (
+    return (
     <div className="login-page">
       <div className="login-card">
         <section className="login-left">
@@ -97,13 +98,13 @@ function Login() {
             </form>
           </div>
         </section>
-        
-        
+
+
       </div>
        <Footer />
     </div>
-    
-  );
+
+    );
 }
 
 export default Login;
