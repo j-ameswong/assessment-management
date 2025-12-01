@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 
 import uk.ac.sheffield.team_project_team_24.domain.module.Module;
 import uk.ac.sheffield.team_project_team_24.domain.module.ModuleRole;
+import uk.ac.sheffield.team_project_team_24.dto.ModuleDTO;
 import uk.ac.sheffield.team_project_team_24.service.ModuleService;
 import uk.ac.sheffield.team_project_team_24.service.ModuleStaffService;
 
@@ -31,14 +32,17 @@ public class ModuleController {
 
     // Get one module
     @GetMapping("/modules/{id}")
-    public ResponseEntity<Module> get(@PathVariable Long id) {
-        return ResponseEntity.ok(moduleService.getModule(id));
+    public ResponseEntity<ModuleDTO> get(@PathVariable Long id) {
+        return ResponseEntity.ok(ModuleDTO.fromEntity(moduleService.getModule(id)));
     }
 
     // List modules
     @GetMapping("/modules")
-    public ResponseEntity<List<Module>> list() {
-        return ResponseEntity.ok(moduleService.getModules());
+    public ResponseEntity<List<ModuleDTO>> list() {
+        return ResponseEntity.ok(moduleService.getModules()
+                .stream()
+                .map(m -> ModuleDTO.fromEntity(m))
+                .toList());
     }
 
     // Assign staff to a module
