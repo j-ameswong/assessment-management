@@ -26,7 +26,7 @@ public class SecurityConfig {
                         .requestMatchers("/h2-console/**").permitAll() // do not require login for /h2-console
                         .requestMatchers("/api/**").permitAll()
                         .anyRequest().authenticated())
-                .formLogin(AbstractAuthenticationFilterConfigurer::permitAll)
+                .formLogin(AbstractAuthenticationFilterConfigurer::disable)
                 .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin));
 
         return http.build();

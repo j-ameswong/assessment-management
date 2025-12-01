@@ -21,8 +21,6 @@ public class Assessment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long assessmentId;
-    private String description;
-
 
     @Column(unique = true, nullable = false)
     private String assessmentName;
@@ -64,4 +62,8 @@ public class Assessment {
 
     @Column(length = 2000)
     private String setterResponse; // setter responses to external examiner
+
+    @Column(length = 2000)
+    private String description;
+
 }
