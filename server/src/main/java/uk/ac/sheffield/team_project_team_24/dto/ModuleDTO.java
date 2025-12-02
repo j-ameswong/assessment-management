@@ -12,12 +12,14 @@ import uk.ac.sheffield.team_project_team_24.domain.module.ModuleStaffId;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ModuleDTO {
+    private Long id;
     private String moduleCode;
     private String moduleName;
     private List<ModuleStaffId> moduleStaffIds;
 
     public static ModuleDTO fromEntity(Module m) {
         ModuleDTO dto = new ModuleDTO();
+        dto.id = m.getId();
         dto.moduleCode = m.getModuleCode();
         dto.moduleName = m.getModuleName();
         dto.moduleStaffIds = m.getModuleStaff()
