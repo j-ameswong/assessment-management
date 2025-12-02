@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
 import "./Modules.css";
 import Navbar from "../components/Navbar.jsx";
 import Footer from "../components/Footer.jsx";
 import ModuleCard from "../components/ModuleCard.jsx";
-import { use } from "react";
 
 
 function Modules() {
