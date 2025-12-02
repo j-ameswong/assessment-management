@@ -5,13 +5,16 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import uk.ac.sheffield.team_project_team_24.domain.assessment.AssessmentType;
 import uk.ac.sheffield.team_project_team_24.domain.module.Module;
 import uk.ac.sheffield.team_project_team_24.domain.module.ModuleRole;
 import uk.ac.sheffield.team_project_team_24.domain.module.ModuleStaff;
 import uk.ac.sheffield.team_project_team_24.dto.AssessmentDTO;
+import uk.ac.sheffield.team_project_team_24.dto.AssessmentStageDTO;
 import uk.ac.sheffield.team_project_team_24.dto.ModuleDTO;
 import uk.ac.sheffield.team_project_team_24.dto.ModuleStaffDTO;
 import uk.ac.sheffield.team_project_team_24.service.AssessmentService;
+import uk.ac.sheffield.team_project_team_24.service.AssessmentStageService;
 import uk.ac.sheffield.team_project_team_24.service.ModuleService;
 import uk.ac.sheffield.team_project_team_24.service.ModuleStaffService;
 
@@ -26,6 +29,7 @@ public class ModuleController {
     private final ModuleService moduleService;
     private final ModuleStaffService moduleStaffService;
     private final AssessmentService assessmentService;
+    private final AssessmentStageService assessmentStageService;
 
     // Create module
     // TODO: use module DTOs, only authorize admins
@@ -81,4 +85,12 @@ public class ModuleController {
                 .toList());
     }
 
+    @GetMapping("/assessments/stages/{type}")
+    public ResponseEntity<List<AssessmentStageDTO>> listStages(
+            @PathVariable AssessmentType type) {
+        return ResponseEntity.ok(assessmentStageService.getAllStagesByType(type)
+                .stream()
+                .map(s -> AssessmentStageDTO.fromEntity(s))
+                .toList());
+    }
 }
