@@ -1,17 +1,25 @@
 package uk.ac.sheffield.team_project_team_24.controller;
 
-import lombok.RequiredArgsConstructor;
+import java.util.List;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
+import lombok.RequiredArgsConstructor;
 import uk.ac.sheffield.team_project_team_24.domain.module.Module;
 import uk.ac.sheffield.team_project_team_24.domain.module.ModuleRole;
 import uk.ac.sheffield.team_project_team_24.dto.ModuleDTO;
 import uk.ac.sheffield.team_project_team_24.service.ModuleService;
 import uk.ac.sheffield.team_project_team_24.service.ModuleStaffService;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api")
@@ -53,6 +61,13 @@ public class ModuleController {
             @RequestParam ModuleRole role) {
 
         moduleStaffService.assignUserToModule(moduleId, userId, role);
+        return ResponseEntity.ok().build();
+    }
+
+    // Delete Module
+    @DeleteMapping("/modules/delete/{moduleCode}")
+    public ResponseEntity<Void> deleteModule(@PathVariable String moduleCode){
+        moduleService.deleteModule(moduleCode);
         return ResponseEntity.ok().build();
     }
 
