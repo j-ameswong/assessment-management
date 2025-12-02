@@ -10,6 +10,7 @@ export default function Navbar({
         position: "sticky",
         top: 0,
         left: 0,
+        margin: 0,
         width: "100%",
         zIndex: 1000,
         background: "#2d0c73",
