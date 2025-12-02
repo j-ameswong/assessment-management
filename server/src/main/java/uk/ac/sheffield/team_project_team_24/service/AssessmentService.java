@@ -33,7 +33,11 @@ public class AssessmentService {
         return assessmentRepository.save(a);
     }
 
-
+    public List<Assessment> getAssessmentsInModule(Long moduleId) {
+        return assessmentRepository.findAllByModuleId(moduleId)
+                // TODO: this exception has misleading id field in constructor, fix
+                .orElseThrow(() -> new AssessmentNotFoundException(moduleId));
+    }
 
     public List<Assessment> getAllAssessments() {
         return assessmentRepository.findAll();
