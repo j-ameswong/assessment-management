@@ -1,7 +1,9 @@
 import React from "react";
-// Dropdown state is now managed by parent
 import { Link } from "react-router-dom";
 import "../componentStyles/ModuleCard.css"
+import dropdownIcon from "../assets/moduleCardDropdown.png"
+
+// Dropdown arrow source: "https://www.flaticon.com/free-icons/down-arrow"
 
 export default function ModuleCard({ moduleCode, moduleTitle, isOpen, onToggle }) {
     return (
@@ -11,7 +13,7 @@ export default function ModuleCard({ moduleCode, moduleTitle, isOpen, onToggle }
                 <div className="module-title-dropdown-row">
                     <h2 className="module-title">{moduleTitle}</h2>
                     <button className="dropdown-btn" onClick={onToggle}>
-                        Dropdown
+                        <img className="dropdown-icon" src={dropdownIcon}></img>
                     </button>
                     { isOpen && (
                         <div className="dropdown-content">
