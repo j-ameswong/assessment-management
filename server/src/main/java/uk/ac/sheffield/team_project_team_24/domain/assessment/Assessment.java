@@ -33,19 +33,19 @@ public class Assessment {
     private AssessmentStage assessmentStage;
 
     @ManyToOne
-    @JoinColumn(name = "module_id")
+    @JoinColumn(name = "moduleId")
     private Module module;
 
     @ManyToOne
-    @JoinColumn(name = "setter_id")
+    @JoinColumn(name = "setterId")
     private User setter;
 
     @ManyToOne
-    @JoinColumn(name = "checker_id")
+    @JoinColumn(name = "checkerId")
     private User checker;
 
     @ManyToOne
-    @JoinColumn(name = "external_examiner_id")
+    @JoinColumn(name = "externalExaminerId")
     private User externalExaminer;
 
     @OneToMany(mappedBy = "assessment", cascade = CascadeType.ALL, orphanRemoval = true)

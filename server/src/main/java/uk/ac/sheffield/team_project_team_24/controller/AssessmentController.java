@@ -10,7 +10,6 @@ import org.springframework.web.multipart.MultipartFile;
 import uk.ac.sheffield.team_project_team_24.domain.assessment.*;
 import uk.ac.sheffield.team_project_team_24.dto.AssessmentDTO;
 import uk.ac.sheffield.team_project_team_24.dto.AdvanceRequestDTO;
-import uk.ac.sheffield.team_project_team_24.dto.CreateAssessmentDTO;
 import uk.ac.sheffield.team_project_team_24.security.CustomUserDetails;
 import uk.ac.sheffield.team_project_team_24.service.AssessmentService;
 import uk.ac.sheffield.team_project_team_24.service.AttachmentService;
@@ -34,8 +33,11 @@ public class AssessmentController {
 
     // Create an assessment
     @PostMapping("/assessments")
-    public Assessment create(@RequestBody CreateAssessmentDTO req) {
-        return assessmentService.createAssessment(req);
+    public ResponseEntity<AssessmentDTO> create(@RequestBody AssessmentDTO req) {
+        return ResponseEntity.ok(AssessmentDTO
+                .fromEntity(assessmentService.createAssessment(req)
+            )
+        );
     }
 
 

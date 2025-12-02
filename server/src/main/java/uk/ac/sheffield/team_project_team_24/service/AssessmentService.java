@@ -8,8 +8,9 @@ import org.springframework.stereotype.Service;
 import jakarta.transaction.Transactional;
 import uk.ac.sheffield.team_project_team_24.domain.assessment.Assessment;
 import uk.ac.sheffield.team_project_team_24.domain.assessment.AssessmentStageLog;
+import uk.ac.sheffield.team_project_team_24.domain.module.Module;
+import uk.ac.sheffield.team_project_team_24.domain.module.ModuleRole;
 import uk.ac.sheffield.team_project_team_24.dto.AssessmentDTO;
-import uk.ac.sheffield.team_project_team_24.dto.CreateAssessmentDTO;
 import uk.ac.sheffield.team_project_team_24.exception.assessment.AssessmentNotFoundException;
 import uk.ac.sheffield.team_project_team_24.repository.AssessmentRepository;
 
@@ -20,20 +21,35 @@ public class AssessmentService {
     private final AssessmentRepository assessmentRepository;
     private final AssessmentStageService assessmentStageService;
     private final AssessmentStageLogService assessmentStageLogService;
+    private final ModuleService moduleService;
+    private final UserService userService;
 
-    public Assessment createAssessment(CreateAssessmentDTO req) {
+    public Assessment createAssessment(AssessmentDTO req) {
         Assessment a = new Assessment();
-        a.setAssessmentName(req.getName());
-        a.setDescription(req.getDescription());
+        Module m = moduleService.getModule(req.getModuleId());
+
+        a.setModule(m);
+        a.setSetter(userService.getUser(req.getSetterId()));
+        a.setChecker(userService.getUser(req.getCheckerId()));
         a.setAssessmentType(req.getType());
-        return assessmentRepository.save(a);
+        a.setAssessmentName(req.getName());
+        // createAssessment should always set to first stage
+        a.setAssessmentStage(assessmentStageService.getFirstStage(
+                a.getAssessmentType()));
+
+        createAssessment(a);
+        return a;
     }
 
     public Assessment createAssessment(Assessment a) {
         return assessmentRepository.save(a);
     }
 
-
+    public List<Assessment> getAssessmentsInModule(Long moduleId) {
+        return assessmentRepository.findAllByModuleId(moduleId)
+                // TODO: this exception has misleading id field in constructor, fix
+                .orElseThrow(() -> new AssessmentNotFoundException(moduleId));
+    }
 
     public List<Assessment> getAllAssessments() {
         return assessmentRepository.findAll();

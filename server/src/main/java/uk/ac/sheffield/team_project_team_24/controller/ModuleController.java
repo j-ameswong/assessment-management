@@ -7,7 +7,11 @@ import org.springframework.web.bind.annotation.*;
 
 import uk.ac.sheffield.team_project_team_24.domain.module.Module;
 import uk.ac.sheffield.team_project_team_24.domain.module.ModuleRole;
+import uk.ac.sheffield.team_project_team_24.domain.module.ModuleStaff;
+import uk.ac.sheffield.team_project_team_24.dto.AssessmentDTO;
 import uk.ac.sheffield.team_project_team_24.dto.ModuleDTO;
+import uk.ac.sheffield.team_project_team_24.dto.ModuleStaffDTO;
+import uk.ac.sheffield.team_project_team_24.service.AssessmentService;
 import uk.ac.sheffield.team_project_team_24.service.ModuleService;
 import uk.ac.sheffield.team_project_team_24.service.ModuleStaffService;
 
@@ -21,9 +25,11 @@ public class ModuleController {
 
     private final ModuleService moduleService;
     private final ModuleStaffService moduleStaffService;
+    private final AssessmentService assessmentService;
 
     // Create module
     // TODO: use module DTOs, only authorize admins
+    // TODO: only fetch modules that have the user/all for admin
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/modules")
     public ResponseEntity<Module> createModule(@RequestBody Module module) {
@@ -54,6 +60,25 @@ public class ModuleController {
 
         moduleStaffService.assignUserToModule(moduleId, userId, role);
         return ResponseEntity.ok().build();
+    }
+
+    // Get all staff in a module
+    @GetMapping("/modules/{moduleId}/staff")
+    public ResponseEntity<List<ModuleStaffDTO>> listStaff(
+            @PathVariable Long moduleId) {
+        return ResponseEntity.ok(moduleStaffService.getAllModuleStaffInModule(moduleId)
+                .stream()
+                .map(ms -> ModuleStaffDTO.fromEntity(ms))
+                .toList());
+    }
+
+    @GetMapping("/modules/{moduleId}/assessments")
+    public ResponseEntity<List<AssessmentDTO>> listAssessments(
+            @PathVariable Long moduleId) {
+        return ResponseEntity.ok(assessmentService.getAssessmentsInModule(moduleId)
+                .stream()
+                .map(a -> AssessmentDTO.fromEntity(a))
+                .toList());
     }
 
 }

@@ -1,49 +1,73 @@
-import React from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import Navbar from "../components/Navbar.jsx";
 import "./AssessmentOverview.css";
 
-const CARDS = [
-  { key: "coursework",        title: "Coursework",        status: "No action required", type: "ok" },
-  { key: "in-semester-quiz",  title: "In-semester quiz",  status: "Action required",    type: "danger" },
-  { key: "exams",             title: "Exams",             status: "In progress",        type: "warn" },
-];
-
 export default function AssessmentOverview() {
-  const navigate = useNavigate();
+    const navigate = useNavigate();
+    // example url: /modules/assessments/1
+    const { moduleId } = useParams();
 
-  return (
-    <>
-      <Navbar left="COM2008 Systems Design and Security" right="Exam officer" />
+    // fetch assessments in module from api
+    const [assessments, setAssessments] = useState([]);
+    useEffect(() => {
+        fetch("http://localhost:8080/api/modules/" + moduleId + "/assessments")
+            .then(res => res.json())
+            .then(data => setAssessments(data))
+            .catch(err => console.error(err));
+    }, []);
 
-      <div className="ao-wrap">
-        <h2 className="ao-subtitle">Assessment Overview</h2>
+    // get module by moduleId
+    const [module, setModule] = useState({});
+    useEffect(() => {
+        fetch("http://localhost:8080/api/modules/" + moduleId)
+            .then(res => res.json())
+            .then(data => setModule(data))
+            .catch(err => console.error(err));
+    }, []);
+    const moduleTitle = module.moduleCode + " " + module.moduleName;
 
-        <div className="ao-grid">
-          {CARDS.map((c) => (
-            <div key={c.key} className="ao-card">
-              <h3 className="ao-card-title">{c.title}</h3>
+    // TODO: set status to current stage
+    const CARDS = assessments.map(a => ({
+        key: a.id,
+        title: a.name,
+        status: "In progress",
+        type: "ok"
+    }
+    ))
 
-              <div className={`ao-pill ${c.type}`}>{c.status}</div>
+    return (
+        <>
+            <Navbar left={moduleTitle} right="Exam officer" />
 
-              <button
-                className="ao-arrow"
-                onClick={() => navigate(`/modules/assessments/${c.key}`)}
-                aria-label={`Open ${c.title}`}
-              >
-                »
-              </button>
+            <div className="ao-wrap">
+                <h2 className="ao-subtitle">Assessment Overview</h2>
+
+                <div className="ao-grid">
+                    {CARDS.map((c) => (
+                        <div key={c.key} className="ao-card">
+                            <h3 className="ao-card-title">{c.title}</h3>
+
+                            <div className={`ao-pill ${c.type}`}>{c.status}</div>
+
+                            <button
+                                className="ao-arrow"
+                                onClick={() => navigate(`/modules/assessments/${c.key}`)}
+                                aria-label={`Open ${c.title}`}
+                            >
+                                »
+                            </button>
+                        </div>
+                    ))}
+                </div>
+
+                <button
+                    className="ao-primary"
+                    onClick={() => navigate("/modules/assessments/new")}
+                >
+                    Create New Assessment
+                </button>
             </div>
-          ))}
-        </div>
-
-        <button
-          className="ao-primary"
-          onClick={() => navigate("/modules/assessments/new")}
-        >
-          Create New Assessment
-        </button>
-      </div>
-    </>
-  );
+        </>
+    );
 }
