@@ -7,7 +7,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import uk.ac.sheffield.team_project_team_24.dto.ApiErrorDTO;
-import uk.ac.sheffield.team_project_team_24.exception.UsernameExistsException;
+import uk.ac.sheffield.team_project_team_24.exception.user.UsernameExistsException;
 
 import java.util.*;
 
@@ -35,9 +35,7 @@ public class GlobalExceptionHandler {
         ApiErrorDTO errorDTO = new ApiErrorDTO(
                 HttpStatus.BAD_REQUEST.value(),
                 "Some of the form values were invalid",
-                errors
-        );
+                errors);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorDTO);
     }
 }
-

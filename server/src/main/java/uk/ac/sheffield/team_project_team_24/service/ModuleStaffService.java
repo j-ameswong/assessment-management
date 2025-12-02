@@ -1,6 +1,5 @@
 package uk.ac.sheffield.team_project_team_24.service;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -13,6 +12,7 @@ import uk.ac.sheffield.team_project_team_24.domain.module.ModuleRole;
 import uk.ac.sheffield.team_project_team_24.domain.module.ModuleStaff;
 import uk.ac.sheffield.team_project_team_24.domain.module.ModuleStaffId;
 import uk.ac.sheffield.team_project_team_24.domain.user.User;
+import uk.ac.sheffield.team_project_team_24.exception.user.UserNotFoundException;
 import uk.ac.sheffield.team_project_team_24.repository.ModuleRepository;
 import uk.ac.sheffield.team_project_team_24.repository.ModuleStaffRepository;
 import uk.ac.sheffield.team_project_team_24.repository.UserRepository;
@@ -61,16 +61,15 @@ public class ModuleStaffService {
     }
 
     public User getUserByRole(Long moduleId, ModuleRole moduleRole) {
-        Optional<ModuleStaff> moduleStaff = moduleStaffRepository.findFirstByModuleRoleAndModuleId(moduleRole,
-                moduleId);
+        Optional<ModuleStaff> moduleStaff = moduleStaffRepository
+                .findFirstByModuleRoleAndModuleId(moduleRole, moduleId);
         if (moduleStaff.isPresent()) {
             return moduleStaff.get()
                     .getUser();
         } else {
-            // TODO: exception handling
-            // throw new Exception();
-            // please remove this ASAP
-            return new User();
+            throw new UserNotFoundException("User with " +
+                    moduleRole + " role in module " + moduleId +
+                    "not found");
         }
     }
 

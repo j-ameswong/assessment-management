@@ -10,7 +10,9 @@ import uk.ac.sheffield.team_project_team_24.service.UserService;
 import java.util.List;
 
 @RestController
+@RequestMapping("/api")
 @RequiredArgsConstructor
+@CrossOrigin(origins = "http://localhost:5173")
 public class UserController {
 
     private final UserService userService;
@@ -30,7 +32,7 @@ public class UserController {
     // Get all users
     @GetMapping("/users")
     public ResponseEntity<List<User>> list() {
-        return ResponseEntity.ok(userService.getUsers());
+        return ResponseEntity.ok(userService.getAllUsers());
     }
 
     // Delete user

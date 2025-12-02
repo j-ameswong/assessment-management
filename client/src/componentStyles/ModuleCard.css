@@ -1,0 +1,220 @@
+
+.module-box {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  box-sizing: border-box;
+
+  font-family: sans-serif;
+
+  gap: 0;
+
+  width: 95%;
+
+  margin: 10px auto;
+
+  padding: 20px;
+}
+
+.module-code {
+  color: white;
+  background-color: #4b0082;
+
+  font-size: 1.5em;
+
+  border-radius: 20px;
+
+  height: auto;
+
+  text-align: center;
+
+  margin: 0px auto;
+  margin-bottom: -60px;
+
+  padding: 10px;
+
+  z-index: 1;
+
+}
+
+.module-title {
+  margin: 0 auto;
+  margin-top: 50px;
+  margin-bottom: 20px;
+}
+
+.module-info {
+  display: block;
+  background-color: white;
+  flex-direction: column;
+  flex-wrap: wrap;
+
+  font-size: 1.5em;
+
+  margin: 0 auto;
+
+  border: 1px solid black;
+  border-radius: 20px;
+
+  text-align: center;
+
+  height: auto;
+
+  width: 100%;
+
+  padding: 25px;
+
+}
+
+.dropdown-box {
+  display: flex;
+  justify-content: center;
+}
+
+.dropdown-btn {
+  display: block;
+  background-color: #4b0082;
+  color: white;
+  padding: 16px;
+  font-size: 16px;
+  border: none;
+  z-index: 9999;
+  margin: 0 auto;
+  cursor: pointer;
+
+  border-radius: 15px;
+
+  min-height: 44px;
+  min-width: 44px;
+}
+
+
+.dropbtn:hover,
+.dropbtn:focus {
+  background-color: #2980b9;
+}
+
+.dropdown {
+  position: relative;
+  display: block;
+}
+
+.dropdown-content {
+  position: absolute;
+  display: block;
+  top: 140px;
+  border-radius: 20px;
+  background-color: #f1f1f1;
+  width: 30vw;
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+  z-index: 1;
+}
+
+.dropdown-content a {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+
+.dropdown-content a:hover {
+  background-color: #ddd;
+}
+
+.show {
+  display: block;
+}
+
+@media (min-width: 768px) {
+  .module-box {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    box-sizing: border-box;
+
+    font-family: sans-serif;
+
+    gap: 0;
+
+    width: 95%;
+
+    margin: 10px auto;
+
+    padding: 0;
+  }
+
+  .module-code {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    width: 10vw;
+
+    height: auto;
+
+    margin: 25px auto;
+    margin-right: -30px;
+
+    padding: 25px;
+
+    z-index: 1;
+  }
+
+  .module-title {
+    margin: auto 30px;
+  }
+
+  .module-title-dropdown-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    gap: 16px;
+  }
+
+  .module-info {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+
+    margin: 25px auto;
+    margin-left: 0;
+
+    width: 60vw;
+
+    padding: 25px;
+
+    z-index: 0;
+  }
+
+  .dropdown-box {
+    display: flex;
+    justify-content: center;
+  }
+
+  .dropdown-btn {
+    padding: 16px;
+    font-size: 16px;
+  }
+
+  .dropdown {
+    position: relative;
+    min-width: 120px;
+    margin-left: 16px;
+  }
+
+  .dropdown-content {
+    display: block;
+    position: absolute;
+    top: 50px;
+    right: -25px;
+    border-radius: 20px;
+    width: 68vw;
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+    z-index: 100;
+  }
+
+  .dropdown-link {
+    padding: 12px 16px;
+  }
+}

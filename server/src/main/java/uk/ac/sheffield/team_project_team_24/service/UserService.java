@@ -11,6 +11,8 @@ import org.springframework.web.server.ResponseStatusException;
 import jakarta.transaction.Transactional;
 import uk.ac.sheffield.team_project_team_24.domain.user.User;
 import uk.ac.sheffield.team_project_team_24.domain.user.UserRole;
+import uk.ac.sheffield.team_project_team_24.exception.EmptyRepositoryException;
+import uk.ac.sheffield.team_project_team_24.exception.user.UserNotFoundException;
 import uk.ac.sheffield.team_project_team_24.repository.UserRepository;
 
 @Service
@@ -34,8 +36,13 @@ public class UserService {
         userRepository.saveAll(newUsers);
     }
 
-    public List<User> getUsers() {
-        return userRepository.findAll();
+    public List<User> getAllUsers() {
+        List<User> users = userRepository.findAll();
+        if (users.isEmpty()) {
+            throw new EmptyRepositoryException("UserRepository");
+        } else {
+            return users;
+        }
     }
 
     public List<User> getUsers(UserRole userRole) {
@@ -49,6 +56,10 @@ public class UserService {
 
     public Optional<User> getUser(String email) {
         return userRepository.findByEmail(email);
+    }
+
+    public boolean existsUserByEmail(String email) {
+        return userRepository.existsUserByEmail(email);
     }
 
     public void deleteUser(Long id) {

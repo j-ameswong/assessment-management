@@ -24,7 +24,7 @@ public class Module {
   @Column(unique = true)
   private String moduleName;
 
-  @OneToMany(mappedBy = "module", cascade = CascadeType.ALL, orphanRemoval = true)
+  @OneToMany(mappedBy = "module", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
   private List<ModuleStaff> moduleStaff;
 
   public Module(String moduleCode, String moduleName) {
