@@ -1,18 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import Navbar from "../components/Navbar.jsx";
 import "./AssessmentOverview.css";
 
-// const CARDS = [
-//     { key: "coursework", title: "Coursework", status: "No action required", type: "ok" },
-//     { key: "in-semester-quiz", title: "In-semester quiz", status: "Action required", type: "danger" },
-//     { key: "exams", title: "Exams", status: "In progress", type: "warn" },
-// ];
 export default function AssessmentOverview() {
     const navigate = useNavigate();
-    // example url: /modules/assessments?moduleId=1
-    const [params, setParams] = useSearchParams();
-    const moduleId = params.get("moduleId");
+    // example url: /modules/assessments/1
+    const { moduleId } = useParams();
 
     // fetch assessments in module from api
     const [assessments, setAssessments] = useState([]);
@@ -33,6 +27,7 @@ export default function AssessmentOverview() {
     }, []);
     const moduleTitle = module.moduleCode + " " + module.moduleName;
 
+    // TODO: set status to current stage
     const CARDS = assessments.map(a => ({
         key: a.id,
         title: a.name,

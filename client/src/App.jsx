@@ -15,7 +15,7 @@ function App() {
             <Route path="/modules" element={<Modules />} />
             <Route path="/add-module" element={<CreateModule />} />
             <Route path="/add-assessment" element={<CreateAssessment />} />
-            <Route path="/modules/assessments" element={<AssessmentOverview />} />
+            <Route path="/modules/assessments/:moduleId" element={<AssessmentOverview />} />
         </Routes>
     );
 }
