@@ -13,9 +13,9 @@ function App() {
             <Route path="/" element={<Login />} />
             <Route path="/home" element={<Home />} />
             <Route path="/modules" element={<Modules />} />
-            <Route path="/add-module" element={<CreateModule />} />
-            <Route path="/add-assessment" element={<CreateAssessment />} />
-            <Route path="/modules/assessments/:moduleId" element={<AssessmentOverview />} />
+            <Route path="/modules/create" element={<CreateModule />} />
+            <Route path="/assessments/create" element={<CreateAssessment />} />
+            <Route path="/assessments/:moduleId" element={<AssessmentOverview />} />
         </Routes>
     );
 }
