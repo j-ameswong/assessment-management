@@ -16,7 +16,8 @@ export default function Home() {
             <h1>Home Page</h1>
             <p>{message}</p>
             <Link to="/add-assessment">Create Assessment</Link>
-            <Link to="/modules/assessments?id=1">View Module 1 Assessments</Link>
+            <br></br>
+            <Link to="/modules/assessments?moduleId=1">View Module 1 Assessments</Link>
         </div>
     );
 }

@@ -1,26 +1,33 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import Navbar from "../components/Navbar.jsx";
 import "./AssessmentOverview.css";
 
-const CARDS = [
-    { key: "coursework", title: "Coursework", status: "No action required", type: "ok" },
-    { key: "in-semester-quiz", title: "In-semester quiz", status: "Action required", type: "danger" },
-    { key: "exams", title: "Exams", status: "In progress", type: "warn" },
-];
-
-const [params, setParams] = useSearchParams();
-useEffect(() => {
-    fetch("http://localhost:8080/api/auth/test")
-        .then(res => res.text())
-        .then(data => setMessage(data))
-        .catch(err => console.error(err));
-}, []);
-
-
-
+// const CARDS = [
+//     { key: "coursework", title: "Coursework", status: "No action required", type: "ok" },
+//     { key: "in-semester-quiz", title: "In-semester quiz", status: "Action required", type: "danger" },
+//     { key: "exams", title: "Exams", status: "In progress", type: "warn" },
+// ];
 export default function AssessmentOverview() {
     const navigate = useNavigate();
+    // example url: /modules/assessments?moduleId=1
+    const [params, setParams] = useSearchParams();
+    const [assessments, setAssessments] = useState([]);
+    const moduleId = params.get("moduleId");
+    useEffect(() => {
+        fetch("http://localhost:8080/api/modules/" + moduleId + "/assessments")
+            .then(res => res.json())
+            .then(data => setAssessments(data))
+            .catch(err => console.error(err));
+    }, []);
+
+    const CARDS = assessments.map(a => ({
+        key: a.id,
+        title: a.name,
+        status: "In progress",
+        type: "ok"
+    }
+    ))
 
     return (
         <>
