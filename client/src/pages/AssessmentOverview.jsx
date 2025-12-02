@@ -12,14 +12,26 @@ export default function AssessmentOverview() {
     const navigate = useNavigate();
     // example url: /modules/assessments?moduleId=1
     const [params, setParams] = useSearchParams();
-    const [assessments, setAssessments] = useState([]);
     const moduleId = params.get("moduleId");
+
+    // fetch assessments in module from api
+    const [assessments, setAssessments] = useState([]);
     useEffect(() => {
         fetch("http://localhost:8080/api/modules/" + moduleId + "/assessments")
             .then(res => res.json())
             .then(data => setAssessments(data))
             .catch(err => console.error(err));
     }, []);
+
+    // get module by moduleId
+    const [module, setModule] = useState({});
+    useEffect(() => {
+        fetch("http://localhost:8080/api/modules/" + moduleId)
+            .then(res => res.json())
+            .then(data => setModule(data))
+            .catch(err => console.error(err));
+    }, []);
+    const moduleTitle = module.moduleCode + " " + module.moduleName;
 
     const CARDS = assessments.map(a => ({
         key: a.id,
@@ -31,7 +43,7 @@ export default function AssessmentOverview() {
 
     return (
         <>
-            <Navbar left="COM2008 Systems Design and Security" right="Exam officer" />
+            <Navbar left={moduleTitle} right="Exam officer" />
 
             <div className="ao-wrap">
                 <h2 className="ao-subtitle">Assessment Overview</h2>
