@@ -90,10 +90,6 @@ function Login() {
               </button>
 
               <p className="login-note">
-                  Don't have an account?{" "}
-                    <Link to="/register" className="login-register-link">
-                        <em>Click here to register.</em>
-                    </Link>
               </p>
             </form>
           </div>
