@@ -85,12 +85,27 @@ public class ModuleController {
                 .toList());
     }
 
-    @GetMapping("/assessments/stages/{type}")
+    @GetMapping("/assessments/stages")
+    public ResponseEntity<List<AssessmentStageDTO>> listAllStages() {
+        return ResponseEntity.ok(assessmentStageService.getAllStages()
+                .stream()
+                .map(s -> AssessmentStageDTO.fromEntity(s))
+                .toList());
+    }
+
+    @GetMapping("/assessments/{type}/stages")
     public ResponseEntity<List<AssessmentStageDTO>> listStages(
             @PathVariable AssessmentType type) {
         return ResponseEntity.ok(assessmentStageService.getAllStagesByType(type)
                 .stream()
                 .map(s -> AssessmentStageDTO.fromEntity(s))
                 .toList());
+    }
+
+    @GetMapping("/assessments/stages/{id}")
+    public ResponseEntity<AssessmentStageDTO> getStage(
+            @PathVariable Long id) {
+        return ResponseEntity.ok(AssessmentStageDTO.fromEntity(
+                assessmentStageService.getAssessmentStage(id)));
     }
 }

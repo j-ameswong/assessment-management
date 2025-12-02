@@ -27,9 +27,18 @@ public class AssessmentStageService {
         return assessmentStageRepository.save(assessmentStage);
     }
 
+    public AssessmentStage getAssessmentStage(Long id) {
+        return assessmentStageRepository.findById(id)
+                .orElseThrow(() -> new AssessmentNotFoundException(id));
+    }
+
     public List<AssessmentStage> getAllStagesByType(AssessmentType assessmentType) {
         return assessmentStageRepository.findAllByAssessmentType(assessmentType)
                 .orElseThrow(() -> new AssessmentNotFoundException(Long.valueOf(1)));
+    }
+
+    public List<AssessmentStage> getAllStages() {
+        return assessmentStageRepository.findAll();
     }
 
     public AssessmentStage getFirstStage(AssessmentType assessmentType) {

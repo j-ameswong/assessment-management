@@ -11,6 +11,8 @@ import uk.ac.sheffield.team_project_team_24.domain.assessment.AssessmentType;
 public interface AssessmentStageRepository extends JpaRepository<AssessmentStage, Long> {
     Optional<AssessmentStage> findById(Long id);
 
+    List<AssessmentStage> findAll();
+
     Optional<List<AssessmentStage>> findAllByAssessmentType(AssessmentType assessmentType);
 
     AssessmentStage findFirstByAssessmentType(AssessmentType assessmentType);

@@ -20,18 +20,41 @@ export default function AssessmentOverview() {
     // get module by moduleId
     const [module, setModule] = useState({});
     useEffect(() => {
-        fetch("http://localhost:8080/api/modules/" + moduleId)
+        fetch("http://localhost:8080/modules/" + moduleId)
             .then(res => res.json())
             .then(data => setModule(data))
             .catch(err => console.error(err));
     }, []);
     const moduleTitle = module.moduleCode + " " + module.moduleName;
 
+    // get list of stages from module.type 
+    const getStagesByType = (type) => {
+        useEffect(() => {
+            fetch("http://localhost:8080/api/assessments/" + type + "/stages")
+                .then(res => res.json())
+                .then(data => (data))
+                .catch(err => console.error(err));
+        }, []);
+    }
+
+    const getStage = (stageId) => {
+        useEffect(() => {
+            fetch("http://localhost:8080/api/assessments/stages/" + stageId)
+                .then(res => res.json())
+                .then(data => (
+                    "Step " + data.step + "/" + getStagesByType(data.type).length +
+                    " - " + data.stageName
+                ))
+                .catch(err => console.error(err));
+        }, []);
+    }
+
+
     // TODO: set status to current stage
     const CARDS = assessments.map(a => ({
         key: a.id,
         title: a.name,
-        status: "In progress",
+        status: getStage(a.assessmentStageId),
         type: "ok"
     }
     ))
