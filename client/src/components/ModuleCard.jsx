@@ -19,7 +19,7 @@ export default function ModuleCard({ moduleCode, moduleTitle, isOpen, onToggle }
                         <div className="dropdown-content">
                             <Link to="/modules/assessments" className="dropdown-link">See assignments</Link>
                             <Link to="/modules/assessments" className="dropdown-link">Edit module details</Link>
-                            <Link to="/modules/assessments" className="dropdown-link">Delete module</Link>
+                            <Link to={`/modules/delete/${moduleCode}`} className="dropdown-link">Delete module</Link>
                         </div>
                     )}
                 </div>
