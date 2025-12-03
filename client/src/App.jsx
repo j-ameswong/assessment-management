@@ -9,17 +9,16 @@ import CreateModule from './pages/CreateModule.jsx';
 import DeleteModule from './pages/DeleteModule.jsx';
 
 function App() {
-    return (
-        <Routes>
-            <Route path="/" element={<Login />} />
-            <Route path="/home" element={<Home />} />
-            <Route path="/modules" element={<Modules />} />
-            <Route path="/add-module" element={<CreateModule />} />
-            <Route path="/modules/delete/:moduleCode" element={<DeleteModule />} />
-            <Route path="/add-assessment" element={<CreateAssessment />} />
-            <Route path="/modules/assessments" element={<AssessmentOverview />} />
-        </Routes>
-    );
+  return (
+    <Routes>
+      <Route path="/" element={<Login />} />
+      <Route path="/home" element={<Home />} />
+      <Route path="/modules" element={<Modules />} />
+      <Route path="/modules/create" element={<CreateModule />} />
+      <Route path="/modules/:moduleId/assessments/new" element={<CreateAssessment />} />
+      <Route path="/modules/:moduleId/assessments" element={<AssessmentOverview />} />
+    </Routes>
+  );
 }
 
 

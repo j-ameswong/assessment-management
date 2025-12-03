@@ -1,20 +1,47 @@
-import React from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import Navbar from "../components/Navbar.jsx";
 import "./AssessmentOverview.css";
 
-const CARDS = [
-  { key: "coursework",        title: "Coursework",        status: "No action required", type: "ok" },
-  { key: "in-semester-quiz",  title: "In-semester quiz",  status: "Action required",    type: "danger" },
-  { key: "exams",             title: "Exams",             status: "In progress",        type: "warn" },
-];
-
 export default function AssessmentOverview() {
   const navigate = useNavigate();
+  // example url: /modules/assessments/1
+  const moduleId = useParams().moduleId;
+
+  // fetch data from api
+  const [overview, setOverview] = useState(null);
+  useEffect(() => {
+    if (!moduleId) { return }
+    fetch("http://localhost:8080/api/modules/" + moduleId + "/overview")
+      .then(res => res.json())
+      .then(data => setOverview(data))
+      .catch(err => console.error(err));
+  }, [moduleId]);
+
+  // Always check if exists first else empty/temp value
+  const moduleTitle =
+    overview?.module
+      ? overview.module.moduleCode + " " + overview.module.moduleName
+      : "Unknown Module";
+
+  const assessments = overview?.assessments ?? [];
+
+  const stages = overview?.stages ?? [];
+
+  const CARDS = assessments.map(a => ({
+    key: a.id,
+    // capitalized assessment type
+    assessmentType: a.type[0] + a.type.substring(1).toLowerCase(),
+    title: a.name,
+    status: "Stage: " + (stages[a.assessmentStageId - 1]?.step ?? "0")
+      + "/" + (stages?.filter(s => s.assessmentType === a.type)).length, //getStage(a.assessmentStageId),
+    type: "ok"
+  }
+  ))
 
   return (
     <>
-      <Navbar left="COM2008 Systems Design and Security" right="Exam officer" />
+      <Navbar left={moduleTitle} right="Exam officer" />
 
       <div className="ao-wrap">
         <h2 className="ao-subtitle">Assessment Overview</h2>
@@ -22,13 +49,14 @@ export default function AssessmentOverview() {
         <div className="ao-grid">
           {CARDS.map((c) => (
             <div key={c.key} className="ao-card">
-              <h3 className="ao-card-title">{c.title}</h3>
+              <h4 className="ao-card-title">{c.title}</h4>
 
+              <div className="ao-card-details">{c.assessmentType}</div>
               <div className={`ao-pill ${c.type}`}>{c.status}</div>
 
               <button
                 className="ao-arrow"
-                onClick={() => navigate(`/modules/assessments/${c.key}`)}
+                onClick={() => navigate(`/modules/${moduleId}/assessments/${c.key}`)}
                 aria-label={`Open ${c.title}`}
               >
                 »
@@ -39,7 +67,7 @@ export default function AssessmentOverview() {
 
         <button
           className="ao-primary"
-          onClick={() => navigate("/modules/assessments/new")}
+          onClick={() => navigate(`/modules/${moduleId}/assessments/new`)}
         >
           Create New Assessment
         </button>

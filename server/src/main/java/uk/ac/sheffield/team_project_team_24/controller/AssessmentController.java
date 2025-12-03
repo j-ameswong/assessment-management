@@ -9,10 +9,11 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.multipart.MultipartFile;
 import uk.ac.sheffield.team_project_team_24.domain.assessment.*;
 import uk.ac.sheffield.team_project_team_24.dto.AssessmentDTO;
+import uk.ac.sheffield.team_project_team_24.dto.AssessmentStageDTO;
 import uk.ac.sheffield.team_project_team_24.dto.AdvanceRequestDTO;
-import uk.ac.sheffield.team_project_team_24.dto.CreateAssessmentDTO;
 import uk.ac.sheffield.team_project_team_24.security.CustomUserDetails;
 import uk.ac.sheffield.team_project_team_24.service.AssessmentService;
+import uk.ac.sheffield.team_project_team_24.service.AssessmentStageService;
 import uk.ac.sheffield.team_project_team_24.service.AttachmentService;
 import uk.ac.sheffield.team_project_team_24.service.CsvService;
 
@@ -30,14 +31,14 @@ public class AssessmentController {
     private CsvService csvService;
     @Autowired
     private AttachmentService attachmentService;
-
+    private final AssessmentStageService assessmentStageService;
 
     // Create an assessment
     @PostMapping("/assessments")
-    public Assessment create(@RequestBody CreateAssessmentDTO req) {
-        return assessmentService.createAssessment(req);
+    public ResponseEntity<AssessmentDTO> create(@RequestBody AssessmentDTO req) {
+        return ResponseEntity.ok(AssessmentDTO
+                .fromEntity(assessmentService.createAssessment(req)));
     }
-
 
     // Get one assessment
     @GetMapping("/assessments/{id}")
@@ -107,8 +108,7 @@ public class AssessmentController {
     @PostMapping("/assessments/uploadAttachment")
     public ResponseEntity<?> uploadAttachment(
             @RequestParam("file") MultipartFile file,
-            @RequestParam("assessmentId") Long assessmentId
-    ) {
+            @RequestParam("assessmentId") Long assessmentId) {
         try {
             String path = attachmentService.saveAttachment(file, assessmentId);
             return ResponseEntity.ok("Uploaded successfully: " + path);
@@ -117,4 +117,27 @@ public class AssessmentController {
         }
     }
 
+    @GetMapping("/assessments/stages")
+    public ResponseEntity<List<AssessmentStageDTO>> listAllStages() {
+        return ResponseEntity.ok(assessmentStageService.getAllStages()
+                .stream()
+                .map(s -> AssessmentStageDTO.fromEntity(s))
+                .toList());
+    }
+
+    @GetMapping("/assessments/{type}/stages")
+    public ResponseEntity<List<AssessmentStageDTO>> listStages(
+            @PathVariable AssessmentType type) {
+        return ResponseEntity.ok(assessmentStageService.getAllStagesByType(type)
+                .stream()
+                .map(s -> AssessmentStageDTO.fromEntity(s))
+                .toList());
+    }
+
+    @GetMapping("/assessments/stages/{id}")
+    public ResponseEntity<AssessmentStageDTO> getStage(
+            @PathVariable Long id) {
+        return ResponseEntity.ok(AssessmentStageDTO.fromEntity(
+                assessmentStageService.getAssessmentStage(id)));
+    }
 }

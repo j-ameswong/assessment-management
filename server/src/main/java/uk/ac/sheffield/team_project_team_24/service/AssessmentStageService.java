@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import jakarta.transaction.Transactional;
 import uk.ac.sheffield.team_project_team_24.domain.assessment.AssessmentStage;
 import uk.ac.sheffield.team_project_team_24.domain.assessment.AssessmentType;
+import uk.ac.sheffield.team_project_team_24.exception.assessment.AssessmentNotFoundException;
 import uk.ac.sheffield.team_project_team_24.exception.assessmentStage.stepOutOfBoundsException;
 import uk.ac.sheffield.team_project_team_24.repository.AssessmentStageRepository;
 
@@ -26,8 +27,18 @@ public class AssessmentStageService {
         return assessmentStageRepository.save(assessmentStage);
     }
 
-    public List<AssessmentStage> getAllStages(AssessmentType assessmentType) {
-        return assessmentStageRepository.findAllByAssessmentType(assessmentType);
+    public AssessmentStage getAssessmentStage(Long id) {
+        return assessmentStageRepository.findById(id)
+                .orElseThrow(() -> new AssessmentNotFoundException(id));
+    }
+
+    public List<AssessmentStage> getAllStagesByType(AssessmentType assessmentType) {
+        return assessmentStageRepository.findAllByAssessmentType(assessmentType)
+                .orElseThrow(() -> new AssessmentNotFoundException(Long.valueOf(1)));
+    }
+
+    public List<AssessmentStage> getAllStages() {
+        return assessmentStageRepository.findAll();
     }
 
     public AssessmentStage getFirstStage(AssessmentType assessmentType) {
@@ -35,7 +46,7 @@ public class AssessmentStageService {
     }
 
     public AssessmentStage getNextStage(AssessmentStage currentStage) {
-        int currentStep = currentStage.getStep();
+        Long currentStep = currentStage.getStep();
         AssessmentType type = currentStage.getAssessmentType();
 
         Optional<AssessmentStage> nextStage = assessmentStageRepository.findByAssessmentTypeAndStep(
@@ -51,7 +62,7 @@ public class AssessmentStageService {
     }
 
     public AssessmentStage getPrevStage(AssessmentStage currentStage) {
-        int currentStep = currentStage.getStep();
+        Long currentStep = currentStage.getStep();
         AssessmentType type = currentStage.getAssessmentType();
 
         Optional<AssessmentStage> nextStage = assessmentStageRepository.findByAssessmentTypeAndStep(
