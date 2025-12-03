@@ -2,12 +2,12 @@ package uk.ac.sheffield.team_project_team_24.service;
 
 import java.util.List;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import uk.ac.sheffield.team_project_team_24.domain.module.Module;
 import uk.ac.sheffield.team_project_team_24.repository.ModuleRepository;
 

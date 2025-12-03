@@ -6,6 +6,7 @@ import Modules from './pages/Modules.jsx';
 import CreateAssessment from "./pages/CreateAssessment.jsx";
 import AssessmentOverview from "./pages/AssessmentOverview.jsx";
 import CreateModule from './pages/CreateModule.jsx';
+import DeleteModule from './pages/DeleteModule.jsx';
 
 function App() {
   return (
