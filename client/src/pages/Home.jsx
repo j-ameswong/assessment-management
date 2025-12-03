@@ -2,20 +2,22 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 export default function Home() {
-    const [message, setMessage] = useState("");
+  const [message, setMessage] = useState("");
 
-    useEffect(() => {
-        fetch("http://localhost:8080/api/auth/test")
-            .then(res => res.text())
-            .then(data => setMessage(data))
-            .catch(err => console.error(err));
-    }, []);
+  useEffect(() => {
+    fetch("http://localhost:8080/api/auth/test")
+      .then(res => res.text())
+      .then(data => setMessage(data))
+      .catch(err => console.error(err));
+  }, []);
 
-    return (
-        <div>
-            <h1>Home Page</h1>
-            <p>{message}</p>
-            <Link to="/add-assessment">Create Assessment</Link>
-        </div>
-    );
+  return (
+    <div>
+      <h1>Home Page</h1>
+      <p>{message}</p>
+      <Link to="/assessments/create">Create Assessment</Link>
+      <br></br>
+      <Link to="/modules/1/assessments">View Module 1 Assessments</Link>
+    </div>
+  );
 }

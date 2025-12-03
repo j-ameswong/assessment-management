@@ -36,5 +36,5 @@ public class AssessmentStage {
 
     private String stageName;
 
-    private int step;
+    private long step;
 }
