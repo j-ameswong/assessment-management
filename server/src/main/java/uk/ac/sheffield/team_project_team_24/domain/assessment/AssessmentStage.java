@@ -34,7 +34,12 @@ public class AssessmentStage {
     @Enumerated(EnumType.STRING)
     private AssessmentType assessmentType;
 
+    @Enumerated(EnumType.STRING)
+    private AssessmentRole actorRole;
+
     private String stageName;
+
+    private String description;
 
     private long step;
 }

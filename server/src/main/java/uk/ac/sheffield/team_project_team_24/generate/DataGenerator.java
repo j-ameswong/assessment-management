@@ -10,6 +10,7 @@ import com.github.javafaker.Faker;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import uk.ac.sheffield.team_project_team_24.domain.assessment.Assessment;
+import uk.ac.sheffield.team_project_team_24.domain.assessment.AssessmentRole;
 import uk.ac.sheffield.team_project_team_24.domain.assessment.AssessmentStage;
 import uk.ac.sheffield.team_project_team_24.domain.assessment.AssessmentStageLog;
 import uk.ac.sheffield.team_project_team_24.domain.assessment.AssessmentType;
@@ -151,16 +152,24 @@ public class DataGenerator {
     }
 
     public void populateAssessmentStages(AssessmentStageService assessmentStageService) {
-        List<String> cwStageNames = Arrays.asList(
-                "CW_SPEC_CREATED",
-                "CW_SPEC_CHECKED",
-                "CW_SPEC_MODIFIED",
-                "CW_SPEC_RELEASED",
-                "CW_DEADLINE_PASSED",
-                "CW_STANDARDISATION_DONE",
-                "CW_MARKING_DONE",
-                "CW_MODERATION_DONE",
-                "CW_FEEDBACK_RETURNED");
+        List<StageActorDescription> cwStageNames = Arrays.asList(
+                new StageActorDescription("CW_SPEC_CREATED", AssessmentRole.SETTER,
+                        "Specification is created by assessment setter"),
+                new StageActorDescription("CW_SPEC_CHECKED", AssessmentRole.CHECKER,
+                        "Specification is checked by assessment checker"),
+                // if previous step checker indicated modification required, setter does it and
+                // describes the modifications here, and after done, checker can approve or reject
+                new StageActorDescription("CW_SPEC_REQ_MODIFICATION", AssessmentRole.CHECKER,
+                        "Checker determines if modification is required"),
+                new StageActorDescription("CW_SPEC_MODIFICATION", AssessmentRole.SETTER,
+                        "If required, setter makes changes and awaits checker approval"),
+            // TODO:
+                new StageActorDescription("CW_SPEC_RELEASED", AssessmentRole.CHECKER),
+                new StageActorDescription("CW_DEADLINE_PASSED", AssessmentRole.CHECKER),
+                new StageActorDescription("CW_STANDARDISATION_DONE", AssessmentRole.CHECKER),
+                new StageActorDescription("CW_MARKING_DONE", AssessmentRole.CHECKER),
+                new StageActorDescription("CW_MODERATION_DONE", AssessmentRole.CHECKER),
+                new StageActorDescription("CW_FEEDBACK_RETURNED", AssessmentRole.CHECKER);
 
         for (String stageName : cwStageNames) {
             AssessmentStage newStage = new AssessmentStage();
