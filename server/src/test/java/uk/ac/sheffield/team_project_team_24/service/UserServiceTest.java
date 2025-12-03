@@ -25,15 +25,6 @@ import java.util.*;
 @ExtendWith(MockitoExtension.class)
 class UserServiceTest {
 
-    @Mock
-    private UserRepository userRepository;
-
-//    @Mock
-//    private PasswordEncoder passwordEncoder;
-
-    @InjectMocks
-    private UserService classUnderTest;
-
     // default testing values
     // signup user
     private static final String SIGNUP_USERNAME = "testuser1";
@@ -65,6 +56,13 @@ class UserServiceTest {
     private static List<User> dummyUserList(){
         return Arrays.asList(dummyUser1(), dummyUser2());
     }
+
+    // mocks
+    @Mock
+    private UserRepository userRepository;
+
+    @InjectMocks
+    private UserService classUnderTest;
 
     // createUser tests
     @Test
