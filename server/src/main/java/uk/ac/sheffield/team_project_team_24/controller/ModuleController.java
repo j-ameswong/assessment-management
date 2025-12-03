@@ -10,6 +10,7 @@ import uk.ac.sheffield.team_project_team_24.domain.module.Module;
 import uk.ac.sheffield.team_project_team_24.domain.module.ModuleRole;
 import uk.ac.sheffield.team_project_team_24.domain.module.ModuleStaff;
 import uk.ac.sheffield.team_project_team_24.dto.AssessmentDTO;
+import uk.ac.sheffield.team_project_team_24.dto.AssessmentOverviewDTO;
 import uk.ac.sheffield.team_project_team_24.dto.AssessmentStageDTO;
 import uk.ac.sheffield.team_project_team_24.dto.ModuleDTO;
 import uk.ac.sheffield.team_project_team_24.dto.ModuleStaffDTO;
@@ -85,27 +86,21 @@ public class ModuleController {
                 .toList());
     }
 
-    @GetMapping("/assessments/stages")
-    public ResponseEntity<List<AssessmentStageDTO>> listAllStages() {
-        return ResponseEntity.ok(assessmentStageService.getAllStages()
+    @GetMapping("/modules/{moduleId}/overview")
+    public ResponseEntity<AssessmentOverviewDTO> getOverview(
+            @PathVariable Long moduleId) {
+        ModuleDTO moduleDTO = ModuleDTO.fromEntity(
+                moduleService.getModule(moduleId));
+        List<AssessmentDTO> assessmentDTOs = assessmentService.getAssessmentsInModule(moduleId)
+                .stream()
+                .map(a -> AssessmentDTO.fromEntity(a))
+                .toList();
+        List<AssessmentStageDTO> assessmentStageDTOs = assessmentStageService.getAllStages()
                 .stream()
                 .map(s -> AssessmentStageDTO.fromEntity(s))
-                .toList());
-    }
+                .toList();
 
-    @GetMapping("/assessments/{type}/stages")
-    public ResponseEntity<List<AssessmentStageDTO>> listStages(
-            @PathVariable AssessmentType type) {
-        return ResponseEntity.ok(assessmentStageService.getAllStagesByType(type)
-                .stream()
-                .map(s -> AssessmentStageDTO.fromEntity(s))
-                .toList());
-    }
-
-    @GetMapping("/assessments/stages/{id}")
-    public ResponseEntity<AssessmentStageDTO> getStage(
-            @PathVariable Long id) {
-        return ResponseEntity.ok(AssessmentStageDTO.fromEntity(
-                assessmentStageService.getAssessmentStage(id)));
+        return ResponseEntity.ok(
+                AssessmentOverviewDTO.combineEntities(moduleDTO, assessmentDTOs, assessmentStageDTOs));
     }
 }

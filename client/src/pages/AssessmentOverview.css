@@ -30,6 +30,8 @@
 
 .ao-card-title {
   margin: 0 0 16px;
+  width: 90%;
+  text-align: center;
   color: #2b2250;
 }
 

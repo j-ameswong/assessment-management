@@ -6,55 +6,32 @@ import "./AssessmentOverview.css";
 export default function AssessmentOverview() {
     const navigate = useNavigate();
     // example url: /modules/assessments/1
-    const { moduleId } = useParams();
+    const moduleId = useParams().moduleId;
 
     // fetch assessments in module from api
-    const [assessments, setAssessments] = useState([]);
+    const [overview, setOverview] = useState(null);
     useEffect(() => {
-        fetch("http://localhost:8080/api/modules/" + moduleId + "/assessments")
+        if (!moduleId) { return }
+        fetch("http://localhost:8080/api/modules/" + moduleId + "/overview")
             .then(res => res.json())
-            .then(data => setAssessments(data))
+            .then(data => setOverview(data))
             .catch(err => console.error(err));
-    }, []);
+    }, [moduleId]);
 
-    // get module by moduleId
-    const [module, setModule] = useState({});
-    useEffect(() => {
-        fetch("http://localhost:8080/modules/" + moduleId)
-            .then(res => res.json())
-            .then(data => setModule(data))
-            .catch(err => console.error(err));
-    }, []);
-    const moduleTitle = module.moduleCode + " " + module.moduleName;
+    const moduleTitle =
+        overview?.module
+            ? overview.module.moduleCode + " " + overview.module.moduleName
+            : "Unknown Module";
 
-    // get list of stages from module.type 
-    const getStagesByType = (type) => {
-        useEffect(() => {
-            fetch("http://localhost:8080/api/assessments/" + type + "/stages")
-                .then(res => res.json())
-                .then(data => (data))
-                .catch(err => console.error(err));
-        }, []);
-    }
+    const assessments = overview?.assessments ?? [];
 
-    const getStage = (stageId) => {
-        useEffect(() => {
-            fetch("http://localhost:8080/api/assessments/stages/" + stageId)
-                .then(res => res.json())
-                .then(data => (
-                    "Step " + data.step + "/" + getStagesByType(data.type).length +
-                    " - " + data.stageName
-                ))
-                .catch(err => console.error(err));
-        }, []);
-    }
+    const stages = overview?.stages;
 
-
-    // TODO: set status to current stage
     const CARDS = assessments.map(a => ({
         key: a.id,
         title: a.name,
-        status: getStage(a.assessmentStageId),
+        status: "Stage: " + (stages[a.assessmentStageId - 1]?.step ?? "0")
+            + "/" + (stages?.filter(s => s.assessmentType === a.type)).length, //getStage(a.assessmentStageId),
         type: "ok"
     }
     ))
