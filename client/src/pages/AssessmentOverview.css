@@ -22,6 +22,7 @@
 .ao-card {
   background: #fff;
   border-radius: 18px;
+  text-align: center;
   padding: 18px;
   box-shadow: 0 8px 20px rgba(0,0,0,0.08);
   position: relative;
@@ -29,10 +30,19 @@
 }
 
 .ao-card-title {
-  margin: 0 0 16px;
+  margin: auto;
   width: 90%;
   text-align: center;
   color: #2b2250;
+}
+
+.ao-card-details {
+  margin: auto;
+  width: 90%;
+  font-size: 20px;
+  text-align: center;
+  color: #2b2250;
+  font-weight: 650;
 }
 
 .ao-pill {
