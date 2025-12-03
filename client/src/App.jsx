@@ -6,18 +6,19 @@ import Modules from './pages/Modules.jsx';
 import CreateAssessment from "./pages/CreateAssessment.jsx";
 import AssessmentOverview from "./pages/AssessmentOverview.jsx";
 import CreateModule from './pages/CreateModule.jsx';
+import DeleteModule from './pages/DeleteModule.jsx';
 
 function App() {
-    return (
-        <Routes>
-            <Route path="/" element={<Login />} />
-            <Route path="/home" element={<Home />} />
-            <Route path="/modules" element={<Modules />} />
-            <Route path="/modules/create" element={<CreateModule />} />
-            <Route path="/assessments/create" element={<CreateAssessment />} />
-            <Route path="/assessments/:moduleId" element={<AssessmentOverview />} />
-        </Routes>
-    );
+  return (
+    <Routes>
+      <Route path="/" element={<Login />} />
+      <Route path="/home" element={<Home />} />
+      <Route path="/modules" element={<Modules />} />
+      <Route path="/modules/create" element={<CreateModule />} />
+      <Route path="/assessments/create" element={<CreateAssessment />} />
+      <Route path="/assessments/:moduleId" element={<AssessmentOverview />} />
+    </Routes>
+  );
 }
 
 
