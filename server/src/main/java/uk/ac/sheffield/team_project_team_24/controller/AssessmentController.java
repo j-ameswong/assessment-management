@@ -9,13 +9,16 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.multipart.MultipartFile;
 import uk.ac.sheffield.team_project_team_24.domain.assessment.*;
 import uk.ac.sheffield.team_project_team_24.dto.AssessmentDTO;
+import uk.ac.sheffield.team_project_team_24.dto.AssessmentOverviewDTO;
 import uk.ac.sheffield.team_project_team_24.dto.AssessmentStageDTO;
+import uk.ac.sheffield.team_project_team_24.dto.ModuleDTO;
 import uk.ac.sheffield.team_project_team_24.dto.AdvanceRequestDTO;
 import uk.ac.sheffield.team_project_team_24.security.CustomUserDetails;
 import uk.ac.sheffield.team_project_team_24.service.AssessmentService;
 import uk.ac.sheffield.team_project_team_24.service.AssessmentStageService;
 import uk.ac.sheffield.team_project_team_24.service.AttachmentService;
 import uk.ac.sheffield.team_project_team_24.service.CsvService;
+import uk.ac.sheffield.team_project_team_24.service.ModuleService;
 
 import java.util.List;
 
@@ -32,6 +35,7 @@ public class AssessmentController {
     @Autowired
     private AttachmentService attachmentService;
     private final AssessmentStageService assessmentStageService;
+    private final ModuleService moduleService;
 
     // Create an assessment
     @PostMapping("/assessments")
@@ -117,6 +121,24 @@ public class AssessmentController {
         }
     }
 
+    @GetMapping("/modules/{moduleId}/assessments")
+    public ResponseEntity<AssessmentOverviewDTO> getOverview(
+            @PathVariable Long moduleId) {
+        ModuleDTO moduleDTO = ModuleDTO.fromEntity(
+                moduleService.getModule(moduleId));
+        List<AssessmentDTO> assessmentDTOs = assessmentService.getAssessmentsInModule(moduleId)
+                .stream()
+                .map(a -> AssessmentDTO.fromEntity(a))
+                .toList();
+        List<AssessmentStageDTO> assessmentStageDTOs = assessmentStageService.getAllStages()
+                .stream()
+                .map(s -> AssessmentStageDTO.fromEntity(s))
+                .toList();
+
+        return ResponseEntity.ok(
+                AssessmentOverviewDTO.combineEntities(moduleDTO, assessmentDTOs, assessmentStageDTOs));
+    }
+
     @GetMapping("/assessments/stages")
     public ResponseEntity<List<AssessmentStageDTO>> listAllStages() {
         return ResponseEntity.ok(assessmentStageService.getAllStages()
@@ -140,4 +162,13 @@ public class AssessmentController {
         return ResponseEntity.ok(AssessmentStageDTO.fromEntity(
                 assessmentStageService.getAssessmentStage(id)));
     }
+
+    // @GetMapping("/modules/{moduleId}/assessments")
+    // public ResponseEntity<List<AssessmentDTO>> listAssessments(
+    // @PathVariable Long moduleId) {
+    // return ResponseEntity.ok(assessmentService.getAssessmentsInModule(moduleId)
+    // .stream()
+    // .map(a -> AssessmentDTO.fromEntity(a))
+    // .toList());
+    // }
 }
