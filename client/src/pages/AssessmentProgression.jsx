@@ -19,11 +19,33 @@ export default function AssessmentOverview() {
   const moduleTitle = progress?.module
     ? progress.module.moduleCode + " " + progress?.module.moduleName
     : "COMXXXX UNKNOWN"
-  if (progress) { console.log(progress) }
+
+  const stages = progress?.assessmentStages ?? [];
+  const pastStages = progress?.assessmentStageLogs ?? [];
+  const completedStages = progress?.assessmentStageLogs?.filter(s => s.isComplete) ?? [];
+  let showPastStages = pastStages.map(ps => ({
+    key: `past${ps.id}`,
+    name: stages.find(i => i.id === ps.assessmentStageId)?.description ?? "DESC_NOT_FOUND"
+  }))
+  let showStages = stages.filter(s =>
+    s.step > 1).map(stage => ({
+      key: `future-${stage.id}`,
+      name: stage?.description ?? "DESC_NOT_FOUND"
+    }));
+
+  if (completedStages) { console.log(completedStages) };
 
   return (
     <>
       <Navbar left={moduleTitle} right="Exam officer" />
+      <div>
+        {showPastStages.map(t => (
+          <p>{t.name}</p>))}
+      </div>
+      <div>
+        {showStages.map(t => (
+          <p>{t.name}</p>))}
+      </div>
     </>
   );
 }

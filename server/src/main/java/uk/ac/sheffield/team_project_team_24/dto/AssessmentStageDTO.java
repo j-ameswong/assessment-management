@@ -16,6 +16,7 @@ public class AssessmentStageDTO {
     private String stageName;
     private Long step;
     private AssessmentRole actor;
+    private String description;
 
     public static AssessmentStageDTO fromEntity(AssessmentStage s) {
         return new AssessmentStageDTO(
@@ -23,7 +24,8 @@ public class AssessmentStageDTO {
                 s.getAssessmentType(),
                 s.getStageName(),
                 s.getStep(),
-                s.getActor());
+                s.getActor(),
+                s.getDescription());
     }
 
     // public Assessment toEntity() {
