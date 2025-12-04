@@ -20,31 +20,39 @@ export default function AssessmentOverview() {
     ? progress.module.moduleCode + " " + progress?.module.moduleName
     : "COMXXXX UNKNOWN"
 
+  const currentStage = progress?.assessmentStageId ?? 0;
   const stages = progress?.assessmentStages ?? [];
   const pastStages = progress?.assessmentStageLogs ?? [];
-  const completedStages = progress?.assessmentStageLogs?.filter(s => s.isComplete) ?? [];
+  const completedStages = pastStages?.filter(s => s.isComplete) ?? [];
+  const lastCompletedStep = stages?.find(s => s.id === (
+    completedStages?.at(-1).assessmentStageId ?? 0))?.step ?? 0;
+
   let showPastStages = pastStages.map(ps => ({
-    key: `past${ps.id}`,
+    key: `past-${ps.id}`,
+    assessmentStageId: ps.assessmentStageId,
     name: stages.find(i => i.id === ps.assessmentStageId)?.description ?? "DESC_NOT_FOUND"
   }))
+
   let showStages = stages.filter(s =>
-    s.step > 1).map(stage => ({
-      key: `future-${stage.id}`,
+    s.step > lastCompletedStep).map(stage => ({
+      key: stage.id,
+      assessmentStageId: stage.id,
       name: stage?.description ?? "DESC_NOT_FOUND"
     }));
-
-  if (completedStages) { console.log(completedStages) };
+  if (completedStages) { console.log(completedStages.at(-1)) };
+  if (lastCompletedStep) { console.log(lastCompletedStep) };
+  if (showStages) { console.log(showStages) };
 
   return (
     <>
       <Navbar left={moduleTitle} right="Exam officer" />
       <div>
-        {showPastStages.map(t => (
-          <p>{t.name}</p>))}
+        {showPastStages.map(s => (
+          <p key={s.key} style={{ color: 'green' }}>{s.name}</p>))}
       </div>
       <div>
         {showStages.map(t => (
-          <p>{t.name}</p>))}
+          <p key={t.key} style={{ color: 'red' }}>{t.name}</p>))}
       </div>
     </>
   );
