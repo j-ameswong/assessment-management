@@ -13,6 +13,7 @@ import uk.ac.sheffield.team_project_team_24.domain.assessment.Assessment;
 import uk.ac.sheffield.team_project_team_24.domain.assessment.AssessmentRole;
 import uk.ac.sheffield.team_project_team_24.domain.assessment.AssessmentStage;
 import uk.ac.sheffield.team_project_team_24.domain.assessment.AssessmentStageLog;
+import uk.ac.sheffield.team_project_team_24.domain.assessment.AssessmentStages;
 import uk.ac.sheffield.team_project_team_24.domain.assessment.AssessmentType;
 import uk.ac.sheffield.team_project_team_24.domain.module.Module;
 import uk.ac.sheffield.team_project_team_24.domain.module.ModuleRole;
@@ -103,7 +104,7 @@ public class DataGenerator {
             moduleService.createModule(newModule);
 
             int offset = i * STAFF_PER_MODULE;
-            // Assign module staff to each module
+            // Assign module staff to cwStage module
             List<ModuleStaff> moduleStaff = new ArrayList<>();
             moduleStaff.add(new ModuleStaff(newModule, availableStaff.get(offset), ModuleRole.MODULE_LEAD));
             moduleStaff.add(new ModuleStaff(newModule, availableStaff.get(offset + 1), ModuleRole.MODERATOR));
@@ -152,70 +153,76 @@ public class DataGenerator {
     }
 
     public void populateAssessmentStages(AssessmentStageService assessmentStageService) {
-        List<StageActorDescription> cwStageNames = Arrays.asList(
-                new StageActorDescription("CW_SPEC_CREATED", AssessmentRole.SETTER,
-                        "Specification is created by assessment setter"),
-                new StageActorDescription("CW_SPEC_CHECKED", AssessmentRole.CHECKER,
-                        "Specification is checked by assessment checker"),
-                // if previous step checker indicated modification required, setter does it and
-                // describes the modifications here, and after done, checker can approve or reject
-                new StageActorDescription("CW_SPEC_REQ_MODIFICATION", AssessmentRole.CHECKER,
-                        "Checker determines if modification is required"),
-                new StageActorDescription("CW_SPEC_MODIFICATION", AssessmentRole.SETTER,
-                        "If required, setter makes changes and awaits checker approval"),
-            // TODO:
-                new StageActorDescription("CW_SPEC_RELEASED", AssessmentRole.CHECKER),
-                new StageActorDescription("CW_DEADLINE_PASSED", AssessmentRole.CHECKER),
-                new StageActorDescription("CW_STANDARDISATION_DONE", AssessmentRole.CHECKER),
-                new StageActorDescription("CW_MARKING_DONE", AssessmentRole.CHECKER),
-                new StageActorDescription("CW_MODERATION_DONE", AssessmentRole.CHECKER),
-                new StageActorDescription("CW_FEEDBACK_RETURNED", AssessmentRole.CHECKER);
+        List<AssessmentStages> cwStages = Arrays.asList(
+                AssessmentStages.CW_SPEC_CREATED,
+                AssessmentStages.CW_SPEC_CHECKED,
+                AssessmentStages.CW_SPEC_MODIFICATION,
+                AssessmentStages.CW_SPEC_RELEASED,
+                AssessmentStages.CW_DEADLINE_PASSED,
+                AssessmentStages.CW_STANDARDISATION_DONE,
+                AssessmentStages.CW_MARKING_DONE,
+                AssessmentStages.CW_MODERATION_DONE,
+                AssessmentStages.CW_FEEDBACK_RETURNED);
 
-        for (String stageName : cwStageNames) {
+        int i = 0;
+        for (AssessmentStages cwStage : cwStages) {
             AssessmentStage newStage = new AssessmentStage();
+            i += 1;
             newStage.setAssessmentType(AssessmentType.COURSEWORK);
-            newStage.setStageName(stageName);
-            newStage.setStep(cwStageNames.indexOf(stageName) + 1);
+            newStage.setActor(cwStage.actor);
+            newStage.setStageName(cwStage.name());
+            newStage.setDescription(cwStage.description);
+            newStage.setStep(i);
             assessmentStageService.createAssessmentStage(newStage);
         }
 
-        List<String> examStageNames = Arrays.asList(
-                "EXAM_CREATED",
-                "EXAM_CHECKED",
-                "EXAM_MODIFIED",
-                "EXAM_OFFICER_CHECKED",
-                "EXTERNAL_EXAMINER_FEEDBACK",
-                "SETTER_RESPONSE_SUBMITTED",
-                "FINAL_EXAM_OFFICER_CHECK",
-                "EXAM_TAKEN",
-                "EXAM_STANDARDISATION_DONE",
-                "EXAM_MARKING_DONE",
-                "ADMIN_CHECK_DONE",
-                "EXAM_MODERATION_DONE");
+        List<AssessmentStages> examStages = Arrays.asList(
+                AssessmentStages.EXAM_CREATED,
+                AssessmentStages.EXAM_CHECKED,
+                AssessmentStages.EXAM_MODIFICATION,
+                AssessmentStages.EXAM_CHECKED_EXAMS_OFFICER,
+                AssessmentStages.EXAM_MODIFICATION_EXAMS_OFFICER,
+                AssessmentStages.EXAM_CHECKED_EXTERNAL_EXAMINER,
+                AssessmentStages.EXAM_MODIFICATION_EXTERNAL_EXAMINER,
+                AssessmentStages.EXAM_CHECKED_FINAL,
+                AssessmentStages.EXAM_MODIFICATION_FINAL,
+                AssessmentStages.EXAM_TAKES_PLACE,
+                AssessmentStages.EXAM_STANDARDISATION_DONE,
+                AssessmentStages.EXAM_MARKING_DONE,
+                AssessmentStages.EXAM_MARKING_CHECKED,
+                AssessmentStages.EXAM_MODERATION_DONE);
 
-        for (String stageName : examStageNames) {
+        i = 0;
+        for (AssessmentStages examStage : examStages) {
+            i += 1;
             AssessmentStage newStage = new AssessmentStage();
             newStage.setAssessmentType(AssessmentType.EXAM);
-            newStage.setStageName(stageName);
-            newStage.setStep(examStageNames.indexOf(stageName) + 1);
+            newStage.setActor(examStage.actor);
+            newStage.setStageName(examStage.name());
+            newStage.setDescription(examStage.description);
+            newStage.setStep(i);
             assessmentStageService.createAssessmentStage(newStage);
         }
 
-        List<String> testStageNames = Arrays.asList(
-                "TEST_CREATED",
-                "TEST_CHECKED",
-                "TEST_MODIFIED",
-                "TEST_TAKEN",
-                "TEST_STANDARDISATION_DONE",
-                "TEST_MARKING_DONE",
-                "TEST_MODERATION_DONE",
-                "TEST_RESULTS_RETURNED");
+        List<AssessmentStages> testStages = Arrays.asList(
+                AssessmentStages.TEST_CREATED,
+                AssessmentStages.TEST_CHECKED,
+                AssessmentStages.TEST_MODIFICATION,
+                AssessmentStages.TEST_TAKES_PLACE,
+                AssessmentStages.TEST_STANDARDISATION_DONE,
+                AssessmentStages.TEST_MARKING_DONE,
+                AssessmentStages.TEST_MODERATION_DONE,
+                AssessmentStages.TEST_RESULTS_RETURNED);
 
-        for (String stageName : testStageNames) {
+        i = 0;
+        for (AssessmentStages testStage : testStages) {
+            i += 1;
             AssessmentStage newStage = new AssessmentStage();
             newStage.setAssessmentType(AssessmentType.TEST);
-            newStage.setStageName(stageName);
-            newStage.setStep(testStageNames.indexOf(stageName) + 1);
+            newStage.setActor(testStage.actor);
+            newStage.setStageName(testStage.name());
+            newStage.setDescription(testStage.description);
+            newStage.setStep(i);
             assessmentStageService.createAssessmentStage(newStage);
         }
     }

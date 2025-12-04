@@ -35,7 +35,7 @@ public class AssessmentStage {
     private AssessmentType assessmentType;
 
     @Enumerated(EnumType.STRING)
-    private AssessmentRole actorRole;
+    private AssessmentRole actor;
 
     private String stageName;
 
