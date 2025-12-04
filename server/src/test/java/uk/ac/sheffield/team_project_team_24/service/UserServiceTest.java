@@ -45,15 +45,16 @@ class UserServiceTest {
     private static final UserRole USER2_ROLE = UserRole.EXAMS_OFFICER;
 
     // create dummy users
-    private static User dummyUser1(){
+    private static User dummyUser1() {
         return new User(USER1_FIRSTNAME, USER1_SURNAME, USER1_EMAIL, USER1_PASSWORD, USER1_ROLE);
     }
-    private static User dummyUser2(){
+
+    private static User dummyUser2() {
         return new User(USER2_FIRSTNAME, USER2_SURNAME, USER2_EMAIL, USER2_PASSWORD, USER2_ROLE);
     }
 
     // create list of users
-    private static List<User> dummyUserList(){
+    private static List<User> dummyUserList() {
         return Arrays.asList(dummyUser1(), dummyUser2());
     }
 
@@ -80,7 +81,7 @@ class UserServiceTest {
     }
     // no failure cases as there's no validation
 
-    //create users tests
+    // create users tests
     @Test
     void createUsers_shouldCallSaveAllWithGivenList() {
         List<User> savedUsers = dummyUserList();
@@ -144,8 +145,7 @@ class UserServiceTest {
     // failure
     @Test
     void getUserById_shouldThrowException_whenUserDoesNotExist() {
-        ResponseStatusException ex =
-                assertThrows(ResponseStatusException.class, () -> classUnderTest.getUser(1L));
+        ResponseStatusException ex = assertThrows(ResponseStatusException.class, () -> classUnderTest.getUser(1L));
     }
 
     // get user by email tests
@@ -155,8 +155,8 @@ class UserServiceTest {
         User savedUser = dummyUser1();
         when(userRepository.findByEmail(USER1_EMAIL)).thenReturn(Optional.of(savedUser));
 
-        Optional<User> result = classUnderTest.getUser(USER1_EMAIL);
-        assertEquals(savedUser.getEmail(), result.get().getEmail());
+        User result = classUnderTest.getUser(USER1_EMAIL);
+        assertEquals(savedUser.getEmail(), result.getEmail());
         verify(userRepository, times(1)).findByEmail(USER1_EMAIL);
     }
     // no failure cases
@@ -194,10 +194,9 @@ class UserServiceTest {
         verify(userRepository, times(1)).existsById(1L);
     }
 
-    //failure
+    // failure
     @Test
     void deleteUser_shouldThrowException_whenUserDoesNotExist() {
-        ResponseStatusException ex =
-                assertThrows(ResponseStatusException.class, () -> classUnderTest.deleteUser(1L));
+        ResponseStatusException ex = assertThrows(ResponseStatusException.class, () -> classUnderTest.deleteUser(1L));
     }
 }

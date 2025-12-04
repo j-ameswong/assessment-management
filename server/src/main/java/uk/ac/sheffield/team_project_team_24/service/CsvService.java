@@ -3,7 +3,7 @@ package uk.ac.sheffield.team_project_team_24.service;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import uk.ac.sheffield.team_project_team_24.domain.assessment.Assessment;
-import uk.ac.sheffield.team_project_team_24.domain.assessment.AssessmentType;
+import uk.ac.sheffield.team_project_team_24.domain.assessment.enums.AssessmentType;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -27,7 +27,8 @@ public class CsvService {
                 }
 
                 String[] fields = line.split(",");
-                if (fields.length < 2) continue;
+                if (fields.length < 2)
+                    continue;
 
                 String name = fields[0].trim();
                 String type = fields[1].trim();

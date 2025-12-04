@@ -27,11 +27,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         // .orElseThrow(() -> new UsernameNotFoundException("User not found: " +
         // email));
 
-        Optional<User> user = userService.getUser(email);
-        if (user.isPresent()) {
-            return new CustomUserDetails(user.get());
-        } else {
-            throw new UsernameNotFoundException("User not found: " + email);
-        }
+        User user = userService.getUser(email);
+        return new CustomUserDetails(user);
     }
 }

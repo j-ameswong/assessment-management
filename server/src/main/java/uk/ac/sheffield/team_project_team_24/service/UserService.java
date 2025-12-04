@@ -54,8 +54,13 @@ public class UserService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, USER_NOT_FOUND));
     }
 
-    public Optional<User> getUser(String email) {
-        return userRepository.findByEmail(email);
+    public User getUser(String email) {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, USER_NOT_FOUND));
+    }
+
+    public User getAdmin() {
+        return getUser("admin@sheffield.ac.uk");
     }
 
     public boolean existsUserByEmail(String email) {

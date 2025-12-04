@@ -1,6 +1,7 @@
 package uk.ac.sheffield.team_project_team_24.domain.assessment;
 
 import uk.ac.sheffield.team_project_team_24.domain.user.User;
+import uk.ac.sheffield.team_project_team_24.domain.assessment.enums.AssessmentType;
 import uk.ac.sheffield.team_project_team_24.domain.module.Module;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -56,12 +57,6 @@ public class Assessment {
     private LocalDateTime deadline;
 
     private LocalDateTime examDate;
-
-    @Column(length = 2000)
-    private String checkerFeedback; // Do not save the content
-
-    @Column(length = 2000)
-    private String setterResponse; // setter responses to external examiner
 
     @Column(length = 2000)
     private String description;

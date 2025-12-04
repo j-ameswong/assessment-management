@@ -1,4 +1,4 @@
-package uk.ac.sheffield.team_project_team_24.domain.assessment;
+package uk.ac.sheffield.team_project_team_24.domain.assessment.enums;
 
 public enum AssessmentStages {
     // coursework

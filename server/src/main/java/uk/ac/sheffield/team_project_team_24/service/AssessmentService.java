@@ -8,8 +8,11 @@ import org.springframework.stereotype.Service;
 import jakarta.transaction.Transactional;
 import uk.ac.sheffield.team_project_team_24.domain.assessment.Assessment;
 import uk.ac.sheffield.team_project_team_24.domain.assessment.AssessmentStageLog;
+import uk.ac.sheffield.team_project_team_24.domain.assessment.enums.AssessmentRole;
+import uk.ac.sheffield.team_project_team_24.domain.assessment.enums.UserSource;
 import uk.ac.sheffield.team_project_team_24.domain.module.Module;
 import uk.ac.sheffield.team_project_team_24.domain.module.ModuleRole;
+import uk.ac.sheffield.team_project_team_24.domain.user.User;
 import uk.ac.sheffield.team_project_team_24.dto.AssessmentDTO;
 import uk.ac.sheffield.team_project_team_24.exception.assessment.AssessmentNotFoundException;
 import uk.ac.sheffield.team_project_team_24.repository.AssessmentRepository;
@@ -19,6 +22,7 @@ import uk.ac.sheffield.team_project_team_24.repository.AssessmentRepository;
 @RequiredArgsConstructor
 public class AssessmentService {
     private final AssessmentRepository assessmentRepository;
+    private final AssessmentService assessmentService;
     private final AssessmentStageService assessmentStageService;
     private final AssessmentStageLogService assessmentStageLogService;
     private final ModuleService moduleService;
@@ -38,11 +42,44 @@ public class AssessmentService {
                 a.getAssessmentType()));
 
         createAssessment(a);
+
         return a;
     }
 
+    public void log(Assessment a, User actor, String note) {
+        AssessmentStageLog log = new AssessmentStageLog();
+        log.setAssessment(a);
+        log.setAssessmentStage(a.getAssessmentStage());
+        log.setActedBy(actor);
+        log.setNote(note);
+        assessmentStageLogService.createAssessmentStageLog(log);
+    }
+
+    public void log(Assessment a) {
+        AssessmentStageLog log = new AssessmentStageLog();
+        log.setAssessment(a);
+        log.setAssessmentStage(a.getAssessmentStage());
+        log.setActedBy(userService.getAdmin());
+        log.setNote("Action automatically taken by system");
+        assessmentStageLogService.createAssessmentStageLog(log);
+
+    }
+
+    public void log(Assessment a, String note) {
+        AssessmentStageLog log = new AssessmentStageLog();
+        log.setAssessment(a);
+        log.setAssessmentStage(a.getAssessmentStage());
+        log.setActedBy(userService.getAdmin());
+        log.setNote(note);
+        assessmentStageLogService.createAssessmentStageLog(log);
+
+    }
+
     public Assessment createAssessment(Assessment a) {
-        return assessmentRepository.save(a);
+        assessmentRepository.save(a);
+        log(a);
+
+        return a;
     }
 
     public List<Assessment> getAssessmentsInModule(Long moduleId) {

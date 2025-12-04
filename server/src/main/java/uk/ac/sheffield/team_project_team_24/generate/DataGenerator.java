@@ -10,11 +10,11 @@ import com.github.javafaker.Faker;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import uk.ac.sheffield.team_project_team_24.domain.assessment.Assessment;
-import uk.ac.sheffield.team_project_team_24.domain.assessment.AssessmentRole;
+import uk.ac.sheffield.team_project_team_24.domain.assessment.enums.AssessmentRole;
 import uk.ac.sheffield.team_project_team_24.domain.assessment.AssessmentStage;
 import uk.ac.sheffield.team_project_team_24.domain.assessment.AssessmentStageLog;
-import uk.ac.sheffield.team_project_team_24.domain.assessment.AssessmentStages;
-import uk.ac.sheffield.team_project_team_24.domain.assessment.AssessmentType;
+import uk.ac.sheffield.team_project_team_24.domain.assessment.enums.AssessmentStages;
+import uk.ac.sheffield.team_project_team_24.domain.assessment.enums.AssessmentType;
 import uk.ac.sheffield.team_project_team_24.domain.module.Module;
 import uk.ac.sheffield.team_project_team_24.domain.module.ModuleRole;
 import uk.ac.sheffield.team_project_team_24.domain.module.ModuleStaff;
@@ -60,6 +60,14 @@ public class DataGenerator {
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         // Populate Usr table with users
         List<User> users = new ArrayList<>();
+
+        // system
+        User admin = new User();
+        admin.setEmail("admin@sheffield.ac.uk");
+        admin.setPassword(passwordEncoder.encode("admin"));
+        admin.setRole(UserRole.ADMIN);
+        users.add(admin);
+
         // Set as needed for testing
         for (int i = 0; i < NUM_USERS; i++) {
             String forename = faker.name().firstName();
@@ -142,12 +150,6 @@ public class DataGenerator {
                         newAssessment.getAssessmentType()));
 
                 assessmentService.createAssessment(newAssessment);
-                AssessmentStageLog log = new AssessmentStageLog();
-                log.setAssessment(newAssessment);
-                log.setAssessmentStage(newAssessment.getAssessmentStage());
-                log.setActedBy(newAssessment.getSetter());
-                log.setNote("Created as part of test data");
-                assessmentStageLogService.createAssessmentStageLog(log);
             }
         }
     }

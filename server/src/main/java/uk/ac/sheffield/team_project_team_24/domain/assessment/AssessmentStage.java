@@ -14,6 +14,8 @@ import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import uk.ac.sheffield.team_project_team_24.domain.assessment.enums.AssessmentRole;
+import uk.ac.sheffield.team_project_team_24.domain.assessment.enums.AssessmentType;
 
 @Entity
 @Table(name = "AssessmentStage")
