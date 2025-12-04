@@ -11,6 +11,7 @@ import uk.ac.sheffield.team_project_team_24.domain.assessment.*;
 import uk.ac.sheffield.team_project_team_24.domain.assessment.enums.AssessmentType;
 import uk.ac.sheffield.team_project_team_24.dto.AssessmentDTO;
 import uk.ac.sheffield.team_project_team_24.dto.AssessmentOverviewDTO;
+import uk.ac.sheffield.team_project_team_24.dto.AssessmentProgressDTO;
 import uk.ac.sheffield.team_project_team_24.dto.AssessmentStageDTO;
 import uk.ac.sheffield.team_project_team_24.dto.ModuleDTO;
 import uk.ac.sheffield.team_project_team_24.dto.AdvanceRequestDTO;
@@ -164,11 +165,11 @@ public class AssessmentController {
                 assessmentStageService.getAssessmentStage(id)));
     }
 
-    // @GetMapping("/assessments/{id}/progress")
-    // public ResponseEntity<AssessmentProgressDTO> getProgress(
-    // @PathVariable Long id) {
-    //
-    // }
+    @GetMapping("/assessments/{id}/progress")
+    public ResponseEntity<AssessmentProgressDTO> getProgress(
+            @PathVariable Long id) {
+        return ResponseEntity.ok(assessmentService.getProgress(id));
+    }
     // @GetMapping("/modules/{moduleId}/assessments")
     // public ResponseEntity<List<AssessmentDTO>> listAssessments(
     // @PathVariable Long moduleId) {

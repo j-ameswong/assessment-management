@@ -63,6 +63,10 @@ public class UserService {
         return getUser("admin@sheffield.ac.uk");
     }
 
+    public User getExamsOfficer() {
+        return getUsers(UserRole.EXAMS_OFFICER).get(0);
+    }
+
     public boolean existsUserByEmail(String email) {
         return userRepository.existsUserByEmail(email);
     }

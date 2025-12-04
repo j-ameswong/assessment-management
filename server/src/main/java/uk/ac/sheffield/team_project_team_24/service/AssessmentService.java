@@ -1,5 +1,6 @@
 package uk.ac.sheffield.team_project_team_24.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import lombok.RequiredArgsConstructor;
@@ -7,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
 import uk.ac.sheffield.team_project_team_24.domain.assessment.Assessment;
+import uk.ac.sheffield.team_project_team_24.domain.assessment.AssessmentStage;
 import uk.ac.sheffield.team_project_team_24.domain.assessment.AssessmentStageLog;
 import uk.ac.sheffield.team_project_team_24.domain.assessment.enums.AssessmentRole;
 import uk.ac.sheffield.team_project_team_24.domain.assessment.enums.UserSource;
@@ -14,6 +16,10 @@ import uk.ac.sheffield.team_project_team_24.domain.module.Module;
 import uk.ac.sheffield.team_project_team_24.domain.module.ModuleRole;
 import uk.ac.sheffield.team_project_team_24.domain.user.User;
 import uk.ac.sheffield.team_project_team_24.dto.AssessmentDTO;
+import uk.ac.sheffield.team_project_team_24.dto.AssessmentProgressDTO;
+import uk.ac.sheffield.team_project_team_24.dto.AssessmentStageDTO;
+import uk.ac.sheffield.team_project_team_24.dto.AssessmentStageLogDTO;
+import uk.ac.sheffield.team_project_team_24.dto.ModuleDTO;
 import uk.ac.sheffield.team_project_team_24.exception.assessment.AssessmentNotFoundException;
 import uk.ac.sheffield.team_project_team_24.repository.AssessmentRepository;
 
@@ -45,6 +51,24 @@ public class AssessmentService {
         return a;
     }
 
+    public AssessmentProgressDTO getProgress(Long assessmentId) {
+        Assessment a = getAssessment(assessmentId);
+        List<AssessmentStage> assessmentStages = assessmentStageService
+                .getAllStagesByType(a.getAssessmentType());
+        List<AssessmentStageLog> assessmentStageLogs = assessmentStageLogService
+                .getLogs(a);
+
+        return AssessmentProgressDTO.from(
+                assessmentStages.stream().map(s -> AssessmentStageDTO.fromEntity(s))
+                        .toList(),
+                assessmentStageLogs.stream().map(l -> AssessmentStageLogDTO.fromEntity(l))
+                        .toList(),
+                AssessmentDTO.fromEntity(a),
+                ModuleDTO.fromEntity(a.getModule()),
+                userService.getExamsOfficer().getId(),
+                userService.getAdmin().getId());
+    }
+
     // For when actor is not system
     public void log(Assessment a, User actor, String note, Boolean isComplete) {
         AssessmentStageLog log = new AssessmentStageLog();
@@ -52,6 +76,7 @@ public class AssessmentService {
         log.setAssessmentStage(a.getAssessmentStage());
         log.setActedBy(actor);
         log.setNote(note);
+        log.setChangedAt(LocalDateTime.now());
         log.setIsComplete(isComplete);
         assessmentStageLogService.createAssessmentStageLog(log);
     }
@@ -63,6 +88,7 @@ public class AssessmentService {
         log.setAssessmentStage(a.getAssessmentStage());
         log.setActedBy(userService.getAdmin());
         log.setNote("Action automatically taken by system");
+        log.setChangedAt(LocalDateTime.now());
         log.setIsComplete(true);
         assessmentStageLogService.createAssessmentStageLog(log);
 
@@ -75,6 +101,7 @@ public class AssessmentService {
         log.setAssessmentStage(a.getAssessmentStage());
         log.setActedBy(userService.getAdmin());
         log.setNote(note);
+        log.setChangedAt(LocalDateTime.now());
         log.setIsComplete(true);
         assessmentStageLogService.createAssessmentStageLog(log);
 
