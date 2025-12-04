@@ -21,7 +21,7 @@ public class AssessmentDTO {
 
     public static AssessmentDTO fromEntity(Assessment a) {
         return new AssessmentDTO(
-                a.getAssessmentId(),
+                a.getId(),
                 a.getAssessmentName(),
                 a.getAssessmentType(),
                 a.getAssessmentStage().getId(),

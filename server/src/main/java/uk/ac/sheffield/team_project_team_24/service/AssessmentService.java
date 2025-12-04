@@ -45,31 +45,37 @@ public class AssessmentService {
         return a;
     }
 
-    public void log(Assessment a, User actor, String note) {
+    // For when actor is not system
+    public void log(Assessment a, User actor, String note, Boolean isComplete) {
         AssessmentStageLog log = new AssessmentStageLog();
         log.setAssessment(a);
         log.setAssessmentStage(a.getAssessmentStage());
         log.setActedBy(actor);
         log.setNote(note);
+        log.setIsComplete(isComplete);
         assessmentStageLogService.createAssessmentStageLog(log);
     }
 
+    // For system only
     public void log(Assessment a) {
         AssessmentStageLog log = new AssessmentStageLog();
         log.setAssessment(a);
         log.setAssessmentStage(a.getAssessmentStage());
         log.setActedBy(userService.getAdmin());
         log.setNote("Action automatically taken by system");
+        log.setIsComplete(true);
         assessmentStageLogService.createAssessmentStageLog(log);
 
     }
 
+    // For system with notes
     public void log(Assessment a, String note) {
         AssessmentStageLog log = new AssessmentStageLog();
         log.setAssessment(a);
         log.setAssessmentStage(a.getAssessmentStage());
         log.setActedBy(userService.getAdmin());
         log.setNote(note);
+        log.setIsComplete(true);
         assessmentStageLogService.createAssessmentStageLog(log);
 
     }

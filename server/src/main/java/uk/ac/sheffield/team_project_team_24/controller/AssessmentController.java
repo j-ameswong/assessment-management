@@ -164,6 +164,11 @@ public class AssessmentController {
                 assessmentStageService.getAssessmentStage(id)));
     }
 
+    // @GetMapping("/assessments/{id}/progress")
+    // public ResponseEntity<AssessmentProgressDTO> getProgress(
+    // @PathVariable Long id) {
+    //
+    // }
     // @GetMapping("/modules/{moduleId}/assessments")
     // public ResponseEntity<List<AssessmentDTO>> listAssessments(
     // @PathVariable Long moduleId) {

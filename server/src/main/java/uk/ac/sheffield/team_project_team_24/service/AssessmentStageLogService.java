@@ -62,7 +62,7 @@ public class AssessmentStageLogService {
                 .findByAssessmentOrderByChangedAtAsc(assessment);
         if (logs.isEmpty()) {
             throw new AssessmentStageLogNotFoundException(
-                    "No logs found for assessment " + assessment.getAssessmentId());
+                    "No logs found for assessment " + assessment.getId());
         } else {
             return logs;
         }
