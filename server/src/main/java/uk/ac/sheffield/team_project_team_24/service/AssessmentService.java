@@ -22,7 +22,6 @@ import uk.ac.sheffield.team_project_team_24.repository.AssessmentRepository;
 @RequiredArgsConstructor
 public class AssessmentService {
     private final AssessmentRepository assessmentRepository;
-    private final AssessmentService assessmentService;
     private final AssessmentStageService assessmentStageService;
     private final AssessmentStageLogService assessmentStageLogService;
     private final ModuleService moduleService;
