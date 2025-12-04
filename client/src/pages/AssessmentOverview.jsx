@@ -21,7 +21,7 @@ export default function AssessmentOverview() {
   const moduleTitle =
     overview?.module
       ? overview.module.moduleCode + " " + overview.module.moduleName
-      : "Unknown Module";
+      : "COMXXXX UNKNOWN";
 
   const assessments = overview?.assessments ?? [];
 
