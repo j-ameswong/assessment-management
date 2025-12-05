@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -13,6 +14,8 @@ import org.springframework.web.server.ResponseStatusException;
 import jakarta.transaction.Transactional;
 import uk.ac.sheffield.team_project_team_24.domain.user.User;
 import uk.ac.sheffield.team_project_team_24.domain.user.UserRole;
+import uk.ac.sheffield.team_project_team_24.dto.FirstTimeLoginDTO;
+import uk.ac.sheffield.team_project_team_24.dto.LoginDTO;
 import uk.ac.sheffield.team_project_team_24.dto.TokenDTO;
 import uk.ac.sheffield.team_project_team_24.dto.UserSignupDTO;
 import uk.ac.sheffield.team_project_team_24.exception.EmptyRepositoryException;
@@ -69,6 +72,17 @@ public class UserService {
         } else {
             return users;
         }
+    }
+
+    public FirstTimeLoginDTO onLogin(LoginDTO loginDTO, TokenDTO tokenDTO) {
+        String username = loginDTO.getUsername();
+        User user = getUser(username)
+                .orElseThrow(() -> new UsernameNotFoundException(username));
+
+        return new FirstTimeLoginDTO(
+                user.getId(),
+                user.getRole(),
+                tokenDTO.getToken());
     }
 
     public List<User> getUsers(UserRole userRole) {

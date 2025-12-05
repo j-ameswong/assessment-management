@@ -28,6 +28,9 @@ function Login() {
       } else {
         const data = await response.json();
         localStorage.setItem("token", data.token);
+        localStorage.setItem("userId", data.id);
+        localStorage.setItem("role", data.role);
+
         setMessage("Login successful");
         navigate("/home");
       }

@@ -14,6 +14,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import uk.ac.sheffield.team_project_team_24.domain.user.User;
+import uk.ac.sheffield.team_project_team_24.dto.FirstTimeLoginDTO;
 import uk.ac.sheffield.team_project_team_24.dto.LoginDTO;
 import uk.ac.sheffield.team_project_team_24.dto.TokenDTO;
 import uk.ac.sheffield.team_project_team_24.dto.UserSignupDTO;
@@ -49,16 +50,18 @@ public class LoginController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<TokenDTO> login(@RequestBody LoginDTO loginDTO) {
+    public ResponseEntity<FirstTimeLoginDTO> login(@RequestBody LoginDTO loginDTO) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         loginDTO.getUsername(),
                         loginDTO.getPassword()));
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
+        System.out.println(authentication.getAuthorities());
 
         TokenDTO tokenDTO = tokenService.generateToken(authentication.getAuthorities(), authentication.getName());
-        return ResponseEntity.ok(tokenDTO);
+        FirstTimeLoginDTO dto = userService.onLogin(loginDTO, tokenDTO);
+        return ResponseEntity.ok(dto);
     }
 
     @GetMapping("/test")

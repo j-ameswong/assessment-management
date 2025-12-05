@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
+console.log(localStorage);
 export default function Home() {
   const [message, setMessage] = useState("");
 

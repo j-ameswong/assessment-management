@@ -7,6 +7,7 @@ import CreateAssessment from "./pages/CreateAssessment.jsx";
 import AssessmentOverview from "./pages/AssessmentOverview.jsx";
 import CreateModule from './pages/CreateModule.jsx';
 import DeleteModule from './pages/DeleteModule.jsx';
+import UserCreation from './pages/UserCreation.jsx';
 
 function App() {
   return (
