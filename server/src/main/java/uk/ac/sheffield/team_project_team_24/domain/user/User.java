@@ -16,10 +16,8 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
     private String forename;
 
-    @Column(nullable = false)
     private String surname;
 
     @Column(unique = true, nullable = false)
@@ -33,10 +31,10 @@ public class User {
     private UserRole role;
 
     public User(String forename, String surname, String email, String password, UserRole role) {
-    this.forename = forename;
-    this.surname = surname;
-    this.email = email;
-    this.password = password;
-    this.role = role;
+        this.forename = forename;
+        this.surname = surname;
+        this.email = email;
+        this.password = password;
+        this.role = role;
     }
 }
