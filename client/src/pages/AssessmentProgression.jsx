@@ -2,11 +2,11 @@ import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Axios from "axios";
 import Navbar from "../components/Navbar.jsx";
-import "./AssessmentOverview.css";
+import "./AssessmentProgression.css";
 
-export default function AssessmentOverview() {
+export default function AssessmentProgression() {
   const navigate = useNavigate();
-  // example url: /modules/1/assessments/1/progress
+  // example url: /modules/:moduleId/assessments/:assessmentId/progress
   const assessmentId = useParams().assessmentId;
   const [progress, setProgress] = useState([]);
 
@@ -16,43 +16,49 @@ export default function AssessmentOverview() {
       .then(({ data }) => setProgress(data))
   }, [assessmentId]);
 
-  const moduleTitle = progress?.module
-    ? progress.module.moduleCode + " " + progress?.module.moduleName
-    : "COMXXXX UNKNOWN"
+  if (!progress) return <p>Loading...</p>;
 
-  const currentStage = progress?.assessmentStageId ?? 0;
-  const stages = progress?.assessmentStages ?? [];
-  const pastStages = progress?.assessmentStageLogs ?? [];
-  const completedStages = pastStages?.filter(s => s.isComplete) ?? [];
-  const lastCompletedStep = stages?.find(s => s.id === (
-    completedStages?.at(-1).assessmentStageId ?? 0))?.step ?? 0;
+  const { module, assessmentStages, assessmentStageLogs } = progress;
 
-  let showPastStages = pastStages.map(ps => ({
-    key: `past-${ps.id}`,
-    assessmentStageId: ps.assessmentStageId,
-    name: stages.find(i => i.id === ps.assessmentStageId)?.description ?? "DESC_NOT_FOUND"
-  }))
+  const moduleTitle = module
+    ? `${progress.module.moduleCode} ${progress?.module.moduleName}`
+    : "COMXXXX UNKNOWN";
 
-  let showStages = stages.filter(s =>
-    s.step > lastCompletedStep).map(stage => ({
-      key: stage.id,
-      assessmentStageId: stage.id,
-      name: stage?.description ?? "DESC_NOT_FOUND"
-    }));
-  if (completedStages) { console.log(completedStages.at(-1)) };
-  if (lastCompletedStep) { console.log(lastCompletedStep) };
-  if (showStages) { console.log(showStages) };
+  const completedLogs = assessmentStageLogs?.filter(log => log.isComplete)
+    .sort((a, b) => new Date(a.changedAt) - new Date(b.changedAt)) ?? [];
+
+  const lastCompletedStageId = completedLogs.at(-1)?.assessmentStageId ?? null;
+  const lastCompletedStage = assessmentStages?.find(s => s.id === lastCompletedStageId) ?? {};
+  const lastCompletedStep = lastCompletedStage?.step ?? 0;
+
+  const stagesWithStatus = assessmentStages?.sort((a, b) => a.step - b.step)
+    .map(stage => {
+      let status = "uncompleted";
+
+      if (stage.step <= lastCompletedStep) {
+        status = "completed";
+      }
+      else if (stage.step === lastCompletedStep + 1) {
+        status = "current";
+      }
+
+      return { ...stage, status };
+    }) ?? [];
 
   return (
     <>
       <Navbar left={moduleTitle} right="Exam officer" />
+
       <div>
-        {showPastStages.map(s => (
-          <p key={s.key} style={{ color: 'green' }}>{s.name}</p>))}
-      </div>
-      <div>
-        {showStages.map(t => (
-          <p key={t.key} style={{ color: 'red' }}>{t.name}</p>))}
+        <h2>Assessment Progress</h2>
+
+        <div>
+          {stagesWithStatus.map(stage => (
+            <p key={stage.id} className={stage.status}>
+              {stage.description}
+            </p>
+          ))}
+        </div>
       </div>
     </>
   );
