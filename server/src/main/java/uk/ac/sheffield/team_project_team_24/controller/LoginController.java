@@ -8,7 +8,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import uk.ac.sheffield.team_project_team_24.domain.user.User;
 import uk.ac.sheffield.team_project_team_24.repository.UserRepository;
-
+import uk.ac.sheffield.team_project_team_24.dto.UserCreationDTO;
 import java.util.Map;
 import java.util.Optional;
 
@@ -42,7 +42,13 @@ public class LoginController {
                     .body("Wrong password");
         }
 
-        return ResponseEntity.ok("Login Success");
+        UserCreationDTO userDTO = new UserCreationDTO();
+        userDTO.setEmail(user.get().getEmail());
+        userDTO.setForename(user.get().getForename());
+        userDTO.setRole(user.get().getRole());
+        userDTO.setId(user.get().getId());
+
+        return ResponseEntity.ok(userDTO);
     }
 
     @GetMapping("/test")

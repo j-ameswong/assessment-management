@@ -2,6 +2,7 @@ package uk.ac.sheffield.team_project_team_24.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import uk.ac.sheffield.team_project_team_24.domain.user.User;
@@ -19,6 +20,7 @@ public class UserController {
 
     // Create user
     @PostMapping("/users")
+    @PreAuthorize("hasAnyRole('ADMIN', 'EXAMS_OFFICER')")
     public ResponseEntity<User> create(@RequestBody User user) {
         return ResponseEntity.ok(userService.createUser(user));
     }

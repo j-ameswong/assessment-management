@@ -26,6 +26,8 @@ function Login() {
                 setMessage("Invalid email or password");
             } else {
                 setMessage("Login successful");
+                const userData = await response.json();
+                localStorage.setItem('userRole', userData.role);
                 navigate("/home");
             }
 

@@ -6,6 +6,7 @@ import Modules from './pages/Modules.jsx';
 import CreateAssessment from "./pages/CreateAssessment.jsx";
 import AssessmentOverview from "./pages/AssessmentOverview.jsx";
 import CreateModule from './pages/CreateModule.jsx';
+import UserCreation from './pages/UserCreation.jsx';
 
 function App() {
     return (
@@ -16,6 +17,7 @@ function App() {
             <Route path="/add-module" element={<CreateModule />} />
             <Route path="/add-assessment" element={<CreateAssessment />} />
             <Route path="/modules/assessments" element={<AssessmentOverview />} />
+            <Route path="/create-new-user" element={<UserCreation/>}/>
         </Routes>
     );
 }
