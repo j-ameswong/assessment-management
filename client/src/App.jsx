@@ -17,9 +17,9 @@ function App() {
       <Route path="/modules/create" element={<CreateModule />} />
       <Route path="/modules/:moduleId/assessments/new" element={<CreateAssessment />} />
       <Route path="/modules/:moduleId/assessments" element={<AssessmentOverview />} />
+      <Route path="/create-new-user" element={<UserCreation />} />
     </Routes>
   );
 }
-
 
 export default App;

@@ -32,7 +32,6 @@ function Login() {
         navigate("/home");
       }
 
-
     } catch (error) {
       console.error(error);
       setMessage("Cannot connect to server");
