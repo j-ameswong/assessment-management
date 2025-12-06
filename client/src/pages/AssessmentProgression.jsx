@@ -83,8 +83,8 @@ export default function AssessmentProgression() {
 
       console.log("Payload sent: ", payload);
 
-      const response = await Axios.post(`http://localhost:8080/api/assessments/${assessment.id}/advance`,
-        { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } }, payload);
+      const response = await Axios.post(`http://localhost:8080/api/assessments/${assessment.id}/advance`, payload,
+        { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
       console.log("Success: ", response.data);
       window.location.reload();
     } catch (err) {
