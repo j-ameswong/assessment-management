@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
 import uk.ac.sheffield.team_project_team_24.domain.assessment.AssessmentStage;
-import uk.ac.sheffield.team_project_team_24.domain.assessment.AssessmentType;
+import uk.ac.sheffield.team_project_team_24.domain.assessment.enums.AssessmentType;
 import uk.ac.sheffield.team_project_team_24.exception.assessment.AssessmentNotFoundException;
 import uk.ac.sheffield.team_project_team_24.exception.assessmentStage.stepOutOfBoundsException;
 import uk.ac.sheffield.team_project_team_24.repository.AssessmentStageRepository;

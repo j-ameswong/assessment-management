@@ -10,7 +10,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import uk.ac.sheffield.team_project_team_24.config.RsaKeyProperties;
-import uk.ac.sheffield.team_project_team_24.domain.assessment.AssessmentType;
 import uk.ac.sheffield.team_project_team_24.domain.user.User;
 import uk.ac.sheffield.team_project_team_24.domain.user.UserRole;
 import uk.ac.sheffield.team_project_team_24.generate.DataGenerator;

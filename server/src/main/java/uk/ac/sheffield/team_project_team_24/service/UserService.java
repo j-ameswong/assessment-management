@@ -76,8 +76,7 @@ public class UserService {
 
     public FirstTimeLoginDTO onLogin(LoginDTO loginDTO, TokenDTO tokenDTO) {
         String username = loginDTO.getUsername();
-        User user = getUser(username)
-                .orElseThrow(() -> new UsernameNotFoundException(username));
+        User user = getUser(username);
 
         return new FirstTimeLoginDTO(
                 user.getId(),
@@ -94,8 +93,17 @@ public class UserService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, USER_NOT_FOUND));
     }
 
-    public Optional<User> getUser(String email) {
-        return userRepository.findByEmail(email);
+    public User getUser(String email) {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, USER_NOT_FOUND));
+    }
+
+    public User getAdmin() {
+        return getUser("admin@sheffield.ac.uk");
+    }
+
+    public User getExamsOfficer() {
+        return getUsers(UserRole.EXAMS_OFFICER).get(0);
     }
 
     public boolean existsUserByEmail(String email) {

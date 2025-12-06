@@ -9,6 +9,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -19,6 +20,7 @@ import uk.ac.sheffield.team_project_team_24.dto.LoginDTO;
 import uk.ac.sheffield.team_project_team_24.dto.TokenDTO;
 import uk.ac.sheffield.team_project_team_24.dto.UserSignupDTO;
 import uk.ac.sheffield.team_project_team_24.repository.UserRepository;
+import uk.ac.sheffield.team_project_team_24.security.CustomUserDetails;
 import uk.ac.sheffield.team_project_team_24.service.TokenService;
 import uk.ac.sheffield.team_project_team_24.service.UserService;
 
@@ -65,7 +67,9 @@ public class LoginController {
     }
 
     @GetMapping("/test")
-    public String test() {
+    public String test(
+            @AuthenticationPrincipal CustomUserDetails currentUser) {
+        System.out.println("TEST IS HERE: " + currentUser.getUsername());
         return "Backend OK";
     }
 

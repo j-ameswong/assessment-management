@@ -8,8 +8,10 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 
 import org.springframework.web.multipart.MultipartFile;
 import uk.ac.sheffield.team_project_team_24.domain.assessment.*;
+import uk.ac.sheffield.team_project_team_24.domain.assessment.enums.AssessmentType;
 import uk.ac.sheffield.team_project_team_24.dto.AssessmentDTO;
 import uk.ac.sheffield.team_project_team_24.dto.AssessmentOverviewDTO;
+import uk.ac.sheffield.team_project_team_24.dto.AssessmentProgressDTO;
 import uk.ac.sheffield.team_project_team_24.dto.AssessmentStageDTO;
 import uk.ac.sheffield.team_project_team_24.dto.ModuleDTO;
 import uk.ac.sheffield.team_project_team_24.dto.AdvanceRequestDTO;
@@ -87,9 +89,8 @@ public class AssessmentController {
         Assessment updated = assessmentService.advanceStage(
                 id,
                 currentUser.getId(),
-                request.getNote()
-
-        );
+                request.getNote(),
+                request.getFurtherActionReq());
 
         return ResponseEntity.ok(AssessmentDTO.fromEntity(updated));
     }
@@ -163,12 +164,9 @@ public class AssessmentController {
                 assessmentStageService.getAssessmentStage(id)));
     }
 
-    // @GetMapping("/modules/{moduleId}/assessments")
-    // public ResponseEntity<List<AssessmentDTO>> listAssessments(
-    // @PathVariable Long moduleId) {
-    // return ResponseEntity.ok(assessmentService.getAssessmentsInModule(moduleId)
-    // .stream()
-    // .map(a -> AssessmentDTO.fromEntity(a))
-    // .toList());
-    // }
+    @GetMapping("/assessments/{id}/progress")
+    public ResponseEntity<AssessmentProgressDTO> getProgress(
+            @PathVariable Long id) {
+        return ResponseEntity.ok(assessmentService.getProgress(id));
+    }
 }

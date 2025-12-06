@@ -13,6 +13,7 @@ import org.springframework.security.oauth2.jwt.JwtException;
 import org.springframework.stereotype.Service;
 
 import uk.ac.sheffield.team_project_team_24.dto.TokenDTO;
+import uk.ac.sheffield.team_project_team_24.security.CustomUserDetails;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -25,10 +26,13 @@ public class TokenService {
 
     private final JwtEncoder jwtEncoder;
     private final JwtDecoder jwtDecoder;
+    private final CustomUserDetailsService customUserDetailsService;
 
-    public TokenService(JwtEncoder jwtEncoder, JwtDecoder jwtDecoder) {
+    public TokenService(JwtEncoder jwtEncoder, JwtDecoder jwtDecoder,
+            CustomUserDetailsService customUserDetailsService) {
         this.jwtEncoder = jwtEncoder;
         this.jwtDecoder = jwtDecoder;
+        this.customUserDetailsService = customUserDetailsService;
     }
 
     public TokenDTO generateToken(Collection<? extends GrantedAuthority> authorities, String username) {
@@ -55,7 +59,9 @@ public class TokenService {
             Collection<GrantedAuthority> authorities = Arrays.stream(scope.split(" "))
                     .map(SimpleGrantedAuthority::new)
                     .collect(Collectors.toList());
-            return new UsernamePasswordAuthenticationToken(username, null, authorities);
+
+            CustomUserDetails details = (CustomUserDetails) customUserDetailsService.loadUserByUsername(username);
+            return new UsernamePasswordAuthenticationToken(details, null, authorities);
         } catch (JwtException e) {
             return null; // invalid token
         }

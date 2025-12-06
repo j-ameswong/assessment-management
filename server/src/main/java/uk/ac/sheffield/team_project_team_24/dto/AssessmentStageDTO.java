@@ -3,9 +3,9 @@ package uk.ac.sheffield.team_project_team_24.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import uk.ac.sheffield.team_project_team_24.domain.assessment.Assessment;
 import uk.ac.sheffield.team_project_team_24.domain.assessment.AssessmentStage;
-import uk.ac.sheffield.team_project_team_24.domain.assessment.AssessmentType;
+import uk.ac.sheffield.team_project_team_24.domain.assessment.enums.AssessmentRole;
+import uk.ac.sheffield.team_project_team_24.domain.assessment.enums.AssessmentType;
 
 @Data
 @NoArgsConstructor
@@ -15,13 +15,17 @@ public class AssessmentStageDTO {
     private AssessmentType assessmentType;
     private String stageName;
     private Long step;
+    private AssessmentRole actor;
+    private String description;
 
     public static AssessmentStageDTO fromEntity(AssessmentStage s) {
         return new AssessmentStageDTO(
                 s.getId(),
                 s.getAssessmentType(),
                 s.getStageName(),
-                s.getStep());
+                s.getStep(),
+                s.getActor(),
+                s.getDescription());
     }
 
     // public Assessment toEntity() {

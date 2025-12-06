@@ -9,7 +9,7 @@ import uk.ac.sheffield.team_project_team_24.domain.user.User;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "ASSESSMENT_STAGE_LOG")
+@Table(name = "AssessmentStageLog")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -19,10 +19,11 @@ public class AssessmentStageLog {
     private Long id;
 
     @ManyToOne
+    @JoinColumn(name = "assessmentId")
     private Assessment assessment;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "assessment_stage")
+    @JoinColumn(name = "assessmentStageId")
     private AssessmentStage assessmentStage;
 
     @ManyToOne
@@ -30,6 +31,7 @@ public class AssessmentStageLog {
 
     private LocalDateTime changedAt;
 
-    @Column(length = 2000)
+    private Boolean isComplete;
+
     private String note;
 }
