@@ -6,13 +6,13 @@ export default function AssessmentStage({
   status, // completed/current/uncompleted
   actor, // setter/checker/moderator/exams officer/external examiner
   step,
-  showButton, // if user is the actor
+  enableButton, // if user is the actor
   onProgress,
 }) {
   return (
     <div className={`stage-card stage-${status}`}>
       <div className="stage-header">
-        <h3 className="stage-title">{title}</h3>
+        <h4 className="stage-title">{title}</h4>
         <span className={`stage-status-label stage-status-${status}`}>
           {status.toUpperCase()}
         </span>
@@ -28,11 +28,14 @@ export default function AssessmentStage({
         <span className="stage-info-value">{step}</span>
       </div>
 
-      {showButton && (
-        <button className="stage-progress-btn" onClick={onProgress}>
+      {enableButton
+        ? (<button className="stage-progress-btn" onClick={onProgress}>
           Progress Stage
-        </button>
-      )}
+        </button>)
+        : (<button disabled className="stage-progress-btn-disabled" onClick={onProgress}>
+          Progress Stage
+        </button>)
+      }
     </div>
   )
 }

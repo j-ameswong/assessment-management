@@ -67,7 +67,7 @@ export default function AssessmentProgression() {
             status={stage.status}
             actor={stage.actor}
             step={stage.step}
-            showButton={true} // TODO: logic for showing btn
+            enableButton={false} // TODO: logic for showing btn
             onProgress={() => console.log("Progressing stage...")}
           />
         ))}
