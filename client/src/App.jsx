@@ -9,6 +9,7 @@ import AssessmentOverview from "./pages/AssessmentOverview.jsx";
 import CreateModule from './pages/CreateModule.jsx';
 import DeleteModule from './pages/DeleteModule.jsx';
 import UserCreation from './pages/UserCreation.jsx';
+import Logout from './pages/Logout.jsx';
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
       <Route path="/modules/:moduleId/assessments" element={<AssessmentOverview />} />
       <Route path="/modules/:moduleId/assessments/:assessmentId/progress" element={<AssessmentProgression />} />
       <Route path="/create-new-user" element={<UserCreation />} />
+      <Route path="/logout" element={<Logout />} />
     </Routes>
   );
 }

@@ -3,16 +3,24 @@ import { useNavigate, useParams } from "react-router-dom";
 import Axios from "axios";
 import Navbar from "../components/Navbar.jsx";
 import "./AssessmentProgression.css";
+import AssessmentStage from "../components/AssessmentStage.jsx";
 
 export default function AssessmentProgression() {
+  // redirect to login if no token
   const navigate = useNavigate();
+  useEffect(() => {
+    if (!localStorage.getItem("token")) { navigate("/") };
+  }, [navigate]);
+
   // example url: /modules/:moduleId/assessments/:assessmentId/progress
   const assessmentId = useParams().assessmentId;
   const [progress, setProgress] = useState([]);
 
   useEffect(() => {
     if (!assessmentId) { return };
-    Axios.get(`http://localhost:8080/api/assessments/${assessmentId}/progress`)
+    Axios.get(
+      `http://localhost:8080/api/assessments/${assessmentId}/progress`,
+      { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } })
       .then(({ data }) => setProgress(data))
   }, [assessmentId]);
 
@@ -49,16 +57,20 @@ export default function AssessmentProgression() {
     <>
       <Navbar left={moduleTitle} right="Exam officer" />
 
-      <div>
-        <h2>Assessment Progress</h2>
+      <div className="assessment-progress-container">
+        <h2 className="assessment-progress-title">Assessment Progress</h2>
 
-        <div>
-          {stagesWithStatus.map(stage => (
-            <p key={stage.id} className={stage.status}>
-              {stage.description}
-            </p>
-          ))}
-        </div>
+        {stagesWithStatus.map(stage => (
+          <AssessmentStage
+            key={stage.id}
+            title={stage.description}
+            status={stage.status}
+            actor={stage.actor}
+            step={stage.step}
+            showButton={true} // TODO: logic for showing btn
+            onProgress={() => console.log("Progressing stage...")}
+          />
+        ))}
       </div>
     </>
   );

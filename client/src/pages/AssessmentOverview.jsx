@@ -13,7 +13,8 @@ export default function AssessmentOverview() {
   const [overview, setOverview] = useState(null);
   useEffect(() => {
     if (!moduleId) { return }
-    Axios.get(`http://localhost:8080/api/modules/${moduleId}/assessments`)
+    Axios.get(`http://localhost:8080/api/modules/${moduleId}/assessments`,
+      { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } })
       .then(({ data }) => setOverview(data))
   }, [moduleId]);
 
