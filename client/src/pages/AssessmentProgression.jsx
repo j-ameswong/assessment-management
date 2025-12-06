@@ -63,7 +63,8 @@ export default function AssessmentProgression() {
       let enableButton = false;
 
       if (status == "current") {
-        if (roles.includes("ADMIN") || roles.includes("EXAMS_OFFICER")) {
+        if (roles.includes("ADMIN")
+          || roles.includes("EXAMS_OFFICER")) {
           enableButton = true;
         } else if (roles.includes(stage.actor)) {
           enableButton = true;
@@ -72,6 +73,25 @@ export default function AssessmentProgression() {
 
       return { ...stage, status, enableButton };
     }) ?? [];
+
+  const progressStage = async (furtherActionReq, note) => {
+    try {
+      const payload = {
+        furtherActionReq: furtherActionReq,
+        note: note,
+      }
+
+      console.log("Payload sent: ", payload);
+
+      const response = await Axios.post(`http://localhost:8080/api/assessments/${assessment.id}/advance`,
+        { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } }, payload);
+      console.log("Success: ", response.data);
+      window.location.reload();
+    } catch (err) {
+      console.error(err);
+      alert("Error when progressing stage");
+    }
+  };
 
   return (
     <>
@@ -87,8 +107,8 @@ export default function AssessmentProgression() {
             status={stage.status}
             actor={stage.actor}
             step={stage.step}
-            enableButton={stage.enableButton ?? false} // TODO: logic for showing btn
-            onProgress={() => console.log("Progressing stage...")}
+            enableButton={stage.enableButton ?? false}
+            onProgress={() => progressStage(false, "TODO")}
           />
         ))}
       </div>

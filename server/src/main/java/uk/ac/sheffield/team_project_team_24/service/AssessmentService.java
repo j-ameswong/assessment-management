@@ -146,15 +146,23 @@ public class AssessmentService {
     }
 
     public Assessment advanceStage(Long id,
-            Long actorId, String note) {
+            Long actorId, String note, Boolean furtherActionReq) {
 
         Assessment assessment = getAssessment(id);
 
-        assessment.setAssessmentStage(
-                assessmentStageService.getNextStage(assessment.getAssessmentStage()));
-        assessmentRepository.save(assessment);
+        if (furtherActionReq && !getHistory(id).get(-1).getIsComplete()) {
+            assessment.setAssessmentStage(
+                    assessmentStageService.getPrevStage(assessment.getAssessmentStage()));
+            assessmentRepository.save(assessment);
 
-        assessmentStageLogService.generateLogFromAssessment(assessment, actorId, note);
+            log(assessment, userService.getUser(actorId), note, !furtherActionReq);
+        } else {
+            assessment.setAssessmentStage(
+                    assessmentStageService.getNextStage(assessment.getAssessmentStage()));
+            assessmentRepository.save(assessment);
+
+            log(assessment, userService.getUser(actorId), note, !furtherActionReq);
+        }
 
         return assessment;
     }

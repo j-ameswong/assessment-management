@@ -89,9 +89,8 @@ public class AssessmentController {
         Assessment updated = assessmentService.advanceStage(
                 id,
                 currentUser.getId(),
-                request.getNote()
-
-        );
+                request.getNote(),
+                request.getFurtherActionReq());
 
         return ResponseEntity.ok(AssessmentDTO.fromEntity(updated));
     }
@@ -170,12 +169,4 @@ public class AssessmentController {
             @PathVariable Long id) {
         return ResponseEntity.ok(assessmentService.getProgress(id));
     }
-    // @GetMapping("/modules/{moduleId}/assessments")
-    // public ResponseEntity<List<AssessmentDTO>> listAssessments(
-    // @PathVariable Long moduleId) {
-    // return ResponseEntity.ok(assessmentService.getAssessmentsInModule(moduleId)
-    // .stream()
-    // .map(a -> AssessmentDTO.fromEntity(a))
-    // .toList());
-    // }
 }

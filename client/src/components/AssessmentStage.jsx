@@ -28,6 +28,12 @@ export default function AssessmentStage({
         <span className="stage-info-value">{step}</span>
       </div>
 
+      {["CHECKER", "MODERATOR", "EXAMS_OFFICER", "EXTERNAL_EXAMINER"].includes(actor) &&
+        (<div className="stage-info-row">
+          <span className="stage-info-label">Request Follow-up</span>
+          <input type="checkbox" />
+        </div>)}
+
       {enableButton
         ? (<button className="stage-progress-btn" onClick={onProgress}>
           Progress Stage
