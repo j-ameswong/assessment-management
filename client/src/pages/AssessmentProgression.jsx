@@ -12,10 +12,14 @@ export default function AssessmentProgression() {
     if (!localStorage.getItem("token")) { navigate("/") };
   }, [navigate]);
 
+  const id = Number(localStorage.getItem("userId"));
+  const role = (localStorage.getItem("role"));
+
   // example url: /modules/:moduleId/assessments/:assessmentId/progress
   const assessmentId = useParams().assessmentId;
   const [progress, setProgress] = useState([]);
 
+  // fetch req info from api
   useEffect(() => {
     if (!assessmentId) { return };
     Axios.get(
@@ -23,15 +27,17 @@ export default function AssessmentProgression() {
       { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } })
       .then(({ data }) => setProgress(data))
   }, [assessmentId]);
-
   if (!progress) return <p>Loading...</p>;
 
-  const { module, assessmentStages, assessmentStageLogs } = progress;
+  // extract data from dto
+  const { module, assessment, assessmentStages, assessmentStageLogs } = progress;
 
+  // always ensure placeholder if api missing data
   const moduleTitle = module
     ? `${progress.module.moduleCode} ${progress?.module.moduleName}`
     : "COMXXXX UNKNOWN";
 
+  // get info from logs about past stages
   const completedLogs = assessmentStageLogs?.filter(log => log.isComplete)
     .sort((a, b) => new Date(a.changedAt) - new Date(b.changedAt)) ?? [];
 
@@ -39,18 +45,32 @@ export default function AssessmentProgression() {
   const lastCompletedStage = assessmentStages?.find(s => s.id === lastCompletedStageId) ?? {};
   const lastCompletedStep = lastCompletedStage?.step ?? 0;
 
+  // add roles from all 3 levels (usr, module, assessment)
+  const roles = [role, "ANY"];
+  roles.push(module?.moduleStaff.find(s =>
+    s.staffId === Number(localStorage.getItem("userId")))?.moduleRole);
+  if (assessment?.setterId === id) { roles.push("SETTER") };
+  if (assessment?.checkerId === id) { roles.push("CHECKER") };
+
   const stagesWithStatus = assessmentStages?.sort((a, b) => a.step - b.step)
     .map(stage => {
+      // check status of current stage
       let status = "uncompleted";
+      if (stage.step <= lastCompletedStep) { status = "completed" }
+      else if (stage.step === lastCompletedStep + 1) { status = "current"; }
 
-      if (stage.step <= lastCompletedStep) {
-        status = "completed";
-      }
-      else if (stage.step === lastCompletedStep + 1) {
-        status = "current";
+      // determine if enable button is true based on status & user
+      let enableButton = false;
+
+      if (status == "current") {
+        if (roles.includes("ADMIN") || roles.includes("EXAMS_OFFICER")) {
+          enableButton = true;
+        } else if (roles.includes(stage.actor)) {
+          enableButton = true;
+        }
       }
 
-      return { ...stage, status };
+      return { ...stage, status, enableButton };
     }) ?? [];
 
   return (
@@ -67,7 +87,7 @@ export default function AssessmentProgression() {
             status={stage.status}
             actor={stage.actor}
             step={stage.step}
-            enableButton={false} // TODO: logic for showing btn
+            enableButton={stage.enableButton ?? false} // TODO: logic for showing btn
             onProgress={() => console.log("Progressing stage...")}
           />
         ))}
