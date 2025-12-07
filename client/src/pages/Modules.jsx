@@ -11,12 +11,24 @@ function Modules() {
 
 
     const GetModules = async () => {
-        const response = await fetch("http://localhost:8080/api/modules", {
-            method: "GET",
-            headers: { "Content-Type": "application/json" },
-        })
+        const role = localStorage.getItem("role");
+        const userId = localStorage.getItem("userId");
+        const token = localStorage.getItem("token");
 
-        if(response.ok){
+        const url =
+            role === "ADMIN" || role === "EXAM_OFFICER"
+                ? "http://localhost:8080/api/modules"
+                : `http://localhost:8080/api/modules?userId=${userId}`;
+
+        const response = await fetch(url, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`
+            }
+        });
+
+        if (response.ok) {
             const data = await response.json();
             setModules(data);
         } else {
