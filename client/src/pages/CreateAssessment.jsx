@@ -1,214 +1,334 @@
 import { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
+
 import axios from "axios";
 import "./CreateAssessment.css"
 import Navbar from "../components/Navbar.jsx";
-import { Dropdown } from "bootstrap";
 
 
 export default function CreateAssessment() {
-    const [name, setName] = useState("");
-    const [type, setType] = useState(null);
-    const [description, setDescription] = useState("");
+  const [name, setName] = useState("");
+  const [type, setType] = useState(null);
+  const [description, setDescription] = useState("");
 
-    const [csvFile, setCsvFile] = useState(null);
-    const [attachment, setAttachment] = useState(null);
+  const [csvFile, setCsvFile] = useState(null);
+  const [attachment, setAttachment] = useState(null);
 
-    // fetch modules from api
-    const [modules, setModules] = useState([]);
-    // TODO: only fetch modules that have the user/all for admin
-    useEffect(() => {
-        fetch("http://localhost:8080/api/modules")
-            .then(res => res.json())
-            .then(data => setModules(data));
-    })
+  // Module list
+  const [modules, setModules] = useState([]);
+  const { moduleId: routeModuleId } = useParams();
+  const [moduleId, setModuleId] = useState(routeModuleId  ? Number(routeModuleId) : 0);
 
-    // TODO: this is for later, get list of staff to set as setter/checker
-    // const [moduleStaff, setModuleStaff] = useState([]);
-    // useEffect(() => {
-    //     fetch("http://localhost:8080/" + currentModuleId + "/modules")
-    //         .then(res => res.json())
-    //         .then(data => setModules(data));
-    // })
-    //
-    const [moduleId, setModuleId] = useState(0);
 
-    const onModuleSelect = (event) => {
-        setModuleId(event.target.value);
-    };
+  // Staff lists
+  const [moduleStaff, setModuleStaff] = useState([]);
+  const [checkerCandidates, setCheckerCandidates] = useState([]);
 
-    const Create = async () => {
-        try {
-            if (!name || !type) {
-                alert("Please enter name and select a type.");
-                return;
-            }
+  // Setter/Checker
+  const [setterId, setSetterId] = useState('');
+  const [checkerId, setCheckerId] = useState('');
 
-            const payload = {
-                name: name,
-                type: type.toUpperCase(),
-                moduleId: moduleId,
-                setterId: 12, // temp setterId 
-                checkerId: 13, // checkerId
-                description: description
-            };
+  useEffect(() => {
+    const role = localStorage.getItem("role");
+    const userId = localStorage.getItem("userId");
+    const token = localStorage.getItem("token");
 
-            console.log("payload send:", payload);
 
-            const response = await axios.post("http://localhost:8080/api/assessments", payload);
-
-            console.log("Created:", response.data);
-            alert("Assessment created!");
-        } catch (err) {
-            console.error(err);
-            alert("Failed to create assessment.");
+    const url =
+          role === "ADMIN" || role === "EXAMS_OFFICER"
+              ? "http://localhost:8080/api/modules"
+              : `http://localhost:8080/api/modules/user/${userId}`;
+      fetch(url, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
         }
-    };
-
-    const CsvUpload = async () => {
-        const formData = new FormData();
-        formData.append("file", csvFile);
-
-        await axios.post("http://localhost:8080/api/assessments/uploadCsv", formData, {
-            headers: { "Content-Type": "multipart/form-data" }
-        });
-
-        alert("CSV uploaded!");
-    };
-
-    const AttachmentUpload = async () => {
-        const formData = new FormData();
-        formData.append("file", attachment);
-        await axios.post("http://localhost:8080/api/assessments/uploadAttachment", formData, {
-            headers: { "Content-Type": "multipart/form-data" }
+      })
+        .then(res => {
+            if (!res.ok) {
+                throw new Error("Failed to fetch modules");
+            }
+            return res.json();
         })
-        alert("Attachment uploaded!");
+        .then(data => setModules(data))
+        .catch(err => console.error(err));
+
+  }, []);
+
+
+  // When modules load or route moduleId changes, auto select module
+  useEffect(() => {
+    if (!modules || modules.length === 0) return;
+
+    const autoSelect = () => {
+      if (routeModuleId) {
+        setModuleId(Number(routeModuleId));
+        onModuleSelect({ target: { value: Number(routeModuleId) } });
+      }
+    };
+
+    autoSelect();
+  }, [modules, routeModuleId]);
+
+
+  const onModuleSelect = async (event) => {
+
+    const id = Number(event.target.value);
+    setModuleId(id);
+    if (!id) return;
+
+    const token = localStorage.getItem("token");
+
+    try {
+      // fetch the staff of this module
+      const resModuleStaff = await axios.get(
+        `http://localhost:8080/api/modules/${id}/staff`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      const staff = resModuleStaff.data;
+      setModuleStaff(staff);
+
+      // default setter = module lead
+      const lead = staff.find(s => s.moduleRole === "MODULE_LEAD");
+      if (lead) setSetterId(String(lead.staffId));
+
+      // fetch all staff
+      const resAll = await axios.get(
+        "http://localhost:8080/api/users",
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      const allUsers = resAll.data;
+
+      const filtered = allUsers.filter(u =>
+        ["ACADEMIC_STAFF", "EXAMS_OFFICER", "EXTERNAL_EXAMINER"].includes(u.role) &&
+        !staff.some(ms => ms.staffId === u.id)
+      );
+
+
+      setCheckerCandidates(filtered);
+
+    } catch (err) {
+      console.error("Failed to load staff", err);
+    }
+
+  };
+
+
+
+
+  const Create = () => {
+      if (!name || !type || !moduleId || !setterId || !checkerId) {
+          alert("Please enter name and select a type.");
+          return;
+      }
+
+      const payload = {
+          name: name,
+          type: type.toUpperCase(),
+          moduleId: moduleId,
+          setterId: setterId,
+          checkerId: checkerId,
+          description: description
+      };
+
+      console.log("payload send:", payload);
+
+      axios.post("http://localhost:8080/api/assessments", payload, {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
+      })
+        .then(response => {
+          console.log("Created:", response.data);
+          alert("Assessment created!");
+        })
+        .catch(error => {
+          console.error(error);
+          alert("Failed to create assessment.");
+        });
+    };
+
+    // Upload CSV
+    const CsvUpload = () => {
+      const formData = new FormData();
+      formData.append("file", csvFile);
+
+      axios.post("http://localhost:8080/api/assessments/uploadCsv", formData, {
+        headers: { "Content-Type": "multipart/form-data" }
+      })
+        .then(() => alert("CSV uploaded!"))
+        .catch(() => alert("Failed to upload CSV."));
+    };
+
+    // Upload Attachment
+    const AttachmentUpload = () => {
+      const formData = new FormData();
+      formData.append("file", attachment);
+      axios.post("http://localhost:8080/api/assessments/uploadAttachment", formData, {
+        headers: { "Content-Type": "multipart/form-data" }
+      })
+      alert("Attachment uploaded!");
     }
 
     return (
-        <>
-            <Navbar left="COM2008 Systems Design and Security" right="Exam officer" />
-            <div className="assessment-page">
-                <div className="assessment-container">
+      <>
+        <Navbar left="COM2008 Systems Design and Security" right="Exam officer" />
+        <div className="assessment-page">
+          <div className="assessment-container">
 
-                    <h1 className="title">Create New Assessment</h1>
+            <h1 className="title">Create New Assessment</h1>
 
-                    <div className="grid-container">
+            <div className="grid-container">
 
-                        {/* left area */}
-                        <div className="left-column">
+              {/* left area */}
+              <div className="left-column">
 
-                            <label className="label">Assessment Name</label>
-                            <input
-                                className="input"
-                                value={name}
-                                onChange={(e) => setName(e.target.value)}
-                            />
+                {/* Name */}
+                <label className="label">Assessment Name</label>
+                <input
+                  className="input"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                />
+                
 
-                            <label className="label">For Module</label>
-                            <select value={moduleId} onChange={onModuleSelect}>
-                                <option value="">-- Select Module --</option>
-                                {modules.map((m) => (
-                                    <option key={m.id} value={m.id}>
-                                        {m.moduleName}
-                                    </option>
-                                ))}
-                            </select>
-
-                            {/* TODO: Create hidden dropdowns to select setter and getters, */}
-                            {/*       on selecting module, initialize setterId and getterId with  */}
-                            {/*       filtering moduleStaff to find moduleRole === MODULE_LEAD/MODERATOR */}
-
-                            <label className="label">Assessment Type</label>
-                            <div className="type-buttons">
-                                <button
-                                    className={`type-btn ${type === "COURSEWORK" ? "selected" : ""}`}
-                                    onClick={() => setType("COURSEWORK")}
-                                    onDoubleClick={() => setType(null)}
-                                >
-                                    <span>Coursework</span>
-                                    <span className={`circle ${type === "COURSEWORK" ? "checked" : ""}`}>
-                                        {type === "COURSEWORK" && <span className="tick">✔</span>}
-                                    </span>
-                                </button>
-                                <button
-                                    className={`type-btn ${type === "test" ? "selected" : ""}`}
-                                    onClick={() => setType("test")}
-                                    onDoubleClick={() => setType(null)}
-                                >
-                                    <span>In-semester quiz</span>
-                                    <span className={`circle ${type === "test" ? "checked" : ""}`}>
-                                        {type === "test" && <span className="tick">✔</span>}
-                                    </span>
-                                </button>
-                                <button
-                                    className={`type-btn ${type === "exam" ? "selected" : ""}`}
-                                    onClick={() => setType("exam")}
-                                    onDoubleClick={() => setType(null)}
-                                >
-                                    <span>Exam</span>
-                                    <span className={`circle ${type === "exam" ? "checked" : ""}`}>
-                                        {type === "exam" && <span className="tick">✔</span>}
-                                    </span>
-                                </button>
-                            </div>
-
-                            <div className="or">
-                                <p>OR</p>
-                            </div>
-
-                            <label className="label">Upload .csv file</label>
-                            <div className="csv-wrapper">
-                                <input
-                                    className="csv-input"
-                                    type="file"
-                                    accept=".csv"
-                                    onChange={(e) => setCsvFile(e.target.files[0])}
-
-                                />
-
-                                <div className="file-display">
-                                    <img src="/icons/file.svg" alt="file upload icon" className="file-icon" />
-                                </div>
-
-                                <button className="attach-btn" onClick={CsvUpload}>
-                                    Attach
-                                </button>
-                            </div>
-                        </div>
-
-                        {/* right area */}
-                        <div className="right-column">
-                            <label className="label">Attachments</label>
-                            <div className="attach-wrapper">
-                                <input
-                                    className="attach-input"
-                                    type="file"
-                                    onChange={(e) => setAttachment(e.target.files[0])}
-                                />
-
-                                <div className="file-display">
-                                    <img src="/icons/file.svg" alt="file upload icon" className="file-icon" />
-                                </div>
-
-                                <button className="attach-btn" onClick={AttachmentUpload}>Attach</button>
-                            </div>
-                            <label className="label">Description</label>
-                            <textarea
-                                className="textarea"
-                                value={description}
-                                onChange={(e) => setDescription(e.target.value)}
-                            ></textarea>
-
-                            <button className="create-btn" onClick={Create}>
-                                Create
-                            </button>
-                        </div>
-
-                    </div>
-
+                {/*Assessment Type*/}
+                <label className="label">Assessment Type</label>
+                <div className="type-buttons">
+                    <button
+                      className={`type-btn ${type === "COURSEWORK" ? "selected" : ""}`}
+                      onClick={() => setType("COURSEWORK")}
+                      onDoubleClick={() => setType(null)}
+                    >
+                      <span>Coursework</span>
+                      <span className={`circle ${type === "COURSEWORK" ? "checked" : ""}`}>
+                          {type === "COURSEWORK" && <span className="tick">✔</span>}
+                      </span>
+                    </button>
+                    <button
+                      className={`type-btn ${type === "test" ? "selected" : ""}`}
+                      onClick={() => setType("test")}
+                      onDoubleClick={() => setType(null)}
+                    >
+                      <span>In-semester quiz</span>
+                      <span className={`circle ${type === "test" ? "checked" : ""}`}>
+                          {type === "test" && <span className="tick">✔</span>}
+                      </span>
+                    </button>
+                    <button
+                      className={`type-btn ${type === "exam" ? "selected" : ""}`}
+                      onClick={() => setType("exam")}
+                      onDoubleClick={() => setType(null)}
+                    >
+                      <span>Exam</span>
+                      <span className={`circle ${type === "exam" ? "checked" : ""}`}>
+                          {type === "exam" && <span className="tick">✔</span>}
+                      </span>
+                    </button>
                 </div>
 
+                <div className="or">
+                  <p>OR</p>
+                </div>
+
+                <label className="label">Upload .csv file</label>
+                <div className="csv-wrapper">
+                  <input
+                    className="csv-input"
+                    type="file"
+                    accept=".csv"
+                    onChange={(e) => setCsvFile(e.target.files[0])}
+
+                  />
+
+                  <div className="file-display">
+                    <img src="/icons/file.svg" alt="file upload icon" className="file-icon" />
+                  </div>
+
+                  <button className="attach-btn" onClick={CsvUpload}>
+                    Attach
+                  </button>
+                </div>
+
+                <label className="label">Attachments</label>
+                <div className="attach-wrapper">
+                  <input
+                    className="attach-input"
+                    type="file"
+                    onChange={(e) => setAttachment(e.target.files[0])}
+                  />
+
+                  <div className="file-display">
+                    <img src="/icons/file.svg" alt="file upload icon" className="file-icon" />
+                  </div>
+
+                  <button className="attach-btn" onClick={AttachmentUpload}>Attach</button>
+                </div>
+
+              </div>
+
+              {/* right area */}
+              <div className="right-column">
+
+                  {/* Module */}
+                  <label className="label">For Module</label>
+                  <select value={moduleId} onChange={onModuleSelect}>
+                    <option value="">-- Select Module --</option>
+                    {modules.map((m) => (
+                      <option key={m.id} value={m.id}>
+                        {m.moduleName}
+                      </option>
+                    ))}
+                  </select>
+
+                  {/*Setter / Checker dropdowns (only show if module selected)*/}
+                  {moduleId !== 0 && (
+                    <>
+                      <label className="label">Setter</label>
+                      <select value={setterId} onChange={e => setSetterId(e.target.value)}>
+                        <option value="">-- Select Setter --</option>
+                        {moduleStaff.map(s => (
+                          <option
+                            key={s.staffId}
+                            value={String(s.staffId)}
+                          >
+                            {s.forename} {s.surname} — {s.moduleRole}
+                          </option>
+                        ))}
+                      </select>
+
+
+                      <label className="label">Checker</label>
+                      <select value={checkerId} onChange={e => setCheckerId(e.target.value)}>
+                        <option value="">-- Select Checker --</option>
+                        {checkerCandidates.map(s => (
+                          <option key={s.id} value={s.id}>
+                            {s.forename} {s.surname} — {s.role}
+                          </option>
+                        ))}
+                      </select>
+
+                    </>
+                  )}
+
+                  <label className="label">Description</label>
+                  <textarea
+                    className="textarea"
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                  ></textarea>
+
+                  <button className="create-btn" onClick={Create}>
+                    Create
+                  </button>
+              </div>
+
             </div>
-        </>
+
+          </div>
+
+        </div>
+      </>
     );
 }

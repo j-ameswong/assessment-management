@@ -16,9 +16,9 @@ function Modules() {
         const token = localStorage.getItem("token");
 
         const url =
-            role === "ADMIN" || role === "EXAM_OFFICER"
+            role === "ADMIN" || role === "EXAMS_OFFICER"
                 ? "http://localhost:8080/api/modules"
-                : `http://localhost:8080/api/modules?userId=${userId}`;
+                : `http://localhost:8080/api/modules/user/${userId}`;
 
         const response = await fetch(url, {
             method: "GET",
