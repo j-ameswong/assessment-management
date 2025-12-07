@@ -51,7 +51,7 @@ public class ModuleController {
     public ResponseEntity<List<ModuleDTO>> list() {
         return ResponseEntity.ok(moduleService.getModules()
                 .stream()
-                .map(m -> ModuleDTO.fromEntity(m))
+                .map(ModuleDTO::fromEntity)
                 .toList());
     }
 
@@ -72,7 +72,7 @@ public class ModuleController {
             @PathVariable Long moduleId) {
         return ResponseEntity.ok(moduleStaffService.getAllModuleStaffInModule(moduleId)
                 .stream()
-                .map(ms -> ModuleStaffDTO.fromEntity(ms))
+                .map(ModuleStaffDTO::fromEntity)
                 .toList());
     }
 
