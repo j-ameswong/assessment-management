@@ -202,3 +202,11 @@
 .type-btn:hover {
     background: #6f935f;
 }
+
+select {
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 15px;
+    width: 400px;
+}
