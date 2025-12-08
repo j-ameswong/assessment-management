@@ -11,7 +11,8 @@ export default function AssessmentStage({
   onProgress,
   setFurtherActionReq,
   note,
-  setNote
+  setNote,
+  summaryRequired,
 }) {
 
   const [isChecked, setIsChecked] = useState(false);
@@ -46,6 +47,11 @@ export default function AssessmentStage({
           <input disabled={!enableButton} checked={isChecked} onChange={onCheckHandler} type="checkbox" />
         </div>)}
 
+      {(actor === "SETTER") && summaryRequired && (
+        <div>
+          <p>test</p>
+        </div>
+      )}
       {(isChecked) && (
         <div className="stage-info-row">
           <span className="stage-info-label">Feedback:</span>

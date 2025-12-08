@@ -72,6 +72,8 @@ export default function AssessmentProgression() {
   const stagesWithStatus = assessmentStages?.sort((a, b) => a.step - b.step)
     .map(stage => {
       let log = latestLogs[stage.id];
+      let prevLog = latestLogs[stage.id - 1];
+      console.log("prev: " + prevLog?.isComplete);
       // check status of current stage
       let status = "uncompleted";
       if (stage.step < currentStep) { status = "completed" }
@@ -93,7 +95,12 @@ export default function AssessmentProgression() {
         }
       }
 
-      return { ...stage, status, enableButton, log, };
+      let summaryRequired = false;
+      if (prevLog && !prevLog.isComplete) {
+        summaryRequired = true;
+      }
+
+      return { ...stage, status, enableButton, log, summaryRequired };
     }) ?? [];
 
   const [furtherActionReq, setFurtherActionReq] = useState(false);
@@ -136,6 +143,7 @@ export default function AssessmentProgression() {
             note={stage.log?.note ?? note}
             setNote={setNote}
             setFurtherActionReq={setFurtherActionReq}
+            summaryRequired={stage.summaryRequired}
           />
         ))}
       </div>
