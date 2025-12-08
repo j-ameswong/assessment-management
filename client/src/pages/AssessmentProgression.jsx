@@ -81,10 +81,24 @@ export default function AssessmentProgression() {
 
       if (log && !log.isComplete && status != "current") {
         status = "pending";
-      } else if (log.isComplete) {
+      } else if (log && log.isComplete) {
         status = "completed";
       }
 
+      let actingStaff = null;
+      let actorName = "PLACEHOLDER";
+      switch (stage.actor) {
+        case "SETTER":
+          actingStaff = module.moduleStaff.find(s => s.staffId === assessment.setterId);
+          actorName = actingStaff.forename + " " + actingStaff.surname;
+        case "CHECKER":
+          actingStaff = module.moduleStaff.find(s => s.staffId === assessment.checkerId);
+          actorName = actingStaff.forename + " " + actingStaff.surname;
+        case "MODERATOR":
+          actingStaff = module.moduleStaff.find(s => s.moduleRole === "MODERATOR");
+          actorName = actingStaff.forename + " " + actingStaff.surname;
+        // TODO: EXAMS_OFFICER, ADMIN, SYSTEM, EXTERNAL_EXAMINER
+      }
       // determine if enable button is true based on status & user
       let enableButton = false;
 
@@ -92,6 +106,9 @@ export default function AssessmentProgression() {
       if (status == "current") {
         if (roles.includes("ADMIN")
           || roles.includes("EXAMS_OFFICER")) {
+          enableButton = true;
+          // allow module lead to act as setter even if not setter for assessment
+        } else if (stage.actor === "SETTER" && roles.includes("MODULE_LEAD")) {
           enableButton = true;
         } else if (roles.includes(stage.actor)) {
           enableButton = true;
