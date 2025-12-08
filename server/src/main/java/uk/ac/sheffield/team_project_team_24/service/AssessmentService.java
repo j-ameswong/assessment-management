@@ -150,7 +150,9 @@ public class AssessmentService {
 
         Assessment assessment = getAssessment(id);
 
-        if (furtherActionReq && !getHistory(id).get(getHistory(id).size() - 1).getIsComplete()) {
+        // if previous stage is still incomplete, always revert
+        if (assessment.getAssessmentStage().getStep() != 1
+                && !getHistory(id).get(getHistory(id).size() - 1).getIsComplete()) {
             log(assessment, userService.getUser(actorId), note, !furtherActionReq);
             assessment.setAssessmentStage(
                     assessmentStageService.getPrevStage(assessment.getAssessmentStage()));

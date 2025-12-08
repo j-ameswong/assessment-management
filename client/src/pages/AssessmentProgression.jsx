@@ -59,7 +59,7 @@ export default function AssessmentProgression() {
   // const lastCompletedStageId = completedLogs.at(-1)?.assessmentStageId ?? null;
   // const lastCompletedStage = assessmentStages?.find(s => s.id === lastCompletedStageId) ?? {};
   // const lastCompletedStep = lastCompletedStage?.step ?? 0;
-  const currentStep = assessmentStages.find(
+  const currentStep = assessmentStages?.find(
     s => s.id === assessment.assessmentStageId)?.step ?? 0;
 
   // add roles from all 3 levels (usr, module, assessment)

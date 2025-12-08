@@ -10,6 +10,7 @@ export default function AssessmentStage({
   enableButton, // if user is the actor
   onProgress,
   setFurtherActionReq,
+  note,
   setNote
 }) {
 
@@ -45,14 +46,21 @@ export default function AssessmentStage({
           <input disabled={!enableButton} checked={isChecked} onChange={onCheckHandler} type="checkbox" />
         </div>)}
 
-      {(isChecked || status === "pending") && (
+      {(isChecked) && (
         <div className="stage-info-row">
           <span className="stage-info-label">Feedback:</span>
           <textarea
-            disabled={status === "pending"}
             onChange={(t) => setNote(t.target.value)}
+            content={note}
             className="stage-textarea">
           </textarea>
+        </div>
+      )}
+
+      {(status === "pending") && (
+        <div className="stage-info-row">
+          <span className="stage-info-label">Feedback:</span>
+          <p>{note}</p>
         </div>
       )}
 
