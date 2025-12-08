@@ -73,21 +73,20 @@ export default function AssessmentProgression() {
     .map(stage => {
       let log = latestLogs[stage.id];
       let prevLog = latestLogs[stage.id - 1];
-      let nextLog = latestLogs[stage.id + 1];
 
       // check status of current stage
       let status = "uncompleted";
       if (stage.step < currentStep) { status = "completed" }
       else if (stage.step === currentStep) { status = "current"; }
 
-      if (((log && !log.isComplete) || (prevLog && !prevLog.isComplete))
-        && status != "current") {
+      if (log && !log.isComplete && status != "current") {
         status = "pending";
       }
 
       // determine if enable button is true based on status & user
       let enableButton = false;
 
+      // always allow exams officer/admin to advance stage
       if (status == "current") {
         if (roles.includes("ADMIN")
           || roles.includes("EXAMS_OFFICER")) {
@@ -97,6 +96,7 @@ export default function AssessmentProgression() {
         }
       }
 
+      // for setter response/summary
       let summaryRequired = false;
       if (prevLog && !prevLog.isComplete) {
         summaryRequired = true;

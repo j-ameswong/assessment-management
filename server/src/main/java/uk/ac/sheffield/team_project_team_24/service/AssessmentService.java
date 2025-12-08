@@ -152,8 +152,10 @@ public class AssessmentService {
 
         // if previous stage is still incomplete, always revert
         if (assessment.getAssessmentStage().getStep() != 1
-                && !getHistory(id).get(getHistory(id).size() - 1).getIsComplete()) {
-            log(assessment, userService.getUser(actorId), note, !furtherActionReq);
+                && !getLastLogOfStep(assessment,
+                        assessment.getAssessmentStage().getStep() - 1)
+                        .getIsComplete()) {
+            log(assessment, userService.getUser(actorId), note, false);
             assessment.setAssessmentStage(
                     assessmentStageService.getPrevStage(assessment.getAssessmentStage()));
         } else {
@@ -172,6 +174,18 @@ public class AssessmentService {
 
     public List<AssessmentStageLog> getHistory(Assessment assessment) {
         return assessmentStageLogService.getLogs(assessment);
+    }
+
+    public AssessmentStageLog getLastLogOfStep(Assessment a, Long step) {
+        List<AssessmentStageLog> history = getHistory(a);
+
+        for (int i = history.size() - 1; i >= 0; i--) {
+            if (history.get(i).getAssessmentStage().getStep() == step) {
+                return history.get(i);
+            }
+        }
+
+        return history.get(0);
     }
 
     public List<Assessment> saveAll(List<Assessment> assessments) {

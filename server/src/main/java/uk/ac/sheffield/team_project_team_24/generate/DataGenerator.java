@@ -142,7 +142,7 @@ public class DataGenerator {
                 newAssessment.setChecker(moduleStaffService.getUserByRole(m.getId(),
                         ModuleRole.MODERATOR));
                 newAssessment.setAssessmentType(AssessmentType.getAllTypes().get(
-                        new Random().nextInt(2)));
+                        new Random().nextInt(3)));
                 // this will cause problems occasionally skull:
                 newAssessment.setAssessmentName(m.getModuleCode()
                         + "_" + new Random().nextInt(100, 999)
