@@ -47,11 +47,17 @@ export default function AssessmentStage({
           <input disabled={!enableButton} checked={isChecked} onChange={onCheckHandler} type="checkbox" />
         </div>)}
 
-      {(actor === "SETTER") && summaryRequired && (
-        <div>
-          <p>test</p>
+      {(actor === "SETTER") && summaryRequired && enableButton && (
+        <div className="stage-info-row">
+          <span className="stage-info-label">Response:</span>
+          <textarea
+            onChange={(t) => setNote(t.target.value)}
+            content={note}
+            className="stage-textarea">
+          </textarea>
         </div>
       )}
+
       {(isChecked) && (
         <div className="stage-info-row">
           <span className="stage-info-label">Feedback:</span>

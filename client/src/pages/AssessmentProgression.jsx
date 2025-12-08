@@ -73,13 +73,15 @@ export default function AssessmentProgression() {
     .map(stage => {
       let log = latestLogs[stage.id];
       let prevLog = latestLogs[stage.id - 1];
-      console.log("prev: " + prevLog?.isComplete);
+      let nextLog = latestLogs[stage.id + 1];
+
       // check status of current stage
       let status = "uncompleted";
       if (stage.step < currentStep) { status = "completed" }
       else if (stage.step === currentStep) { status = "current"; }
 
-      if (log && !log.isComplete && status != "current") {
+      if (((log && !log.isComplete) || (prevLog && !prevLog.isComplete))
+        && status != "current") {
         status = "pending";
       }
 
