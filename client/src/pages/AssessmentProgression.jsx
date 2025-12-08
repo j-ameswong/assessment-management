@@ -81,6 +81,8 @@ export default function AssessmentProgression() {
 
       if (log && !log.isComplete && status != "current") {
         status = "pending";
+      } else if (log.isComplete) {
+        status = "completed";
       }
 
       // determine if enable button is true based on status & user
