@@ -149,19 +149,18 @@ public class AssessmentService {
             Long actorId, String note, Boolean furtherActionReq) {
 
         Assessment assessment = getAssessment(id);
-        log(assessment, userService.getUser(actorId), note, !furtherActionReq);
 
-        if (furtherActionReq && !getHistory(id).get(-1).getIsComplete()) {
+        if (furtherActionReq && !getHistory(id).get(getHistory(id).size() - 1).getIsComplete()) {
+            log(assessment, userService.getUser(actorId), note, !furtherActionReq);
             assessment.setAssessmentStage(
                     assessmentStageService.getPrevStage(assessment.getAssessmentStage()));
-            assessmentRepository.save(assessment);
         } else {
+            log(assessment, userService.getUser(actorId), note, !furtherActionReq);
             assessment.setAssessmentStage(
                     assessmentStageService.getNextStage(assessment.getAssessmentStage()));
-            assessmentRepository.save(assessment);
-
         }
 
+        assessmentRepository.save(assessment);
         return assessment;
     }
 

@@ -47,6 +47,10 @@
   background: orange;
 }
 
+.stage-status-pending {
+  background: red;
+}
+
 .stage-status-uncompleted {
   background: gray;
 }

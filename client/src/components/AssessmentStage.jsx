@@ -17,7 +17,7 @@ export default function AssessmentStage({
 
   const onCheckHandler = () => {
     setIsChecked(!isChecked);
-    setFurtherActionReq(isChecked);
+    setFurtherActionReq(!isChecked);
   }
 
   return (
@@ -45,10 +45,11 @@ export default function AssessmentStage({
           <input disabled={!enableButton} checked={isChecked} onChange={onCheckHandler} type="checkbox" />
         </div>)}
 
-      {isChecked && (
+      {(isChecked || status === "pending") && (
         <div className="stage-info-row">
           <span className="stage-info-label">Feedback:</span>
           <textarea
+            disabled={status === "pending"}
             onChange={(t) => setNote(t.target.value)}
             className="stage-textarea">
           </textarea>
