@@ -10,9 +10,7 @@ import com.github.javafaker.Faker;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import uk.ac.sheffield.team_project_team_24.domain.assessment.Assessment;
-import uk.ac.sheffield.team_project_team_24.domain.assessment.enums.AssessmentRole;
 import uk.ac.sheffield.team_project_team_24.domain.assessment.AssessmentStage;
-import uk.ac.sheffield.team_project_team_24.domain.assessment.AssessmentStageLog;
 import uk.ac.sheffield.team_project_team_24.domain.assessment.enums.AssessmentStages;
 import uk.ac.sheffield.team_project_team_24.domain.assessment.enums.AssessmentType;
 import uk.ac.sheffield.team_project_team_24.domain.module.Module;
@@ -142,7 +140,7 @@ public class DataGenerator {
                 newAssessment.setChecker(moduleStaffService.getUserByRole(m.getId(),
                         ModuleRole.MODERATOR));
                 newAssessment.setAssessmentType(AssessmentType.getAllTypes().get(
-                        new Random().nextInt(2)));
+                        new Random().nextInt(3)));
                 // this will cause problems occasionally skull:
                 newAssessment.setAssessmentName(m.getModuleCode()
                         + "_" + new Random().nextInt(100, 999)

@@ -72,6 +72,8 @@ export default function AssessmentProgression() {
   const stagesWithStatus = assessmentStages?.sort((a, b) => a.step - b.step)
     .map(stage => {
       let log = latestLogs[stage.id];
+      let prevLog = latestLogs[stage.id - 1];
+
       // check status of current stage
       let status = "uncompleted";
       if (stage.step < currentStep) { status = "completed" }
@@ -79,21 +81,47 @@ export default function AssessmentProgression() {
 
       if (log && !log.isComplete && status != "current") {
         status = "pending";
+      } else if (log && log.isComplete) {
+        status = "completed";
       }
 
+      let actingStaff = null;
+      let actorName = "PLACEHOLDER";
+      switch (stage.actor) {
+        case "SETTER":
+          actingStaff = module.moduleStaff.find(s => s.staffId === assessment.setterId);
+          actorName = actingStaff.forename + " " + actingStaff.surname;
+        case "CHECKER":
+          actingStaff = module.moduleStaff.find(s => s.staffId === assessment.checkerId);
+          actorName = actingStaff.forename + " " + actingStaff.surname;
+        case "MODERATOR":
+          actingStaff = module.moduleStaff.find(s => s.moduleRole === "MODERATOR");
+          actorName = actingStaff.forename + " " + actingStaff.surname;
+        // TODO: EXAMS_OFFICER, ADMIN, SYSTEM, EXTERNAL_EXAMINER
+      }
       // determine if enable button is true based on status & user
       let enableButton = false;
 
+      // always allow exams officer/admin to advance stage
       if (status == "current") {
         if (roles.includes("ADMIN")
           || roles.includes("EXAMS_OFFICER")) {
+          enableButton = true;
+          // allow module lead to act as setter even if not setter for assessment
+        } else if (stage.actor === "SETTER" && roles.includes("MODULE_LEAD")) {
           enableButton = true;
         } else if (roles.includes(stage.actor)) {
           enableButton = true;
         }
       }
 
-      return { ...stage, status, enableButton, log, };
+      // for setter response/summary
+      let summaryRequired = false;
+      if (prevLog && !prevLog.isComplete) {
+        summaryRequired = true;
+      }
+
+      return { ...stage, status, enableButton, log, summaryRequired };
     }) ?? [];
 
   const [furtherActionReq, setFurtherActionReq] = useState(false);
@@ -136,6 +164,7 @@ export default function AssessmentProgression() {
             note={stage.log?.note ?? note}
             setNote={setNote}
             setFurtherActionReq={setFurtherActionReq}
+            summaryRequired={stage.summaryRequired}
           />
         ))}
       </div>

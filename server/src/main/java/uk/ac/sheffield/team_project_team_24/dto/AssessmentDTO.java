@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import uk.ac.sheffield.team_project_team_24.domain.assessment.Assessment;
-import uk.ac.sheffield.team_project_team_24.domain.assessment.AssessmentStage;
 import uk.ac.sheffield.team_project_team_24.domain.assessment.enums.AssessmentType;
 
 @Data
@@ -17,6 +16,7 @@ public class AssessmentDTO {
     private Long assessmentStageId;
     private Long moduleId;
     private Long setterId;
+    private long externalExaminerId;
     private Long checkerId;
 
     public static AssessmentDTO fromEntity(Assessment a) {
@@ -27,6 +27,7 @@ public class AssessmentDTO {
                 a.getAssessmentStage().getId(),
                 a.getModule() != null ? a.getModule().getId() : null,
                 a.getSetter() != null ? a.getSetter().getId() : null,
+                a.getExternalExaminer() != null ? a.getExternalExaminer().getId() : null,
                 a.getChecker() != null ? a.getChecker().getId() : null);
     }
 

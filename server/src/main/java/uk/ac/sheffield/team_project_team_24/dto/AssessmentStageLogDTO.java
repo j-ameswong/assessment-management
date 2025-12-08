@@ -5,10 +5,7 @@ import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import uk.ac.sheffield.team_project_team_24.domain.assessment.AssessmentStage;
 import uk.ac.sheffield.team_project_team_24.domain.assessment.AssessmentStageLog;
-import uk.ac.sheffield.team_project_team_24.domain.assessment.enums.AssessmentRole;
-import uk.ac.sheffield.team_project_team_24.domain.assessment.enums.AssessmentType;
 
 @Data
 @NoArgsConstructor
