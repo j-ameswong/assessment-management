@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import Axios from "axios";
 import Navbar from "../components/Navbar.jsx";
 import "./AssessmentOverview.css";
 
@@ -12,17 +13,16 @@ export default function AssessmentOverview() {
   const [overview, setOverview] = useState(null);
   useEffect(() => {
     if (!moduleId) { return }
-    fetch("http://localhost:8080/api/modules/" + moduleId + "/overview")
-      .then(res => res.json())
-      .then(data => setOverview(data))
-      .catch(err => console.error(err));
+    Axios.get(`http://localhost:8080/api/modules/${moduleId}/assessments`,
+      { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } })
+      .then(({ data }) => setOverview(data))
   }, [moduleId]);
 
   // Always check if exists first else empty/temp value
   const moduleTitle =
     overview?.module
       ? overview.module.moduleCode + " " + overview.module.moduleName
-      : "Unknown Module";
+      : "COMXXXX UNKNOWN";
 
   const assessments = overview?.assessments ?? [];
 
@@ -33,6 +33,7 @@ export default function AssessmentOverview() {
     // capitalized assessment type
     assessmentType: a.type[0] + a.type.substring(1).toLowerCase(),
     title: a.name,
+    // Show stage/total stages for progress status
     status: "Stage: " + (stages[a.assessmentStageId - 1]?.step ?? "0")
       + "/" + (stages?.filter(s => s.assessmentType === a.type)).length, //getStage(a.assessmentStageId),
     type: "ok"

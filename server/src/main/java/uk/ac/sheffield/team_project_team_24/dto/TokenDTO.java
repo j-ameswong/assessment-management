@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class AdvanceRequestDTO {
-    private Boolean furtherActionReq;
-    private String note;
+public class TokenDTO {
+    private String token;
 }

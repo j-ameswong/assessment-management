@@ -1,16 +1,28 @@
 package uk.ac.sheffield.team_project_team_24.controller;
 
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import uk.ac.sheffield.team_project_team_24.domain.user.User;
+import uk.ac.sheffield.team_project_team_24.dto.FirstTimeLoginDTO;
+import uk.ac.sheffield.team_project_team_24.dto.LoginDTO;
+import uk.ac.sheffield.team_project_team_24.dto.TokenDTO;
+import uk.ac.sheffield.team_project_team_24.dto.UserSignupDTO;
 import uk.ac.sheffield.team_project_team_24.repository.UserRepository;
-
-import java.util.Map;
-import java.util.Optional;
+import uk.ac.sheffield.team_project_team_24.security.CustomUserDetails;
+import uk.ac.sheffield.team_project_team_24.service.TokenService;
+import uk.ac.sheffield.team_project_team_24.service.UserService;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -18,37 +30,47 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class LoginController {
 
+    private final UserService userService;
+    private final TokenService tokenService;
+
     @Autowired
-    private UserRepository userRepository;
+    private final AuthenticationManager authenticationManager;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+    // only admins should be allowed to signup users
+    @PostMapping("/signup")
+    public ResponseEntity<TokenDTO> signup(@RequestBody UserSignupDTO userSignupDTO) {
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(userService.signupNewUser(userSignupDTO));
+    }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody Map<String, String> loginData) {
-        String email = loginData.get("email");
-        String rawPassword = loginData.get("password");
+    public ResponseEntity<FirstTimeLoginDTO> login(@RequestBody LoginDTO loginDTO) {
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        loginDTO.getUsername(),
+                        loginDTO.getPassword()));
 
-        Optional<User> user = userRepository.findByEmail(email);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        System.out.println(authentication.getAuthorities());
 
-        if (user.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body("User not found");
-        }
-
-        if (!passwordEncoder.matches(rawPassword, user.get().getPassword())) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body("Wrong password");
-        }
-
-        return ResponseEntity.ok("Login Success");
+        TokenDTO tokenDTO = tokenService.generateToken(authentication.getAuthorities(), authentication.getName());
+        FirstTimeLoginDTO dto = userService.onLogin(loginDTO, tokenDTO);
+        return ResponseEntity.ok(dto);
     }
 
     @GetMapping("/test")
-    public String test() {
+    public String test(
+            @AuthenticationPrincipal CustomUserDetails currentUser) {
+        System.out.println("TEST IS HERE: " + currentUser.getUsername());
         return "Backend OK";
     }
 
 }
-

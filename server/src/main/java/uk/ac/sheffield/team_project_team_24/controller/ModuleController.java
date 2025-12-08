@@ -14,18 +14,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import uk.ac.sheffield.team_project_team_24.domain.assessment.AssessmentType;
 import lombok.RequiredArgsConstructor;
 import uk.ac.sheffield.team_project_team_24.domain.module.Module;
 import uk.ac.sheffield.team_project_team_24.domain.module.ModuleRole;
-import uk.ac.sheffield.team_project_team_24.domain.module.ModuleStaff;
-import uk.ac.sheffield.team_project_team_24.dto.AssessmentDTO;
-import uk.ac.sheffield.team_project_team_24.dto.AssessmentOverviewDTO;
-import uk.ac.sheffield.team_project_team_24.dto.AssessmentStageDTO;
 import uk.ac.sheffield.team_project_team_24.dto.ModuleDTO;
 import uk.ac.sheffield.team_project_team_24.dto.ModuleStaffDTO;
-import uk.ac.sheffield.team_project_team_24.service.AssessmentService;
-import uk.ac.sheffield.team_project_team_24.service.AssessmentStageService;
 import uk.ac.sheffield.team_project_team_24.service.ModuleService;
 import uk.ac.sheffield.team_project_team_24.service.ModuleStaffService;
 
@@ -37,8 +30,6 @@ public class ModuleController {
 
     private final ModuleService moduleService;
     private final ModuleStaffService moduleStaffService;
-    private final AssessmentService assessmentService;
-    private final AssessmentStageService assessmentStageService;
 
     // Create module
     // TODO: use module DTOs, only authorize admins
@@ -60,7 +51,7 @@ public class ModuleController {
     public ResponseEntity<List<ModuleDTO>> list() {
         return ResponseEntity.ok(moduleService.getModules()
                 .stream()
-                .map(m -> ModuleDTO.fromEntity(m))
+                .map(ModuleDTO::fromEntity)
                 .toList());
     }
 
@@ -81,40 +72,15 @@ public class ModuleController {
             @PathVariable Long moduleId) {
         return ResponseEntity.ok(moduleStaffService.getAllModuleStaffInModule(moduleId)
                 .stream()
-                .map(ms -> ModuleStaffDTO.fromEntity(ms))
+                .map(ModuleStaffDTO::fromEntity)
                 .toList());
     }
 
-    @GetMapping("/modules/{moduleId}/assessments")
-    public ResponseEntity<List<AssessmentDTO>> listAssessments(
-            @PathVariable Long moduleId) {
-        return ResponseEntity.ok(assessmentService.getAssessmentsInModule(moduleId)
-                .stream()
-                .map(a -> AssessmentDTO.fromEntity(a))
-                .toList());
-
     // Delete Module
     @DeleteMapping("/modules/delete/{moduleCode}")
-    public ResponseEntity<Void> deleteModule(@PathVariable String moduleCode){
+    public ResponseEntity<Void> deleteModule(@PathVariable String moduleCode) {
         moduleService.deleteModule(moduleCode);
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/modules/{moduleId}/overview")
-    public ResponseEntity<AssessmentOverviewDTO> getOverview(
-            @PathVariable Long moduleId) {
-        ModuleDTO moduleDTO = ModuleDTO.fromEntity(
-                moduleService.getModule(moduleId));
-        List<AssessmentDTO> assessmentDTOs = assessmentService.getAssessmentsInModule(moduleId)
-                .stream()
-                .map(a -> AssessmentDTO.fromEntity(a))
-                .toList();
-        List<AssessmentStageDTO> assessmentStageDTOs = assessmentStageService.getAllStages()
-                .stream()
-                .map(s -> AssessmentStageDTO.fromEntity(s))
-                .toList();
-
-        return ResponseEntity.ok(
-                AssessmentOverviewDTO.combineEntities(moduleDTO, assessmentDTOs, assessmentStageDTOs));
-    }
 }

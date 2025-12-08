@@ -5,38 +5,43 @@ import Footer from "../components/Footer.jsx";
 
 
 function Login() {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
 
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [, setMessage] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [, setMessage] = useState("");
 
-    const handleSubmit = async (event) => {
-        event.preventDefault();
-        console.log("Login form submitted");
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    console.log("Login form submitted");
 
-        try {
-            const response = await fetch("http://localhost:8080/api/auth/login", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ email, password })
-            });
+    try {
+      let username = email;
+      const response = await fetch("http://localhost:8080/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password })
+      });
 
-            if (!response.ok) {
-                setMessage("Invalid email or password");
-            } else {
-                setMessage("Login successful");
-                navigate("/home");
-            }
+      if (!response.ok) {
+        setMessage("Invalid email or password");
+      } else {
+        const data = await response.json();
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("userId", data.id);
+        localStorage.setItem("role", data.role);
 
+        setMessage("Login successful");
+        navigate("/home");
+      }
 
-        } catch (error) {
-            console.error(error);
-            setMessage("Cannot connect to server");
-        }
-};
+    } catch (error) {
+      console.error(error);
+      setMessage("Cannot connect to server");
+    }
+  };
 
-    return (
+  return (
     <div className="login-page">
       <div className="login-card">
         <section className="login-left">
@@ -46,10 +51,10 @@ function Login() {
             </div>
 
             <div className="login-left-logo">
-            <div className="login-left-logo-placeholder">
+              <div className="login-left-logo-placeholder">
                 Logo
-            </div>
-            <p className="login-left-uni">University of Sheffield</p>
+              </div>
+              <p className="login-left-uni">University of Sheffield</p>
             </div>
 
           </div>
@@ -97,10 +102,10 @@ function Login() {
 
 
       </div>
-       <Footer />
+      <Footer />
     </div>
 
-    );
+  );
 }
 
 export default Login;

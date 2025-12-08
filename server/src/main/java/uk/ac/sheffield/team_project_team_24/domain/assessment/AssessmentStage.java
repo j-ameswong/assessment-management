@@ -14,6 +14,8 @@ import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import uk.ac.sheffield.team_project_team_24.domain.assessment.enums.AssessmentRole;
+import uk.ac.sheffield.team_project_team_24.domain.assessment.enums.AssessmentType;
 
 @Entity
 @Table(name = "AssessmentStage")
@@ -34,7 +36,12 @@ public class AssessmentStage {
     @Enumerated(EnumType.STRING)
     private AssessmentType assessmentType;
 
+    @Enumerated(EnumType.STRING)
+    private AssessmentRole actor;
+
     private String stageName;
+
+    private String description;
 
     private long step;
 }
