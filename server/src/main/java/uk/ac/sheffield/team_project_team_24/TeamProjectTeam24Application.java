@@ -68,6 +68,7 @@ public class TeamProjectTeam24Application {
                     moduleStaffService,
                     assessmentService,
                     assessmentStageService,
+                    userService,
                     assessmentStageLogService);
 
         };

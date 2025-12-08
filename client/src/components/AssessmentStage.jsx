@@ -42,7 +42,7 @@ export default function AssessmentStage({
       {["CHECKER", "MODERATOR", "EXAMS_OFFICER", "EXTERNAL_EXAMINER"].includes(actor) &&
         (<div className="stage-info-row">
           <span className="stage-info-label">Request Follow-up</span>
-          <input checked={isChecked} onChange={onCheckHandler} type="checkbox" />
+          <input disabled={!enableButton} checked={isChecked} onChange={onCheckHandler} type="checkbox" />
         </div>)}
 
       {isChecked && (
