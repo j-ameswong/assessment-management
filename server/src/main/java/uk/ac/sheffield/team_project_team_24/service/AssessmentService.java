@@ -47,6 +47,7 @@ public class AssessmentService {
                 a.getAssessmentType()));
 
         createAssessment(a);
+        log(a, userService.getAdmin(), "Initialized by system", false);
 
         return a;
     }
@@ -109,7 +110,6 @@ public class AssessmentService {
 
     public Assessment createAssessment(Assessment a) {
         assessmentRepository.save(a);
-        log(a);
 
         return a;
     }
@@ -150,20 +150,19 @@ public class AssessmentService {
 
         Assessment assessment = getAssessment(id);
 
-        if (furtherActionReq && !getHistory(id).get(-1).getIsComplete()) {
+        // if previous stage is still incomplete, always revert
+        if (assessment.getAssessmentStage().getStep() != 1
+                && !getHistory(id).get(getHistory(id).size() - 1).getIsComplete()) {
+            log(assessment, userService.getUser(actorId), note, !furtherActionReq);
             assessment.setAssessmentStage(
                     assessmentStageService.getPrevStage(assessment.getAssessmentStage()));
-            assessmentRepository.save(assessment);
-
-            log(assessment, userService.getUser(actorId), note, !furtherActionReq);
         } else {
+            log(assessment, userService.getUser(actorId), note, !furtherActionReq);
             assessment.setAssessmentStage(
                     assessmentStageService.getNextStage(assessment.getAssessmentStage()));
-            assessmentRepository.save(assessment);
-
-            log(assessment, userService.getUser(actorId), note, !furtherActionReq);
         }
 
+        assessmentRepository.save(assessment);
         return assessment;
     }
 

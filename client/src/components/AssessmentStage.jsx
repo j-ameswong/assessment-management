@@ -1,4 +1,5 @@
 import React from "react";
+import { useState } from "react";
 import "../componentStyles/AssessmentStage.css";
 
 export default function AssessmentStage({
@@ -8,7 +9,18 @@ export default function AssessmentStage({
   step,
   enableButton, // if user is the actor
   onProgress,
+  setFurtherActionReq,
+  note,
+  setNote
 }) {
+
+  const [isChecked, setIsChecked] = useState(false);
+
+  const onCheckHandler = () => {
+    setIsChecked(!isChecked);
+    setFurtherActionReq(!isChecked);
+  }
+
   return (
     <div className={`stage-card stage-${status}`}>
       <div className="stage-header">
@@ -31,8 +43,26 @@ export default function AssessmentStage({
       {["CHECKER", "MODERATOR", "EXAMS_OFFICER", "EXTERNAL_EXAMINER"].includes(actor) &&
         (<div className="stage-info-row">
           <span className="stage-info-label">Request Follow-up</span>
-          <input type="checkbox" />
+          <input disabled={!enableButton} checked={isChecked} onChange={onCheckHandler} type="checkbox" />
         </div>)}
+
+      {(isChecked) && (
+        <div className="stage-info-row">
+          <span className="stage-info-label">Feedback:</span>
+          <textarea
+            onChange={(t) => setNote(t.target.value)}
+            content={note}
+            className="stage-textarea">
+          </textarea>
+        </div>
+      )}
+
+      {(status === "pending") && (
+        <div className="stage-info-row">
+          <span className="stage-info-label">Feedback:</span>
+          <p>{note}</p>
+        </div>
+      )}
 
       {enableButton
         ? (<button className="stage-progress-btn" onClick={onProgress}>

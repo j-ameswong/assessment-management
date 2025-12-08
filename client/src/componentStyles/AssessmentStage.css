@@ -47,6 +47,10 @@
   background: orange;
 }
 
+.stage-status-pending {
+  background: red;
+}
+
 .stage-status-uncompleted {
   background: gray;
 }
@@ -66,6 +70,10 @@
 
 .stage-info-value {
   color: #222;
+}
+
+.stage-textarea {
+    width: 100%;
 }
 
 /* Progress button */

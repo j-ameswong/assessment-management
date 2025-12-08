@@ -37,13 +37,30 @@ export default function AssessmentProgression() {
     ? `${progress.module.moduleCode} ${progress?.module.moduleName}`
     : "COMXXXX UNKNOWN";
 
-  // get info from logs about past stages
-  const completedLogs = assessmentStageLogs?.filter(log => log.isComplete)
-    .sort((a, b) => new Date(a.changedAt) - new Date(b.changedAt)) ?? [];
+  // get latest log for each stage
+  const latestLogs = {};
+  for (const log of assessmentStageLogs ?? []) {
+    const id = log.assessmentStageId;
 
-  const lastCompletedStageId = completedLogs.at(-1)?.assessmentStageId ?? null;
-  const lastCompletedStage = assessmentStages?.find(s => s.id === lastCompletedStageId) ?? {};
-  const lastCompletedStep = lastCompletedStage?.step ?? 0;
+    if (!latestLogs[id]) {
+      // first time seeing this stageId
+      latestLogs[id] = log;
+    } else {
+      // keep whichever has the latest changedAt
+      if (new Date(log.changedAt) > new Date(latestLogs[id].changedAt)) {
+        latestLogs[id] = log;
+      }
+    }
+  }
+
+  // const completedLogs = assessmentStageLogs?.filter(log => log.isComplete)
+  //   .sort((a, b) => new Date(a.changedAt) - new Date(b.changedAt)) ?? [];
+  //
+  // const lastCompletedStageId = completedLogs.at(-1)?.assessmentStageId ?? null;
+  // const lastCompletedStage = assessmentStages?.find(s => s.id === lastCompletedStageId) ?? {};
+  // const lastCompletedStep = lastCompletedStage?.step ?? 0;
+  const currentStep = assessmentStages?.find(
+    s => s.id === assessment.assessmentStageId)?.step ?? 0;
 
   // add roles from all 3 levels (usr, module, assessment)
   const roles = [role, "ANY"];
@@ -54,10 +71,15 @@ export default function AssessmentProgression() {
 
   const stagesWithStatus = assessmentStages?.sort((a, b) => a.step - b.step)
     .map(stage => {
+      let log = latestLogs[stage.id];
       // check status of current stage
       let status = "uncompleted";
-      if (stage.step <= lastCompletedStep) { status = "completed" }
-      else if (stage.step === lastCompletedStep + 1) { status = "current"; }
+      if (stage.step < currentStep) { status = "completed" }
+      else if (stage.step === currentStep) { status = "current"; }
+
+      if (log && !log.isComplete && status != "current") {
+        status = "pending";
+      }
 
       // determine if enable button is true based on status & user
       let enableButton = false;
@@ -71,9 +93,11 @@ export default function AssessmentProgression() {
         }
       }
 
-      return { ...stage, status, enableButton };
+      return { ...stage, status, enableButton, log, };
     }) ?? [];
 
+  const [furtherActionReq, setFurtherActionReq] = useState(false);
+  const [note, setNote] = useState("");
   const progressStage = async (furtherActionReq, note) => {
     try {
       const payload = {
@@ -108,7 +132,10 @@ export default function AssessmentProgression() {
             actor={stage.actor}
             step={stage.step}
             enableButton={stage.enableButton ?? false}
-            onProgress={() => progressStage(false, "TODO")}
+            onProgress={() => progressStage(furtherActionReq, note)}
+            note={stage.log?.note ?? note}
+            setNote={setNote}
+            setFurtherActionReq={setFurtherActionReq}
           />
         ))}
       </div>
