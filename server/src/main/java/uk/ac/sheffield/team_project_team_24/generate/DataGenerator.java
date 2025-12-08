@@ -129,6 +129,7 @@ public class DataGenerator {
             ModuleStaffService moduleStaffService,
             AssessmentService assessmentService,
             AssessmentStageService assessmentStageService,
+            UserService userService,
             AssessmentStageLogService assessmentStageLogService) {
         List<Module> modules = moduleService.getModules();
 
@@ -150,6 +151,7 @@ public class DataGenerator {
                         newAssessment.getAssessmentType()));
 
                 assessmentService.createAssessment(newAssessment);
+                assessmentService.log(newAssessment, userService.getAdmin(), "Initialized by system", false);
             }
         }
     }
