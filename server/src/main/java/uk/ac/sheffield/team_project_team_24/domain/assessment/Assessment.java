@@ -4,6 +4,7 @@ import uk.ac.sheffield.team_project_team_24.domain.user.User;
 import uk.ac.sheffield.team_project_team_24.domain.assessment.enums.AssessmentType;
 import uk.ac.sheffield.team_project_team_24.domain.module.Module;
 import jakarta.persistence.*;
+import jdk.jfr.BooleanFlag;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

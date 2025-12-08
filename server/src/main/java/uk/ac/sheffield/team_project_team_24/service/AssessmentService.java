@@ -151,7 +151,10 @@ public class AssessmentService {
         Assessment assessment = getAssessment(id);
 
         // if previous stage is still incomplete, always revert
-        if (assessment.getAssessmentStage().getStep() != 1
+        // spagetthi, TODO: fix this mess
+        if (assessment.getAssessmentStage() == assessmentStageService.getLastStage(assessment.getAssessmentType())) {
+            log(assessment, userService.getUser(actorId), note, !furtherActionReq);
+        } else if (assessment.getAssessmentStage().getStep() != 1
                 && !getLastLogOfStep(assessment,
                         assessment.getAssessmentStage().getStep() - 1)
                         .getIsComplete()) {

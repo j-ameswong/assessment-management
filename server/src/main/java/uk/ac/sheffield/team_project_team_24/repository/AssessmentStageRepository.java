@@ -20,4 +20,5 @@ public interface AssessmentStageRepository extends JpaRepository<AssessmentStage
     Optional<AssessmentStage> findByAssessmentTypeAndStep(AssessmentType assessmentType,
             Long step);
 
+    Optional<AssessmentStage> findTopByAssessmentTypeOrderByIdDesc(AssessmentType assessmentType);
 }

@@ -5,7 +5,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import uk.ac.sheffield.team_project_team_24.domain.module.ModuleRole;
 import uk.ac.sheffield.team_project_team_24.domain.module.ModuleStaff;
-import uk.ac.sheffield.team_project_team_24.domain.user.User;
 
 @Data
 @AllArgsConstructor
@@ -29,7 +28,6 @@ public class ModuleStaffDTO {
         staffDTO.email = ms.getUser().getEmail();
 
         staffDTO.moduleRole = ms.getModuleRole();
-
 
         return staffDTO;
     }

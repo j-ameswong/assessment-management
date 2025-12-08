@@ -10,9 +10,7 @@ import com.github.javafaker.Faker;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import uk.ac.sheffield.team_project_team_24.domain.assessment.Assessment;
-import uk.ac.sheffield.team_project_team_24.domain.assessment.enums.AssessmentRole;
 import uk.ac.sheffield.team_project_team_24.domain.assessment.AssessmentStage;
-import uk.ac.sheffield.team_project_team_24.domain.assessment.AssessmentStageLog;
 import uk.ac.sheffield.team_project_team_24.domain.assessment.enums.AssessmentStages;
 import uk.ac.sheffield.team_project_team_24.domain.assessment.enums.AssessmentType;
 import uk.ac.sheffield.team_project_team_24.domain.module.Module;

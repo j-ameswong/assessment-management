@@ -41,7 +41,7 @@ export default function AssessmentStage({
         <span className="stage-info-value">{step}</span>
       </div>
 
-      {["CHECKER", "MODERATOR", "EXAMS_OFFICER", "EXTERNAL_EXAMINER"].includes(actor) &&
+      {["CHECKER", "EXAMS_OFFICER", "EXTERNAL_EXAMINER"].includes(actor) &&
         (<div className="stage-info-row">
           <span className="stage-info-label">Request Follow-up</span>
           <input disabled={!enableButton} checked={isChecked} onChange={onCheckHandler} type="checkbox" />
