@@ -68,6 +68,10 @@
   color: #222;
 }
 
+.stage-textarea {
+    width: 100%;
+}
+
 /* Progress button */
 .stage-progress-btn {
   margin-top: 16px;

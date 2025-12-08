@@ -74,6 +74,8 @@ export default function AssessmentProgression() {
       return { ...stage, status, enableButton };
     }) ?? [];
 
+  const [furtherActionReq, setFurtherActionReq] = useState(false);
+  const [note, setNote] = useState("");
   const progressStage = async (furtherActionReq, note) => {
     try {
       const payload = {
@@ -108,7 +110,9 @@ export default function AssessmentProgression() {
             actor={stage.actor}
             step={stage.step}
             enableButton={stage.enableButton ?? false}
-            onProgress={() => progressStage(false, "TODO")}
+            onProgress={() => progressStage(furtherActionReq, note)}
+            setNote={setNote}
+            setFurtherActionReq={setFurtherActionReq}
           />
         ))}
       </div>
