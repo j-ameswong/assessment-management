@@ -5,7 +5,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import uk.ac.sheffield.team_project_team_24.domain.assessment.AssessmentStage;
 import uk.ac.sheffield.team_project_team_24.domain.assessment.AssessmentStageLog;
-import uk.ac.sheffield.team_project_team_24.domain.assessment.AssessmentType;
+import uk.ac.sheffield.team_project_team_24.domain.assessment.enums.AssessmentType;
 import uk.ac.sheffield.team_project_team_24.domain.module.Module;
 import uk.ac.sheffield.team_project_team_24.domain.user.User;
 import uk.ac.sheffield.team_project_team_24.exception.assessmentStageLog.AssessmentStageLogNotFoundException;
