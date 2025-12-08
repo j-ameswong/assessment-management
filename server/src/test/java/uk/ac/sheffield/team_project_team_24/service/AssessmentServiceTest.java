@@ -5,7 +5,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import uk.ac.sheffield.team_project_team_24.domain.assessment.AssessmentStage;
 import uk.ac.sheffield.team_project_team_24.domain.assessment.AssessmentStageLog;
-import uk.ac.sheffield.team_project_team_24.domain.assessment.AssessmentType;
+import uk.ac.sheffield.team_project_team_24.domain.assessment.enums.AssessmentType;
 import uk.ac.sheffield.team_project_team_24.domain.module.Module;
 import uk.ac.sheffield.team_project_team_24.domain.user.User;
 import uk.ac.sheffield.team_project_team_24.exception.assessmentStageLog.AssessmentStageLogNotFoundException;
@@ -16,7 +16,6 @@ import uk.ac.sheffield.team_project_team_24.repository.AssessmentStageLogReposit
 import uk.ac.sheffield.team_project_team_24.service.AssessmentStageLogService;
 import uk.ac.sheffield.team_project_team_24.service.AssessmentStageService;
 import uk.ac.sheffield.team_project_team_24.exception.assessment.AssessmentNotFoundException;
-
 
 import java.util.*;
 
@@ -40,7 +39,6 @@ public class AssessmentServiceTest {
     @Mock
     private AssessmentStageLogService assessmentStageLogService;
 
-
     @InjectMocks
     private AssessmentService classUnderTest;
 
@@ -55,33 +53,39 @@ public class AssessmentServiceTest {
         dto.setName("Final Exam");
         return dto;
     }
+
     // create module
     private Module testModule() {
         return new Module("Test_Code", "Test_Module");
     }
+
     // create setter
     private User testSetter() {
         User setter = new User();
         setter.setId(2L);
         return setter;
     }
+
     // create checker
     private User testChecker() {
         User checker = new User();
         checker.setId(3L);
         return checker;
     }
+
     // create assessment
     private Assessment testAssessment1() {
         Assessment assessment = new Assessment();
         assessment.setAssessmentType(AssessmentType.EXAM);
         return assessment;
     }
+
     private Assessment testAssessment2() {
         Assessment assessment = new Assessment();
         assessment.setAssessmentType(AssessmentType.EXAM);
         return assessment;
     }
+
     private List<Assessment> testAssessmentList() {
         return Arrays.asList(testAssessment1(), testAssessment2());
     }
@@ -236,7 +240,7 @@ public class AssessmentServiceTest {
     @Test
     void getAssessment_shouldReturnAssessment_whenExists() {
         Assessment assessment = testAssessment1();
-        assessment.setAssessmentId(1L);
+        assessment.setId(1L);
 
         when(assessmentRepository.findById(1L)).thenReturn(Optional.of(assessment));
         Assessment result = classUnderTest.getAssessment(1L);
@@ -251,7 +255,7 @@ public class AssessmentServiceTest {
         when(assessmentRepository.findAllByModuleId(1L))
                 .thenReturn(Optional.empty());
         assertThrows(AssessmentNotFoundException.class,
-        () -> classUnderTest.getAssessment(1L));
+                () -> classUnderTest.getAssessment(1L));
         verify(assessmentRepository, times(1)).findAllByModuleId(1L);
         verifyNoMoreInteractions(assessmentRepository);
     }
@@ -261,7 +265,7 @@ public class AssessmentServiceTest {
     @Test
     void deleteAssessment_shouldDelete_whenAssessmentExists() {
         Assessment assessment = testAssessment1();
-        assessment.setAssessmentId(1L);
+        assessment.setId(1L);
         when(assessmentRepository.findById(1L)).thenReturn(Optional.of(assessment));
         classUnderTest.deleteAssessment(1L);
         verify(assessmentRepository, times(1)).findById(1L);
@@ -283,7 +287,7 @@ public class AssessmentServiceTest {
     @Test
     void updateAssessment_shouldUpdateNameAndType() {
         Assessment assessment = testAssessment1();
-        assessment.setAssessmentId(1L);
+        assessment.setId(1L);
         AssessmentDTO dto = testAssessmentDTO();
 
         when(assessmentRepository.findById(1L))
@@ -305,7 +309,7 @@ public class AssessmentServiceTest {
     @Test
     void advanceStage_shouldAdvanceStage() {
         Assessment assessment = testAssessment1();
-        assessment.setAssessmentId(1L);
+        assessment.setId(1L);
 
         AssessmentStage currentStage = new AssessmentStage();
         AssessmentStage nextStage = new AssessmentStage();
@@ -320,7 +324,7 @@ public class AssessmentServiceTest {
         doNothing().when(assessmentStageLogService)
                 .generateLogFromAssessment(any(), anyLong(), any());
 
-        Assessment result = classUnderTest.advanceStage(1L, 99L, "Advance to next stage");
+        Assessment result = classUnderTest.advanceStage(1L, 99L, "Advance to next stage", false);
 
         assertEquals(nextStage, result.getAssessmentStage());
         verify(assessmentRepository).findById(1L);
@@ -331,8 +335,7 @@ public class AssessmentServiceTest {
         verifyNoMoreInteractions(
                 assessmentRepository,
                 assessmentStageService,
-                assessmentStageLogService
-        );
+                assessmentStageLogService);
     }
 
     // failure
@@ -340,7 +343,7 @@ public class AssessmentServiceTest {
     void advanceStage_shouldThrowException_whenAssessmentDoesNotExist() {
         when(assessmentRepository.findById(1L)).thenReturn(Optional.empty());
         assertThrows(AssessmentNotFoundException.class,
-                () -> classUnderTest.advanceStage(1L, 99L, "Advance to next stage"));
+                () -> classUnderTest.advanceStage(1L, 99L, "Advance to next stage", false));
         verify(assessmentRepository, times(1)).findById(1L);
         verifyNoMoreInteractions(assessmentRepository);
     }
@@ -350,7 +353,7 @@ public class AssessmentServiceTest {
     void getHistoryById_shouldReturnLogs() {
         List<AssessmentStageLog> logs = Arrays.asList(new AssessmentStageLog(), new AssessmentStageLog());
         Assessment assessment = testAssessment1();
-        assessment.setAssessmentId(1L);
+        assessment.setId(1L);
 
         when(assessmentStageLogRepository.findByAssessmentOrderByChangedAtAsc(assessment))
                 .thenReturn(logs);
@@ -377,7 +380,7 @@ public class AssessmentServiceTest {
     void getHistoryByEntity_shouldReturnLogs() {
         List<AssessmentStageLog> logs = Arrays.asList(new AssessmentStageLog(), new AssessmentStageLog());
         Assessment assessment = testAssessment1();
-        assessment.setAssessmentId(1L);
+        assessment.setId(1L);
         when(assessmentStageLogRepository.findByAssessmentOrderByChangedAtAsc(assessment))
                 .thenReturn(logs);
         List<AssessmentStageLog> result = classUnderTest.getHistory(assessment);
@@ -396,6 +399,5 @@ public class AssessmentServiceTest {
         verify(assessmentRepository, times(1)).saveAll(assessments);
         verifyNoMoreInteractions(assessmentRepository);
     }
-
 
 }
