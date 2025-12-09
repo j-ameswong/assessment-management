@@ -1,6 +1,8 @@
 package uk.ac.sheffield.team_project_team_24.service;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -119,4 +121,30 @@ public class UserService {
         return userRepository.findByEmail(email).orElse(null);
     }
 
+
+    public void updatePassword(Long userId, uk.ac.sheffield.team_project_team_24.dto.UpdatePasswordDTO body) {
+        if (body == null
+                || body.getOldPassword() == null
+                || body.getNewPassword() == null
+                || body.getConfirmNewPassword() == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Missing fields");
+        }
+
+        if (!Objects.equals(body.getNewPassword(), body.getConfirmNewPassword())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Passwords do not match");
+        }
+
+        Optional<uk.ac.sheffield.team_project_team_24.domain.user.User> opt = userRepository.findById(userId);
+        uk.ac.sheffield.team_project_team_24.domain.user.User user = opt.orElseThrow(() ->
+                new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+
+        if (!passwordEncoder.matches(body.getOldPassword(), user.getPassword())) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Old password incorrect");
+        }
+
+        user.setPassword(passwordEncoder.encode(body.getNewPassword()));
+        userRepository.save(user);
+    }
+
+    
 }

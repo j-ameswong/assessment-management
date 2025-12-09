@@ -4,15 +4,15 @@ import java.util.List;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
-import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -32,61 +32,23 @@ public class SecurityConfig {
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
     }
 
-
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                // CORS + CSRF
-                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .cors(cors -> {
+                })
                 .csrf(AbstractHttpConfigurer::disable)
-
-                // Authorisation rules
                 .authorizeHttpRequests(auth -> auth
-                        // login public
-                        .requestMatchers("/api/auth/**").permitAll()
-                        // H2 console public
                         .requestMatchers("/h2-console/**").permitAll()
-
-                        // Admin + Exams Officer only
-                        .requestMatchers(HttpMethod.GET, "/api/modules").hasAnyRole("ADMIN", "EXAMS_OFFICER")
-                        .requestMatchers(HttpMethod.POST, "/api/modules").hasAnyRole("ADMIN", "EXAMS_OFFICER")
-                        .requestMatchers(HttpMethod.PUT, "/api/modules/**").hasAnyRole("ADMIN", "EXAMS_OFFICER")
-                        .requestMatchers(HttpMethod.DELETE, "/api/modules/**").hasAnyRole("ADMIN", "EXAMS_OFFICER")
-
-                        // module staff list
-                        .requestMatchers(HttpMethod.GET, "/api/modules/*/staff")
-                        .hasAnyRole("ADMIN", "EXAMS_OFFICER", "ACADEMIC_STAFF")
-
-                        // module assessments list
-                        .requestMatchers(HttpMethod.GET, "/api/modules/*/assessments")
-                        .hasAnyRole("ADMIN", "EXAMS_OFFICER", "ACADEMIC_STAFF", "EXTERNAL_EXAMINER")
-
-                        // assessments routes
-                        .requestMatchers("/api/assessments/**")
-                        .hasAnyRole("ADMIN",
-                                "EXAMS_OFFICER",
-                                "ACADEMIC_STAFF",
-                                "EXTERNAL_EXAMINER")
-
-                        // all other API endpoints need authentication
-                        .requestMatchers("/api/**").authenticated()
-
-                        // anything else allow
-                        .anyRequest().permitAll()
-                )
-
-                // Stateless sessions for JWT
-                .sessionManagement(session ->
-                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                )
-
-                // JWT filter
-                .addFilterBefore(this.jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
-
-        // allow H2 console in iframe
-        http.headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin));
-
+                        .requestMatchers("/api/auth/login").permitAll()
+                        // TODO: restrict modules API later
+                        .requestMatchers("/api/modules/**").permitAll()
+                        // TODO: restrict assessments API later
+                        .requestMatchers("/api/assessments/**").permitAll()
+                        .requestMatchers("/api/auth/update-password").authenticated()
+                        .anyRequest().authenticated())
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin));
         return http.build();
     }
 
@@ -105,10 +67,14 @@ public class SecurityConfig {
         return source;
     }
 
-
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration config)
-            throws Exception {
-        return config.getAuthenticationManager();
+    public AuthenticationManager authenticationManager(HttpSecurity http,
+            PasswordEncoder passwordEncoder,
+            UserDetailsService userDetailsService) throws Exception {
+        return http.getSharedObject(AuthenticationManagerBuilder.class)
+                .userDetailsService(userDetailsService)
+                .passwordEncoder(passwordEncoder)
+                .and()
+                .build();
     }
 }

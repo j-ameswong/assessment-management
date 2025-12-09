@@ -37,17 +37,17 @@ function UpdatePassword() {
 
     try {
       setLoading(true);
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem("token") || "";
       const res = await fetch("http://localhost:8080/api/auth/update-password", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token || ""}`,
+          Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ oldPassword, newPassword }),
+        body: JSON.stringify({ oldPassword, newPassword, confirmNewPassword }),
       });
 
-      if (res.status === 401) {
+      if (res.status === 403) {
         setMsg("Old password is incorrect");
         setOk(false);
         return;
@@ -61,10 +61,8 @@ function UpdatePassword() {
 
       setOk(true);
       setMsg("Password updated. Redirecting...");
-      setTimeout(() => {
-        navigate("/modules");
-      }, 800);
-    } catch (err) {
+      setTimeout(() => navigate("/modules"), 800);
+    } catch {
       setMsg("Cannot connect to server");
       setOk(false);
     } finally {
@@ -133,7 +131,12 @@ function UpdatePassword() {
               </button>
 
               {msg && (
-                <p className={`login-note ${ok ? "up-ok" : "up-err"}`}>{msg}</p>
+                <p
+                  className="login-note"
+                  style={{ marginTop: 8, textAlign: "center", color: ok ? "#16a34a" : "#fecaca" }}
+                >
+                  {msg}
+                </p>
               )}
             </form>
           </div>
