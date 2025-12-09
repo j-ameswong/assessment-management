@@ -18,7 +18,11 @@ export default function CreateModule() {
     // Fetch users
     const [staffList, setStaffList] = useState([]);
     useEffect(() => {
-        fetch("http://localhost:8080/api/users")
+        fetch("http://localhost:8080/api/users", {
+            headers: {
+                "Authorization": `Bearer ${localStorage.getItem("token")}`
+            }
+        })
             .then(res => {
                 console.log("Status code: ", res.status); // for debugging
                 return res.json();
