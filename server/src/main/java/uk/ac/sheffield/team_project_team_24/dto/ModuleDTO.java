@@ -23,7 +23,7 @@ public class ModuleDTO {
         dto.moduleName = m.getModuleName();
         dto.moduleStaff = m.getModuleStaff()
                 .stream()
-                .map(ms -> ModuleStaffDTO.fromEntity(ms))
+                .map(ModuleStaffDTO::fromEntity)
                 .toList();
 
         return dto;

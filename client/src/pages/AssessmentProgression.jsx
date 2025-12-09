@@ -110,12 +110,14 @@ export default function AssessmentProgression() {
       console.log(stage.actor, actorName);
       // determine if enable button is true based on status & user
       let enableButton = false;
+      let enableReverse = false;
 
       // always allow exams officer/admin to advance stage
       if (status == "current") {
         if (roles.includes("ADMIN")
           || roles.includes("EXAMS_OFFICER")) {
           enableButton = true;
+          if (stage.step > 1) { enableReverse = true; }
           // allow module lead to act as setter even if not setter for assessment
         } else if (stage.actor === "SETTER" && roles.includes("MODULE_LEAD")) {
           enableButton = true;
@@ -130,7 +132,7 @@ export default function AssessmentProgression() {
         summaryRequired = true;
       }
 
-      return { ...stage, status, actorName, enableButton, log, summaryRequired };
+      return { ...stage, status, actorName, enableButton, log, summaryRequired, enableReverse };
     }) ?? [];
 
   const [furtherActionReq, setFurtherActionReq] = useState(false);
@@ -138,6 +140,7 @@ export default function AssessmentProgression() {
   const progressStage = async (furtherActionReq, note) => {
     try {
       const payload = {
+        actorId: id,
         furtherActionReq: furtherActionReq,
         note: note,
       }
@@ -145,6 +148,23 @@ export default function AssessmentProgression() {
       console.log("Payload sent: ", payload);
 
       const response = await Axios.post(`http://localhost:8080/api/assessments/${assessment.id}/advance`, payload,
+        { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
+      console.log("Success: ", response.data);
+      window.location.reload();
+    } catch (err) {
+      console.error(err);
+      alert("Error when progressing stage");
+    }
+  };
+
+  const reverseStage = async () => {
+    try {
+      const payload = {
+        actorId: id,
+        furtherActionReq: furtherActionReq,
+        note: note,
+      }
+      const response = await Axios.post(`http://localhost:8080/api/assessments/${assessment.id}/reverse`, payload,
         { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
       console.log("Success: ", response.data);
       window.location.reload();
@@ -170,7 +190,9 @@ export default function AssessmentProgression() {
             actorName={stage.actorName}
             step={stage.step}
             enableButton={stage.enableButton ?? false}
+            enableReverse={stage.enableReverse}
             onProgress={() => progressStage(furtherActionReq, note)}
+            onReverse={() => reverseStage()}
             note={stage.log?.note ?? note}
             setNote={setNote}
             setFurtherActionReq={setFurtherActionReq}

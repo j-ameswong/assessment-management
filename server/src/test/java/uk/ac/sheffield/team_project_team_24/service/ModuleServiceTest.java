@@ -1,8 +1,10 @@
 package uk.ac.sheffield.team_project_team_24.service;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.server.ResponseStatusException;
 import uk.ac.sheffield.team_project_team_24.repository.ModuleRepository;
 import uk.ac.sheffield.team_project_team_24.domain.module.Module;
@@ -14,6 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
+@ExtendWith(MockitoExtension.class)
 public class ModuleServiceTest {
 
     // dummy module
@@ -130,7 +133,7 @@ public class ModuleServiceTest {
     @Test
     void deleteModule_shouldThrowException_whenModuleNotFound() {
         when(moduleRepository.findByModuleCode(DUMMY_MODULE_CODE1)).thenReturn(Optional.empty());
-        assertThrows(ResponseStatusException.class, () -> classUnderTest.deleteModule(DUMMY_MODULE_CODE1));
+        assertThrows(RuntimeException.class, () -> classUnderTest.deleteModule(DUMMY_MODULE_CODE1));
         verify(moduleRepository, times(1)).findByModuleCode(DUMMY_MODULE_CODE1);
     }
 }

@@ -175,6 +175,23 @@ public class AssessmentService {
         return assessment;
     }
 
+    public Assessment reverseStage(Long id, Long adminId) {
+        Assessment a = getAssessment(id);
+
+        if (a.getAssessmentStage().getStep() == 1) {
+            return a;
+        } else {
+            AssessmentStage prevStage = assessmentStageService.getPrevStage(
+                    a.getAssessmentStage());
+            a.setAssessmentStage(prevStage);
+            log(a, userService.getUser(adminId), "Reversed by admin/exams officer", false);
+
+            assessmentRepository.save(a);
+            return a;
+        }
+
+    }
+
     public List<AssessmentStageLog> getHistory(Long id) {
         return assessmentStageLogService.getLogs(getAssessment(id));
     }

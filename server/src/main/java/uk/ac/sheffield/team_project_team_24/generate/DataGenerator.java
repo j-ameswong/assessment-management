@@ -76,10 +76,12 @@ public class DataGenerator {
             UserRole role;
             if (i < NUM_ADMINS) {
                 role = UserRole.ADMIN;
-            } else if (i < (NUM_USERS - 1)) {
+            } else if (i < (NUM_USERS - 2)) {
                 role = UserRole.ACADEMIC_STAFF;
-            } else {
+            } else if (i == (NUM_USERS - 2)) {
                 role = UserRole.EXAMS_OFFICER;
+            } else {
+                role = UserRole.EXTERNAL_EXAMINER;
             }
 
             String rawPassword = email; // user email for password when logging in

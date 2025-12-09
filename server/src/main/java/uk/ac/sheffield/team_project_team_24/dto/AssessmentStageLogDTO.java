@@ -24,6 +24,7 @@ public class AssessmentStageLogDTO {
         dto.id = log.getId();
         dto.assessmentId = log.getAssessment().getId();
         dto.assessmentStageId = log.getAssessmentStage().getId();
+        dto.actedById = log.getActedBy().getId();
         dto.changedAt = log.getChangedAt();
         dto.isComplete = log.getIsComplete();
         dto.note = log.getNote();

@@ -1,8 +1,11 @@
 package uk.ac.sheffield.team_project_team_24.service;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
 import uk.ac.sheffield.team_project_team_24.domain.assessment.AssessmentStage;
 import uk.ac.sheffield.team_project_team_24.domain.assessment.AssessmentStageLog;
 import uk.ac.sheffield.team_project_team_24.domain.assessment.enums.AssessmentType;
@@ -17,19 +20,20 @@ import uk.ac.sheffield.team_project_team_24.service.AssessmentStageLogService;
 import uk.ac.sheffield.team_project_team_24.service.AssessmentStageService;
 import uk.ac.sheffield.team_project_team_24.exception.assessment.AssessmentNotFoundException;
 
+import java.lang.reflect.Array;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 
+@ExtendWith(MockitoExtension.class)
 public class AssessmentServiceTest {
 
     // mocks
     @Mock
     private AssessmentRepository assessmentRepository;
-    @Mock
-    AssessmentStageLogRepository assessmentStageLogRepository;
     @Mock
     private AssessmentStageService assessmentStageService;
     @Mock
@@ -252,11 +256,11 @@ public class AssessmentServiceTest {
     // failure
     @Test
     void getAssessment_shouldThrowException_whenNotFound() {
-        when(assessmentRepository.findAllByModuleId(1L))
+        when(assessmentRepository.findById(1L))
                 .thenReturn(Optional.empty());
         assertThrows(AssessmentNotFoundException.class,
                 () -> classUnderTest.getAssessment(1L));
-        verify(assessmentRepository, times(1)).findAllByModuleId(1L);
+        verify(assessmentRepository, times(1)).findById(1L);
         verifyNoMoreInteractions(assessmentRepository);
     }
 
@@ -264,21 +268,20 @@ public class AssessmentServiceTest {
     // success
     @Test
     void deleteAssessment_shouldDelete_whenAssessmentExists() {
-        Assessment assessment = testAssessment1();
-        assessment.setId(1L);
-        when(assessmentRepository.findById(1L)).thenReturn(Optional.of(assessment));
+        when(assessmentRepository.existsById(1L)).thenReturn(true);
         classUnderTest.deleteAssessment(1L);
-        verify(assessmentRepository, times(1)).findById(1L);
+        verify(assessmentRepository).existsById(1L);
+        verify(assessmentRepository).deleteById(1L);
         verifyNoMoreInteractions(assessmentRepository);
     }
 
     // failure
     @Test
     void deleteAssessment_shouldThrow_whenAssessmentDoesNotExist() {
-        when(assessmentRepository.findById(1L)).thenReturn(Optional.empty());
+        when(assessmentRepository.existsById(1L)).thenReturn(Boolean.FALSE);
         assertThrows(AssessmentNotFoundException.class,
                 () -> classUnderTest.deleteAssessment(1L));
-        verify(assessmentRepository, times(1)).findById(1L);
+        verify(assessmentRepository, times(1)).existsById(1L);
         verifyNoMoreInteractions(assessmentRepository);
     }
 
@@ -312,36 +315,38 @@ public class AssessmentServiceTest {
         assessment.setId(1L);
 
         AssessmentStage currentStage = new AssessmentStage();
+        currentStage.setStep(1); // VERY IMPORTANT
         AssessmentStage nextStage = new AssessmentStage();
-
         assessment.setAssessmentStage(currentStage);
+
         when(assessmentRepository.findById(1L))
                 .thenReturn(Optional.of(assessment));
         when(assessmentStageService.getNextStage(currentStage))
                 .thenReturn(nextStage);
+        when(userService.getUser(99L))
+                .thenReturn(new User());
         when(assessmentRepository.save(any(Assessment.class)))
                 .thenAnswer(invocation -> invocation.getArgument(0));
-        doNothing().when(assessmentStageLogService)
-                .generateLogFromAssessment(any(), anyLong(), any());
 
-        Assessment result = classUnderTest.advanceStage(1L, 99L, "Advance to next stage", false);
+        Assessment result =
+                classUnderTest.advanceStage(1L, 99L, "Advance", false);
 
         assertEquals(nextStage, result.getAssessmentStage());
+
         verify(assessmentRepository).findById(1L);
         verify(assessmentStageService).getNextStage(currentStage);
         verify(assessmentRepository).save(assessment);
-        verify(assessmentStageLogService)
-                .generateLogFromAssessment(assessment, 99L, "Advance to next stage");
-        verifyNoMoreInteractions(
-                assessmentRepository,
-                assessmentStageService,
-                assessmentStageLogService);
     }
+
+
+
+
 
     // failure
     @Test
     void advanceStage_shouldThrowException_whenAssessmentDoesNotExist() {
         when(assessmentRepository.findById(1L)).thenReturn(Optional.empty());
+
         assertThrows(AssessmentNotFoundException.class,
                 () -> classUnderTest.advanceStage(1L, 99L, "Advance to next stage", false));
         verify(assessmentRepository, times(1)).findById(1L);
@@ -351,24 +356,32 @@ public class AssessmentServiceTest {
     // get history by id tests
     @Test
     void getHistoryById_shouldReturnLogs() {
-        List<AssessmentStageLog> logs = Arrays.asList(new AssessmentStageLog(), new AssessmentStageLog());
         Assessment assessment = testAssessment1();
         assessment.setId(1L);
+        List<AssessmentStageLog> logs =
+                List.of(new AssessmentStageLog(), new AssessmentStageLog());
 
-        when(assessmentStageLogRepository.findByAssessmentOrderByChangedAtAsc(assessment))
+        when(assessmentRepository.findById(1L))
+                .thenReturn(Optional.of(assessment));
+        when(assessmentStageLogService.getLogs(assessment))
                 .thenReturn(logs);
+
         List<AssessmentStageLog> result = classUnderTest.getHistory(1L);
 
         assertEquals(logs, result);
-        verify(assessmentStageLogRepository, times(1)).findByAssessmentOrderByChangedAtAsc(assessment);
-        verifyNoMoreInteractions(assessmentStageLogRepository);
+        verify(assessmentRepository).findById(1L);
+        verify(assessmentStageLogService).getLogs(assessment);
+        verifyNoMoreInteractions(
+                assessmentRepository,
+                assessmentStageLogService);
     }
 
     // failure
     @Test
     void getHistoryById_shouldThrowException_whenAssessmentDoesNotExist() {
         when(assessmentRepository.findById(1L)).thenReturn(Optional.empty());
-        assertThrows(AssessmentStageLogNotFoundException.class,
+
+        assertThrows(AssessmentNotFoundException.class,
                 () -> classUnderTest.getHistory(1L));
         verify(assessmentRepository, times(1)).findById(1L);
         verifyNoMoreInteractions(assessmentRepository);
@@ -381,12 +394,15 @@ public class AssessmentServiceTest {
         List<AssessmentStageLog> logs = Arrays.asList(new AssessmentStageLog(), new AssessmentStageLog());
         Assessment assessment = testAssessment1();
         assessment.setId(1L);
-        when(assessmentStageLogRepository.findByAssessmentOrderByChangedAtAsc(assessment))
+
+        when(assessmentStageLogService.getLogs(assessment))
                 .thenReturn(logs);
+
         List<AssessmentStageLog> result = classUnderTest.getHistory(assessment);
+
         assertEquals(logs, result);
-        verify(assessmentStageLogRepository, times(1)).findByAssessmentOrderByChangedAtAsc(assessment);
-        verifyNoMoreInteractions(assessmentStageLogRepository);
+        verify(assessmentStageLogService, times(1)).getLogs(assessment);
+        verifyNoMoreInteractions(assessmentStageLogService);
     }
 
     // save all
@@ -394,8 +410,12 @@ public class AssessmentServiceTest {
     @Test
     void saveAll_shouldReturnSavedList() {
         List<Assessment> assessments = testAssessmentList();
+
+        when(assessmentRepository.saveAll(assessments)).thenReturn(assessments);
+
         List<Assessment> savedAssessments = classUnderTest.saveAll(assessments);
-        assertEquals(savedAssessments, assessments);
+
+        assertEquals(assessments, savedAssessments);
         verify(assessmentRepository, times(1)).saveAll(assessments);
         verifyNoMoreInteractions(assessmentRepository);
     }

@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AdvanceRequestDTO {
+    private Long actorId;
     private Boolean furtherActionReq;
     private String note;
 }

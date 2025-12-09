@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -24,25 +24,15 @@ import uk.ac.sheffield.team_project_team_24.security.CustomUserDetails;
 
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class UserService {
 
-    @Autowired
     private final UserRepository userRepository;
     private final CustomUserDetailsService userDetailsService;
     private final PasswordEncoder passwordEncoder;
     private final TokenService tokenService;
 
     private static final String USER_NOT_FOUND = "User does not exist";
-
-    public UserService(UserRepository userRepository,
-            CustomUserDetailsService userDetailsService,
-            PasswordEncoder passwordEncoder,
-            TokenService tokenService) {
-        this.userRepository = userRepository;
-        this.userDetailsService = userDetailsService;
-        this.passwordEncoder = passwordEncoder;
-        this.tokenService = tokenService;
-    }
 
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
