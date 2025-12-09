@@ -2,7 +2,6 @@ package uk.ac.sheffield.team_project_team_24.controller;
 
 import lombok.RequiredArgsConstructor;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -31,11 +30,9 @@ public class LoginController {
     private final UserService userService;
     private final TokenService tokenService;
 
-    @Autowired
     private final AuthenticationManager authenticationManager;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
 
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();

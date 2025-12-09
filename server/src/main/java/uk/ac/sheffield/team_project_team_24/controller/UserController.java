@@ -2,7 +2,6 @@ package uk.ac.sheffield.team_project_team_24.controller;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -27,7 +26,6 @@ import uk.ac.sheffield.team_project_team_24.service.UserService;
 @RequiredArgsConstructor
 @CrossOrigin(origins = "http://localhost:5173")
 public class UserController {
-    @Autowired
     private final UserService userService;
 
     // Create user

@@ -3,7 +3,7 @@ package uk.ac.sheffield.team_project_team_24.service;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
@@ -19,28 +19,14 @@ import uk.ac.sheffield.team_project_team_24.repository.UserRepository;
 
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class ModuleStaffService {
-    @Autowired
-    private ModuleRepository moduleRepository;
-    @Autowired
+    private final ModuleRepository moduleRepository;
     private final ModuleStaffRepository moduleStaffRepository;
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
     private final UserService userService;
     private final ModuleService moduleService;
-
-    public ModuleStaffService(ModuleStaffRepository moduleStaffRepository,
-            ModuleRepository moduleRepository,
-            UserRepository userRepository,
-            UserService userService,
-            ModuleService moduleService) {
-        this.moduleStaffRepository = moduleStaffRepository;
-        this.moduleRepository = moduleRepository;
-        this.userRepository = userRepository;
-        this.userService = userService;
-        this.moduleService = moduleService;
-    }
 
     public void assignModuleStaff(ModuleStaff moduleStaff) {
         moduleStaffRepository.save(moduleStaff);
