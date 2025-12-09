@@ -27,6 +27,8 @@ export default function Home() {
       <Link to="/modules/1/assessments">View Module 1 Assessments</Link>
       <br></br>
       <Link to="/modules">Modules</Link>
+        <br></br>
+        <Link to="/modules/create">Create Module</Link>
     </div>
   );
 }

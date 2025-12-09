@@ -1,5 +1,6 @@
 
 import {useEffect, useState} from "react";
+import Select from "react-select";
 import axios from "axios";
 import "./CreateModule.css";
 import Navbar from "../components/Navbar.jsx";
@@ -28,6 +29,17 @@ export default function CreateModule() {
             })
             .catch(err => console.error("Error loading staff members: ", err));
     }, []);
+
+    // For debugging : see what users have been selected
+    console.log("Selected lead:", modLead);
+    console.log("Selected moderator:", modModerator);
+    console.log("Selected module staff:", modStaff);
+
+    // For multi-select dropdown (module staff)
+    const modStaffOptions = staffList.map(user => ({
+        value: user.id,
+        label: `${user.forename} ${user.surname}`
+    }));
 
     const Create = async () => {
         try {
@@ -157,23 +169,16 @@ export default function CreateModule() {
                             </select>
 
                             <label className="label">Module Staff</label>
-                            <select
-                                id="otherStaff"
-                                multiple
-                                value={modStaff}
-                                onChange={(e) =>
-                                    setModStaff(
-                                        Array.from(e.target.selectedOptions, opt => opt.value)
-                                    )
-                                }
+                            <Select
+                                isMulti
+                                options={modStaffOptions}
+                                value={modStaffOptions.filter(option => modStaff.includes(option.value))}
+                                onChange={(selected) => {
+                                    setModStaff(selected.map(option => option.value));
+                                }}
                                 className="module-input"
-                            >
-                                {staffList.map(user => (
-                                    <option key={user.id} value={user.id}>
-                                        {`${user.forename} ${user.surname}`}
-                                    </option>
-                                ))}
-                            </select>
+                                placeholder="Select module staff"
+                            />
 
                             <button className="create-btn" onClick={Create}>
                                 Create
