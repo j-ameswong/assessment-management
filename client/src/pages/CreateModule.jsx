@@ -30,16 +30,27 @@ export default function CreateModule() {
             .catch(err => console.error("Error loading staff members: ", err));
     }, []);
 
-    // For debugging : see what users have been selected
-    console.log("Selected lead:", modLead);
-    console.log("Selected moderator:", modModerator);
-    console.log("Selected module staff:", modStaff);
-
-    // For multi-select dropdown (module staff)
+    // Staff
     const modStaffOptions = staffList.map(user => ({
         value: user.id,
         label: `${user.forename} ${user.surname}`
     }));
+
+    // Filtered options for selection
+    const filteredLeadOptions = modStaffOptions.filter(option =>
+        option.value !== modModerator && !modStaff.includes(option.value)
+    )
+    const filteredModeratorOptions = modStaffOptions.filter(option =>
+        option.value !== modLead && !modStaff.includes(option.value)
+    );
+    const filteredStaffOptions = modStaffOptions.filter(option =>
+        option.value !== modLead && option.value !== modModerator
+    );
+
+    // For debugging : see what users have been selected
+    console.log("Selected lead:", modLead);
+    console.log("Selected moderator:", modModerator);
+    console.log("Selected module staff:", modStaff);
 
     const Create = async () => {
         try {
@@ -139,44 +150,65 @@ export default function CreateModule() {
                         {/* right area */}
                         <div className="right-column">
                             <label className="label">Module Lead</label>
-                            <select
-                                id="lead"
-                                value={modLead}
-                                onChange={(e) => setModLead(e.target.value)}
+                            <Select
+                                options={filteredLeadOptions}
+                                value={
+                                    (function() {
+                                        const found = filteredLeadOptions.find(option => option.value === modLead);
+                                        if (found) {
+                                            return found;
+                                        } else {
+                                            return null;
+                                        }
+                                    })()
+                                }
+                                onChange={(option) => {
+                                    if (option) {
+                                        setModLead(option.value);
+                                    } else {
+                                        setModLead("");
+                                    }
+                                }}
                                 className="module-input"
-                            >
-                                <option value="">Select Lead</option>
-                                {staffList.map(user => (
-                                    <option key={user.id} value={user.id}>
-                                        {`${user.forename} ${user.surname}`}
-                                    </option>
-                                ))}
-                            </select>
+                                classNamePrefix="react-select"
+                                placeholder="Select Lead"
+                            />
 
                             <label className="label">Module Moderator</label>
-                            <select
-                                id="moderator"
-                                value={modModerator}
-                                onChange={(e) => setModModerator(e.target.value)}
+                            <Select
+                                options={filteredModeratorOptions}
+                                value={
+                                    (function() {
+                                        const found = filteredModeratorOptions.find(option => option.value === modModerator);
+                                        if (found) {
+                                            return found;
+                                        } else {
+                                            return null;
+                                        }
+                                    })()
+                                }
+                                onChange={(option) => {
+                                    if (option) {
+                                        setModModerator(option.value);
+                                    } else {
+                                        setModModerator("");
+                                    }
+                                }}
                                 className="module-input"
-                            >
-                                <option value="">Select Moderator</option>
-                                {staffList.map(user => (
-                                    <option key={user.id} value={user.id}>
-                                        {`${user.forename} ${user.surname}`}
-                                    </option>
-                                ))}
-                            </select>
+                                classNamePrefix="react-select"
+                                placeholder="Select Moderator"
+                            />
 
                             <label className="label">Module Staff</label>
                             <Select
                                 isMulti
-                                options={modStaffOptions}
-                                value={modStaffOptions.filter(option => modStaff.includes(option.value))}
+                                options={filteredStaffOptions}
+                                value={filteredStaffOptions.filter(option => modStaff.includes(option.value))}
                                 onChange={(selected) => {
                                     setModStaff(selected.map(option => option.value));
                                 }}
                                 className="module-input"
+                                classNamePrefix="react-select"
                                 placeholder="Select module staff"
                             />
 
