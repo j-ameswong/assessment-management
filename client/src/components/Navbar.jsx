@@ -7,7 +7,7 @@ export default function Navbar() {
 
   console.log("Navbar user:", user);
 
-  const primaryRole = user?.role; // 后端返回的是 user.role
+  const primaryRole = user?.role;
 
   return (
     <header className="navbar">
