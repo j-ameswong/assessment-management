@@ -1,4 +1,3 @@
-// src/api/axiosConfig.js
 import axios from "axios";
 
 const api = axios.create({
@@ -8,7 +7,6 @@ const api = axios.create({
   },
 });
 
-// 给每个请求自动加上 token
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem("token");
@@ -20,12 +18,10 @@ api.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-// 自动处理未授权情况
 api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response && error.response.status === 401) {
-      // token 过期或无效 → 强制返回登录页
       localStorage.removeItem("token");
       window.location.href = "/login";
     }
