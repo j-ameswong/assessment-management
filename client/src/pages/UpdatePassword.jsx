@@ -47,7 +47,6 @@ function UpdatePassword() {
         body: JSON.stringify({ oldPassword, newPassword }),
       });
 
-      // 常见判定：401 旧密码错误，400 校验失败，其它非200都是失败
       if (res.status === 401) {
         setMsg("Old password is incorrect");
         setOk(false);
@@ -62,7 +61,6 @@ function UpdatePassword() {
 
       setOk(true);
       setMsg("Password updated. Redirecting...");
-      // 成功后清理一下旧状态再跳走
       setTimeout(() => {
         navigate("/modules");
       }, 800);
