@@ -13,10 +13,12 @@ public class AssessmentDTO {
     private Long id;
     private String name;
     private AssessmentType type;
+    private Boolean isComplete;
+    private String description;
     private Long assessmentStageId;
     private Long moduleId;
     private Long setterId;
-    private long externalExaminerId;
+    private Long externalExaminerId;
     private Long checkerId;
 
     public static AssessmentDTO fromEntity(Assessment a) {
@@ -24,6 +26,8 @@ public class AssessmentDTO {
                 a.getId(),
                 a.getAssessmentName(),
                 a.getAssessmentType(),
+                a.getIsComplete(),
+                a.getDescription(),
                 a.getAssessmentStage().getId(),
                 a.getModule() != null ? a.getModule().getId() : null,
                 a.getSetter() != null ? a.getSetter().getId() : null,

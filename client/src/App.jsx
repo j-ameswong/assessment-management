@@ -11,6 +11,7 @@ import DeleteModule from './pages/DeleteModule.jsx';
 import UserCreation from './pages/UserCreation.jsx';
 import Logout from './pages/Logout.jsx';
 import EditModule from './pages/EditModule.jsx';
+import UpdatePassword from "./pages/UpdatePassword.jsx";
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
       <Route path="/modules/:moduleId/assessments/:assessmentId/progress" element={<AssessmentProgression />} />
       <Route path="/create-new-user" element={<UserCreation />} />
       <Route path="/logout" element={<Logout />} />
+      <Route path="/update-password" element={<UpdatePassword />} />
     </Routes>
   );
 }
