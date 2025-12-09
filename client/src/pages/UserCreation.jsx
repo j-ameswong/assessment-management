@@ -32,6 +32,22 @@ return (
               <h1 className="login-title">New user details</h1>
               <form className="login-form">
                 <div className="login-field">
+                  <label htmlFor="forename">Forename</label>
+                  <input
+                    id="forename"
+                    type="forename"
+                    className="login-input"
+                    placeholder="forename"
+                    />
+
+                  <label htmlFor="surname">Surname</label>
+                  <input
+                    id="surname"
+                    type="surname"
+                    className="login-input"
+                    placeholder="surname"
+                  />
+
                   <label htmlFor="email">Email</label>
                   <input
                     id="email"
