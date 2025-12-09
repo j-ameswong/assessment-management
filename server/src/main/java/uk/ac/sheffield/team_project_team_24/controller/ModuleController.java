@@ -23,6 +23,7 @@ import uk.ac.sheffield.team_project_team_24.dto.ModuleStaffDTO;
 import uk.ac.sheffield.team_project_team_24.service.ModuleService;
 import uk.ac.sheffield.team_project_team_24.service.ModuleStaffService;
 
+
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor
@@ -81,6 +82,12 @@ public class ModuleController {
     public ResponseEntity<Void> deleteModule(@PathVariable String moduleCode) {
         moduleService.deleteModule(moduleCode);
         return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/modules/edit")
+    public ResponseEntity<ModuleDTO> editModule(@RequestBody CreateModuleDTO moduleDTO) {
+        Module module = moduleService.createModule(moduleDTO);
+        return ResponseEntity.ok(ModuleDTO.fromEntity(module));
     }
 
 }
