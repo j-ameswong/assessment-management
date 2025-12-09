@@ -88,7 +88,7 @@ public class AssessmentController {
 
         Assessment updated = assessmentService.advanceStage(
                 id,
-                currentUser.getId(),
+                request.getActorId(),
                 request.getNote(),
                 request.getFurtherActionReq());
 
@@ -97,12 +97,12 @@ public class AssessmentController {
 
     @PostMapping("/assessments/{id}/reverse")
     public ResponseEntity<AssessmentDTO> reverse(
-            @PathVariable Long id,
-            @AuthenticationPrincipal CustomUserDetails currentUser) {
+            @RequestBody AdvanceRequestDTO request,
+            @PathVariable Long id) {
 
         Assessment updated = assessmentService.reverseStage(
                 id,
-                currentUser.getId());
+                request.getActorId());
 
         return ResponseEntity.ok(AssessmentDTO.fromEntity(updated));
     }

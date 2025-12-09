@@ -140,6 +140,7 @@ export default function AssessmentProgression() {
   const progressStage = async (furtherActionReq, note) => {
     try {
       const payload = {
+        actorId: id,
         furtherActionReq: furtherActionReq,
         note: note,
       }
@@ -158,7 +159,12 @@ export default function AssessmentProgression() {
 
   const reverseStage = async () => {
     try {
-      const response = await Axios.post(`http://localhost:8080/api/assessments/${assessment.id}/reverse`,
+      const payload = {
+        actorId: id,
+        furtherActionReq: furtherActionReq,
+        note: note,
+      }
+      const response = await Axios.post(`http://localhost:8080/api/assessments/${assessment.id}/reverse`, payload,
         { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
       console.log("Success: ", response.data);
       window.location.reload();
