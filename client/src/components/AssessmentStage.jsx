@@ -9,7 +9,9 @@ export default function AssessmentStage({
   actorName,
   step,
   enableButton, // if user is the actor
+  enableReverse,
   onProgress,
+  onReverse,
   setFurtherActionReq,
   note,
   setNote,
@@ -93,6 +95,15 @@ export default function AssessmentStage({
         </button>)
         : (<button disabled className="stage-progress-btn-disabled" onClick={onProgress}>
           Progress Stage
+        </button>)
+      }
+
+      {enableReverse
+        ? (<button className="stage-reverse-btn" onClick={onReverse}>
+          Reverse Stage
+        </button>)
+        : (<button disabled className="stage-progress-btn-disabled" onClick={onReverse}>
+          Reverse Stage
         </button>)
       }
     </div>
