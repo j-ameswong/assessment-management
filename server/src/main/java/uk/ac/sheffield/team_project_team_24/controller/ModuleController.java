@@ -17,10 +17,12 @@ import org.springframework.web.bind.annotation.RestController;
 import lombok.RequiredArgsConstructor;
 import uk.ac.sheffield.team_project_team_24.domain.module.Module;
 import uk.ac.sheffield.team_project_team_24.domain.module.ModuleRole;
+import uk.ac.sheffield.team_project_team_24.dto.CreateModuleDTO;
 import uk.ac.sheffield.team_project_team_24.dto.ModuleDTO;
 import uk.ac.sheffield.team_project_team_24.dto.ModuleStaffDTO;
 import uk.ac.sheffield.team_project_team_24.service.ModuleService;
 import uk.ac.sheffield.team_project_team_24.service.ModuleStaffService;
+
 
 @RestController
 @RequestMapping("/api")
@@ -32,12 +34,11 @@ public class ModuleController {
     private final ModuleStaffService moduleStaffService;
 
     // Create module
-    // TODO: use module DTOs, only authorize admins
-    // TODO: only fetch modules that have the user/all for admin
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/modules")
-    public ResponseEntity<Module> createModule(@RequestBody Module module) {
-        return ResponseEntity.ok(moduleService.createModule(module));
+    public ResponseEntity<ModuleDTO> createModule(@RequestBody CreateModuleDTO moduleDTO) {
+        Module module = moduleService.createModule(moduleDTO);
+        return ResponseEntity.ok(ModuleDTO.fromEntity(module));
     }
 
     // Get one module
@@ -56,6 +57,7 @@ public class ModuleController {
     }
 
     // Assign staff to a module
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/modules/{moduleId}/staff/{userId}")
     public ResponseEntity<Void> assign(
             @PathVariable Long moduleId,
@@ -68,8 +70,7 @@ public class ModuleController {
 
     // Get all staff in a module
     @GetMapping("/modules/{moduleId}/staff")
-    public ResponseEntity<List<ModuleStaffDTO>> listStaff(
-            @PathVariable Long moduleId) {
+    public ResponseEntity<List<ModuleStaffDTO>> listStaff(@PathVariable Long moduleId) {
         return ResponseEntity.ok(moduleStaffService.getAllModuleStaffInModule(moduleId)
                 .stream()
                 .map(ModuleStaffDTO::fromEntity)
@@ -81,6 +82,12 @@ public class ModuleController {
     public ResponseEntity<Void> deleteModule(@PathVariable String moduleCode) {
         moduleService.deleteModule(moduleCode);
         return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/modules/edit")
+    public ResponseEntity<ModuleDTO> editModule(@RequestBody CreateModuleDTO moduleDTO) {
+        Module module = moduleService.createModule(moduleDTO);
+        return ResponseEntity.ok(ModuleDTO.fromEntity(module));
     }
 
 }
