@@ -13,6 +13,7 @@ import Logout from './pages/Logout.jsx';
 import EditModule from './pages/EditModule.jsx';
 import UpdatePassword from "./pages/UpdatePassword.jsx";
 import Layout from "./components/Layout.jsx";
+import UserCreation from './pages/UserCreation.jsx';
 
 function App() {
   const location = useLocation();
