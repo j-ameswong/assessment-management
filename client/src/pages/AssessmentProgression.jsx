@@ -72,6 +72,8 @@ export default function AssessmentProgression() {
   const stagesWithStatus = assessmentStages?.sort((a, b) => a.step - b.step)
     .map(stage => {
       let log = latestLogs[stage.id];
+      let prevLog = latestLogs[stage.id - 1];
+
       // check status of current stage
       let status = "uncompleted";
       if (stage.step < currentStep) { status = "completed" }
@@ -79,21 +81,58 @@ export default function AssessmentProgression() {
 
       if (log && !log.isComplete && status != "current") {
         status = "pending";
+      } else if (log && log.isComplete) {
+        status = "completed";
       }
 
+      let actingStaff = null;
+      let actorName = "PLACEHOLDER_NAME";
+      switch (stage.actor) {
+        case "SETTER":
+          actingStaff = module.moduleStaff.find(s => s.staffId === assessment.setterId);
+          actorName = (actingStaff.forename + " " + actingStaff.surname);
+          break;
+        case "CHECKER":
+          actingStaff = module.moduleStaff.find(s => s.staffId === assessment.checkerId);
+          actorName = (actingStaff.forename + " " + actingStaff.surname);
+          break;
+        case "MODERATOR":
+          actingStaff = module.moduleStaff.find(s => s.moduleRole === "MODERATOR");
+          actorName = (actingStaff.forename + " " + actingStaff.surname);
+          break;
+        case "ANY":
+          actorName = ("Any staff member");
+          break;
+        default:
+          break;
+        // TODO: EXAMS_OFFICER, ADMIN, SYSTEM, EXTERNAL_EXAMINER
+      }
+      console.log(stage.actor, actorName);
       // determine if enable button is true based on status & user
       let enableButton = false;
+      let enableReverse = false;
 
+      // always allow exams officer/admin to advance stage
       if (status == "current") {
         if (roles.includes("ADMIN")
           || roles.includes("EXAMS_OFFICER")) {
+          enableButton = true;
+          if (stage.step > 1) { enableReverse = true; }
+          // allow module lead to act as setter even if not setter for assessment
+        } else if (stage.actor === "SETTER" && roles.includes("MODULE_LEAD")) {
           enableButton = true;
         } else if (roles.includes(stage.actor)) {
           enableButton = true;
         }
       }
 
-      return { ...stage, status, enableButton, log, };
+      // for setter response/summary
+      let summaryRequired = false;
+      if (prevLog && !prevLog.isComplete) {
+        summaryRequired = true;
+      }
+
+      return { ...stage, status, actorName, enableButton, log, summaryRequired, enableReverse };
     }) ?? [];
 
   const [furtherActionReq, setFurtherActionReq] = useState(false);
@@ -101,6 +140,7 @@ export default function AssessmentProgression() {
   const progressStage = async (furtherActionReq, note) => {
     try {
       const payload = {
+        actorId: id,
         furtherActionReq: furtherActionReq,
         note: note,
       }
@@ -108,6 +148,23 @@ export default function AssessmentProgression() {
       console.log("Payload sent: ", payload);
 
       const response = await Axios.post(`http://localhost:8080/api/assessments/${assessment.id}/advance`, payload,
+        { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
+      console.log("Success: ", response.data);
+      window.location.reload();
+    } catch (err) {
+      console.error(err);
+      alert("Error when progressing stage");
+    }
+  };
+
+  const reverseStage = async () => {
+    try {
+      const payload = {
+        actorId: id,
+        furtherActionReq: furtherActionReq,
+        note: note,
+      }
+      const response = await Axios.post(`http://localhost:8080/api/assessments/${assessment.id}/reverse`, payload,
         { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
       console.log("Success: ", response.data);
       window.location.reload();
@@ -130,12 +187,16 @@ export default function AssessmentProgression() {
             title={stage.description}
             status={stage.status}
             actor={stage.actor}
+            actorName={stage.actorName}
             step={stage.step}
             enableButton={stage.enableButton ?? false}
+            enableReverse={stage.enableReverse}
             onProgress={() => progressStage(furtherActionReq, note)}
+            onReverse={() => reverseStage()}
             note={stage.log?.note ?? note}
             setNote={setNote}
             setFurtherActionReq={setFurtherActionReq}
+            summaryRequired={stage.summaryRequired}
           />
         ))}
       </div>

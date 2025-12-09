@@ -2,10 +2,8 @@ package uk.ac.sheffield.team_project_team_24.controller;
 
 import lombok.RequiredArgsConstructor;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -19,7 +17,6 @@ import uk.ac.sheffield.team_project_team_24.dto.FirstTimeLoginDTO;
 import uk.ac.sheffield.team_project_team_24.dto.LoginDTO;
 import uk.ac.sheffield.team_project_team_24.dto.TokenDTO;
 import uk.ac.sheffield.team_project_team_24.dto.UserSignupDTO;
-import uk.ac.sheffield.team_project_team_24.repository.UserRepository;
 import uk.ac.sheffield.team_project_team_24.security.CustomUserDetails;
 import uk.ac.sheffield.team_project_team_24.service.TokenService;
 import uk.ac.sheffield.team_project_team_24.service.UserService;
@@ -33,11 +30,9 @@ public class LoginController {
     private final UserService userService;
     private final TokenService tokenService;
 
-    @Autowired
     private final AuthenticationManager authenticationManager;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
 
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -66,11 +61,17 @@ public class LoginController {
         return ResponseEntity.ok(dto);
     }
 
-    @GetMapping("/test")
-    public String test(
-            @AuthenticationPrincipal CustomUserDetails currentUser) {
-        System.out.println("TEST IS HERE: " + currentUser.getUsername());
-        return "Backend OK";
+    @GetMapping("/me")
+    public ResponseEntity<?> getCurrentUser(@AuthenticationPrincipal CustomUserDetails userDetails) {
+
+        if (userDetails == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        User user = userService.getUserByEmail(userDetails.getUsername());
+
+        return ResponseEntity.ok(user);
     }
+
 
 }

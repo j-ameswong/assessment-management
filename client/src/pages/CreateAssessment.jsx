@@ -3,8 +3,6 @@ import { useParams } from "react-router-dom";
 
 import axios from "axios";
 import "./CreateAssessment.css"
-import Navbar from "../components/Navbar.jsx";
-
 
 export default function CreateAssessment() {
   const [name, setName] = useState("");
@@ -24,9 +22,15 @@ export default function CreateAssessment() {
   const [moduleStaff, setModuleStaff] = useState([]);
   const [checkerCandidates, setCheckerCandidates] = useState([]);
 
-  // Setter/Checker
+  // Setter/Checker/External Examiner
   const [setterId, setSetterId] = useState('');
   const [checkerId, setCheckerId] = useState('');
+  const [externalExaminerId, setExternalExaminerId] = useState('');
+
+
+  // deadline
+  const [deadline, setDeadline] = useState("");
+
 
   useEffect(() => {
     const role = localStorage.getItem("role");
@@ -71,6 +75,11 @@ export default function CreateAssessment() {
     autoSelect();
   }, [modules, routeModuleId]);
 
+  useEffect(() => {
+    if (routeModuleId && !isNaN(routeModuleId)) {
+      setModuleId(Number(routeModuleId));
+    }
+  }, [routeModuleId]);
 
   const onModuleSelect = async (event) => {
 
@@ -131,7 +140,10 @@ export default function CreateAssessment() {
           moduleId: moduleId,
           setterId: setterId,
           checkerId: checkerId,
-          description: description
+          externalExaminer: externalExaminerId,
+          description: description,
+          deadline: deadline ? new Date(deadline).toISOString() : null
+
       };
 
       console.log("payload send:", payload);
@@ -173,7 +185,7 @@ export default function CreateAssessment() {
 
     return (
       <>
-        <Navbar left="COM2008 Systems Design and Security" right="Exam officer" />
+        
         <div className="assessment-page">
           <div className="assessment-container">
 
@@ -266,6 +278,14 @@ export default function CreateAssessment() {
                   <button className="attach-btn" onClick={AttachmentUpload}>Attach</button>
                 </div>
 
+                <label className="label">Deadline</label>
+                <input
+                  type="datetime-local"
+                  className="input"
+                  value={deadline}
+                  onChange={e => setDeadline(e.target.value)}
+                />
+
               </div>
 
               {/* right area */}
@@ -273,7 +293,10 @@ export default function CreateAssessment() {
 
                   {/* Module */}
                   <label className="label">For Module</label>
-                  <select value={moduleId} onChange={onModuleSelect}>
+                  <select
+                    value={Number.isNaN(moduleId) ? "" : moduleId}
+                    onChange={onModuleSelect}
+                  >
                     <option value="">-- Select Module --</option>
                     {modules.map((m) => (
                       <option key={m.id} value={m.id}>
@@ -282,7 +305,7 @@ export default function CreateAssessment() {
                     ))}
                   </select>
 
-                  {/*Setter / Checker dropdowns (only show if module selected)*/}
+                  {/*Setter / Checker / External Examiner dropdowns (only show if module selected)*/}
                   {moduleId !== 0 && (
                     <>
                       <label className="label">Setter</label>
@@ -307,6 +330,18 @@ export default function CreateAssessment() {
                             {s.forename} {s.surname} — {s.role}
                           </option>
                         ))}
+                      </select>
+
+                      <label className="label">External Examiner</label>
+                      <select value={externalExaminerId} onChange={e => setExternalExaminerId(e.target.value)}>
+                        <option value="">-- Select External Examiner --</option>
+                        {checkerCandidates
+                          .filter(c => c.role === "EXTERNAL_EXAMINER")
+                          .map(c => (
+                            <option key={c.id} value={c.id}>
+                              {c.forename} {c.surname}
+                            </option>
+                          ))}
                       </select>
 
                     </>

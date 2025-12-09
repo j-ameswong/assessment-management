@@ -45,6 +45,12 @@ public class AssessmentStageService {
         return assessmentStageRepository.findFirstByAssessmentType(assessmentType);
     }
 
+    public AssessmentStage getLastStage(AssessmentType assessmentType) {
+        return assessmentStageRepository.findTopByAssessmentTypeOrderByIdDesc(assessmentType)
+                .orElseThrow(() -> new AssessmentNotFoundException(Long.valueOf(1)));
+        // very bad, change
+    }
+
     public AssessmentStage getNextStage(AssessmentStage currentStage) {
         Long currentStep = currentStage.getStep();
         AssessmentType type = currentStage.getAssessmentType();

@@ -1,11 +1,11 @@
 package uk.ac.sheffield.team_project_team_24.service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -24,25 +24,15 @@ import uk.ac.sheffield.team_project_team_24.security.CustomUserDetails;
 
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class UserService {
 
-    @Autowired
     private final UserRepository userRepository;
     private final CustomUserDetailsService userDetailsService;
     private final PasswordEncoder passwordEncoder;
     private final TokenService tokenService;
 
     private static final String USER_NOT_FOUND = "User does not exist";
-
-    public UserService(UserRepository userRepository,
-            CustomUserDetailsService userDetailsService,
-            PasswordEncoder passwordEncoder,
-            TokenService tokenService) {
-        this.userRepository = userRepository;
-        this.userDetailsService = userDetailsService;
-        this.passwordEncoder = passwordEncoder;
-        this.tokenService = tokenService;
-    }
 
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -116,4 +106,35 @@ public class UserService {
         }
         userRepository.deleteById(id);
     }
+
+    public User getUserByEmail(String email) {
+        return userRepository.findByEmail(email).orElse(null);
+    }
+
+
+    public void updatePassword(Long userId, uk.ac.sheffield.team_project_team_24.dto.UpdatePasswordDTO body) {
+        if (body == null
+                || body.getOldPassword() == null
+                || body.getNewPassword() == null
+                || body.getConfirmNewPassword() == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Missing fields");
+        }
+
+        if (!Objects.equals(body.getNewPassword(), body.getConfirmNewPassword())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Passwords do not match");
+        }
+
+        Optional<uk.ac.sheffield.team_project_team_24.domain.user.User> opt = userRepository.findById(userId);
+        uk.ac.sheffield.team_project_team_24.domain.user.User user = opt.orElseThrow(() ->
+                new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+
+        if (!passwordEncoder.matches(body.getOldPassword(), user.getPassword())) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Old password incorrect");
+        }
+
+        user.setPassword(passwordEncoder.encode(body.getNewPassword()));
+        userRepository.save(user);
+    }
+
+    
 }

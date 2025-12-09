@@ -1,17 +1,21 @@
 import React from "react";
 import { useState } from "react";
-import "../componentStyles/AssessmentStage.css";
+import "./AssessmentStage.css";
 
 export default function AssessmentStage({
   title,
   status, // completed/current/uncompleted
   actor, // setter/checker/moderator/exams officer/external examiner
+  actorName,
   step,
   enableButton, // if user is the actor
+  enableReverse,
   onProgress,
+  onReverse,
   setFurtherActionReq,
   note,
-  setNote
+  setNote,
+  summaryRequired,
 }) {
 
   const [isChecked, setIsChecked] = useState(false);
@@ -19,6 +23,14 @@ export default function AssessmentStage({
   const onCheckHandler = () => {
     setIsChecked(!isChecked);
     setFurtherActionReq(!isChecked);
+  }
+
+  const toCapitalize = (str) => {
+    let newStr = str.replaceAll("_", " ");
+    newStr = newStr[0] + newStr.slice(1).toLowerCase();
+
+    return newStr;
+
   }
 
   return (
@@ -32,7 +44,9 @@ export default function AssessmentStage({
 
       <div className="stage-info-row">
         <span className="stage-info-label">Responsible:</span>
-        <span className="stage-info-value">{actor}</span>
+        <span className="stage-info-value">{toCapitalize(actor) + (
+          !(actor === "ADMIN" || actor === "SYSTEM") ? ` (${actorName})` : ""
+        )}</span>
       </div>
 
       <div className="stage-info-row">
@@ -40,13 +54,24 @@ export default function AssessmentStage({
         <span className="stage-info-value">{step}</span>
       </div>
 
-      {["CHECKER", "MODERATOR", "EXAMS_OFFICER", "EXTERNAL_EXAMINER"].includes(actor) &&
+      {["CHECKER", "EXAMS_OFFICER", "EXTERNAL_EXAMINER"].includes(actor) &&
         (<div className="stage-info-row">
           <span className="stage-info-label">Request Follow-up</span>
           <input disabled={!enableButton} checked={isChecked} onChange={onCheckHandler} type="checkbox" />
         </div>)}
 
-      {(isChecked) && (
+      {(actor === "SETTER") && summaryRequired && enableButton && (
+        <div className="stage-info-row">
+          <span className="stage-info-label">Response:</span>
+          <textarea
+            onChange={(t) => setNote(t.target.value)}
+            content={note}
+            className="stage-textarea">
+          </textarea>
+        </div>
+      )}
+
+      {(isChecked || (actor === "EXTERNAL_EXAMINER" && enableButton)) && (
         <div className="stage-info-row">
           <span className="stage-info-label">Feedback:</span>
           <textarea
@@ -70,6 +95,15 @@ export default function AssessmentStage({
         </button>)
         : (<button disabled className="stage-progress-btn-disabled" onClick={onProgress}>
           Progress Stage
+        </button>)
+      }
+
+      {enableReverse
+        ? (<button className="stage-reverse-btn" onClick={onReverse}>
+          Reverse Stage
+        </button>)
+        : (<button disabled className="stage-reverse-btn-disabled" onClick={onReverse}>
+          Reverse Stage
         </button>)
       }
     </div>

@@ -10,9 +10,7 @@ import com.github.javafaker.Faker;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import uk.ac.sheffield.team_project_team_24.domain.assessment.Assessment;
-import uk.ac.sheffield.team_project_team_24.domain.assessment.enums.AssessmentRole;
 import uk.ac.sheffield.team_project_team_24.domain.assessment.AssessmentStage;
-import uk.ac.sheffield.team_project_team_24.domain.assessment.AssessmentStageLog;
 import uk.ac.sheffield.team_project_team_24.domain.assessment.enums.AssessmentStages;
 import uk.ac.sheffield.team_project_team_24.domain.assessment.enums.AssessmentType;
 import uk.ac.sheffield.team_project_team_24.domain.module.Module;
@@ -78,10 +76,12 @@ public class DataGenerator {
             UserRole role;
             if (i < NUM_ADMINS) {
                 role = UserRole.ADMIN;
-            } else if (i < (NUM_USERS - 1)) {
+            } else if (i < (NUM_USERS - 2)) {
                 role = UserRole.ACADEMIC_STAFF;
-            } else {
+            } else if (i == (NUM_USERS - 2)) {
                 role = UserRole.EXAMS_OFFICER;
+            } else {
+                role = UserRole.EXTERNAL_EXAMINER;
             }
 
             String rawPassword = email; // user email for password when logging in
@@ -142,13 +142,15 @@ public class DataGenerator {
                 newAssessment.setChecker(moduleStaffService.getUserByRole(m.getId(),
                         ModuleRole.MODERATOR));
                 newAssessment.setAssessmentType(AssessmentType.getAllTypes().get(
-                        new Random().nextInt(2)));
+                        new Random().nextInt(3)));
                 // this will cause problems occasionally skull:
                 newAssessment.setAssessmentName(m.getModuleCode()
                         + "_" + new Random().nextInt(100, 999)
                         + "_" + newAssessment.getAssessmentType().toString());
                 newAssessment.setAssessmentStage(assessmentStageService.getFirstStage(
                         newAssessment.getAssessmentType()));
+                newAssessment.setIsComplete(false);
+                newAssessment.setDescription("This is a sample description");
 
                 assessmentService.createAssessment(newAssessment);
                 assessmentService.log(newAssessment, userService.getAdmin(), "Initialized by system", false);

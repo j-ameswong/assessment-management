@@ -1,7 +1,6 @@
 package uk.ac.sheffield.team_project_team_24.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -30,14 +29,11 @@ import java.util.List;
 @CrossOrigin(origins = "http://localhost:5173")
 public class AssessmentController {
 
-    @Autowired
     private final AssessmentService assessmentService;
-    @Autowired
-    private CsvService csvService;
-    @Autowired
-    private AttachmentService attachmentService;
     private final AssessmentStageService assessmentStageService;
     private final ModuleService moduleService;
+    private final CsvService csvService;
+    private final AttachmentService attachmentService;
 
     // Create an assessment
     @PostMapping("/assessments")
@@ -88,9 +84,21 @@ public class AssessmentController {
 
         Assessment updated = assessmentService.advanceStage(
                 id,
-                currentUser.getId(),
+                request.getActorId(),
                 request.getNote(),
                 request.getFurtherActionReq());
+
+        return ResponseEntity.ok(AssessmentDTO.fromEntity(updated));
+    }
+
+    @PostMapping("/assessments/{id}/reverse")
+    public ResponseEntity<AssessmentDTO> reverse(
+            @RequestBody AdvanceRequestDTO request,
+            @PathVariable Long id) {
+
+        Assessment updated = assessmentService.reverseStage(
+                id,
+                request.getActorId());
 
         return ResponseEntity.ok(AssessmentDTO.fromEntity(updated));
     }
@@ -129,11 +137,11 @@ public class AssessmentController {
                 moduleService.getModule(moduleId));
         List<AssessmentDTO> assessmentDTOs = assessmentService.getAssessmentsInModule(moduleId)
                 .stream()
-                .map(a -> AssessmentDTO.fromEntity(a))
+                .map(AssessmentDTO::fromEntity)
                 .toList();
         List<AssessmentStageDTO> assessmentStageDTOs = assessmentStageService.getAllStages()
                 .stream()
-                .map(s -> AssessmentStageDTO.fromEntity(s))
+                .map(AssessmentStageDTO::fromEntity)
                 .toList();
 
         return ResponseEntity.ok(
@@ -144,7 +152,7 @@ public class AssessmentController {
     public ResponseEntity<List<AssessmentStageDTO>> listAllStages() {
         return ResponseEntity.ok(assessmentStageService.getAllStages()
                 .stream()
-                .map(s -> AssessmentStageDTO.fromEntity(s))
+                .map(AssessmentStageDTO::fromEntity)
                 .toList());
     }
 
@@ -153,7 +161,7 @@ public class AssessmentController {
             @PathVariable AssessmentType type) {
         return ResponseEntity.ok(assessmentStageService.getAllStagesByType(type)
                 .stream()
-                .map(s -> AssessmentStageDTO.fromEntity(s))
+                .map(AssessmentStageDTO::fromEntity)
                 .toList());
     }
 

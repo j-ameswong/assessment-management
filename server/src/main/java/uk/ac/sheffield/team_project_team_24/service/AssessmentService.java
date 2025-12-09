@@ -45,6 +45,7 @@ public class AssessmentService {
         // createAssessment should always set to first stage
         a.setAssessmentStage(assessmentStageService.getFirstStage(
                 a.getAssessmentType()));
+        a.setIsComplete(false);
 
         createAssessment(a);
         log(a, userService.getAdmin(), "Initialized by system", false);
@@ -151,9 +152,17 @@ public class AssessmentService {
         Assessment assessment = getAssessment(id);
 
         // if previous stage is still incomplete, always revert
-        if (assessment.getAssessmentStage().getStep() != 1
-                && !getHistory(id).get(getHistory(id).size() - 1).getIsComplete()) {
+        // spagetthi, TODO: fix this mess
+        if (assessment.getAssessmentStage() == assessmentStageService.getLastStage(assessment.getAssessmentType())) {
             log(assessment, userService.getUser(actorId), note, !furtherActionReq);
+            if (!furtherActionReq) {
+                assessment.setIsComplete(true);
+            }
+        } else if (assessment.getAssessmentStage().getStep() != 1
+                && !getLastLogOfStep(assessment,
+                        assessment.getAssessmentStage().getStep() - 1)
+                        .getIsComplete()) {
+            log(assessment, userService.getUser(actorId), note, false);
             assessment.setAssessmentStage(
                     assessmentStageService.getPrevStage(assessment.getAssessmentStage()));
         } else {
@@ -166,12 +175,41 @@ public class AssessmentService {
         return assessment;
     }
 
+    public Assessment reverseStage(Long id, Long adminId) {
+        Assessment a = getAssessment(id);
+
+        if (a.getAssessmentStage().getStep() == 1) {
+            return a;
+        } else {
+            AssessmentStage prevStage = assessmentStageService.getPrevStage(
+                    a.getAssessmentStage());
+            a.setAssessmentStage(prevStage);
+            log(a, userService.getUser(adminId), "Reversed by admin/exams officer", false);
+
+            assessmentRepository.save(a);
+            return a;
+        }
+
+    }
+
     public List<AssessmentStageLog> getHistory(Long id) {
         return assessmentStageLogService.getLogs(getAssessment(id));
     }
 
     public List<AssessmentStageLog> getHistory(Assessment assessment) {
         return assessmentStageLogService.getLogs(assessment);
+    }
+
+    public AssessmentStageLog getLastLogOfStep(Assessment a, Long step) {
+        List<AssessmentStageLog> history = getHistory(a);
+
+        for (int i = history.size() - 1; i >= 0; i--) {
+            if (history.get(i).getAssessmentStage().getStep() == step) {
+                return history.get(i);
+            }
+        }
+
+        return history.get(0);
     }
 
     public List<Assessment> saveAll(List<Assessment> assessments) {

@@ -5,10 +5,7 @@ import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import uk.ac.sheffield.team_project_team_24.domain.assessment.AssessmentStage;
 import uk.ac.sheffield.team_project_team_24.domain.assessment.AssessmentStageLog;
-import uk.ac.sheffield.team_project_team_24.domain.assessment.enums.AssessmentRole;
-import uk.ac.sheffield.team_project_team_24.domain.assessment.enums.AssessmentType;
 
 @Data
 @NoArgsConstructor
@@ -27,6 +24,7 @@ public class AssessmentStageLogDTO {
         dto.id = log.getId();
         dto.assessmentId = log.getAssessment().getId();
         dto.assessmentStageId = log.getAssessmentStage().getId();
+        dto.actedById = log.getActedBy().getId();
         dto.changedAt = log.getChangedAt();
         dto.isComplete = log.getIsComplete();
         dto.note = log.getNote();
