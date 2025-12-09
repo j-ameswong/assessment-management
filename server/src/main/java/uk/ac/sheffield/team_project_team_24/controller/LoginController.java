@@ -13,6 +13,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import uk.ac.sheffield.team_project_team_24.domain.user.User;
 import uk.ac.sheffield.team_project_team_24.dto.FirstTimeLoginDTO;
 import uk.ac.sheffield.team_project_team_24.dto.LoginDTO;
 import uk.ac.sheffield.team_project_team_24.dto.TokenDTO;
@@ -63,11 +64,17 @@ public class LoginController {
         return ResponseEntity.ok(dto);
     }
 
-    @GetMapping("/test")
-    public String test(
-            @AuthenticationPrincipal CustomUserDetails currentUser) {
-        System.out.println("TEST IS HERE: " + currentUser.getUsername());
-        return "Backend OK";
+    @GetMapping("/me")
+    public ResponseEntity<?> getCurrentUser(@AuthenticationPrincipal CustomUserDetails userDetails) {
+
+        if (userDetails == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        User user = userService.getUserByEmail(userDetails.getUsername());
+
+        return ResponseEntity.ok(user);
     }
+
 
 }

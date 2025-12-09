@@ -3,8 +3,6 @@ import { useParams } from "react-router-dom";
 
 import axios from "axios";
 import "./CreateAssessment.css"
-import Navbar from "../components/Navbar.jsx";
-
 
 export default function CreateAssessment() {
   const [name, setName] = useState("");
@@ -77,6 +75,11 @@ export default function CreateAssessment() {
     autoSelect();
   }, [modules, routeModuleId]);
 
+  useEffect(() => {
+    if (routeModuleId && !isNaN(routeModuleId)) {
+      setModuleId(Number(routeModuleId));
+    }
+  }, [routeModuleId]);
 
   const onModuleSelect = async (event) => {
 
@@ -182,7 +185,7 @@ export default function CreateAssessment() {
 
     return (
       <>
-        <Navbar left="COM2008 Systems Design and Security" right="Exam officer" />
+        
         <div className="assessment-page">
           <div className="assessment-container">
 
@@ -290,7 +293,10 @@ export default function CreateAssessment() {
 
                   {/* Module */}
                   <label className="label">For Module</label>
-                  <select value={moduleId} onChange={onModuleSelect}>
+                  <select
+                    value={Number.isNaN(moduleId) ? "" : moduleId}
+                    onChange={onModuleSelect}
+                  >
                     <option value="">-- Select Module --</option>
                     {modules.map((m) => (
                       <option key={m.id} value={m.id}>

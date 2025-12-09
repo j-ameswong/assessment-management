@@ -114,4 +114,9 @@ public class UserService {
         }
         userRepository.deleteById(id);
     }
+
+    public User getUserByEmail(String email) {
+        return userRepository.findByEmail(email).orElse(null);
+    }
+
 }

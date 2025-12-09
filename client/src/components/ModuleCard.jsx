@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import "../componentStyles/ModuleCard.css"
+import "./ModuleCard.css"
 import dropdownIcon from "../assets/moduleCardDropdown.png"
 
 // Dropdown arrow source: "https://www.flaticon.com/free-icons/down-arrow"

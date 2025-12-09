@@ -1,35 +1,30 @@
-import React from "react";
+import { useContext } from "react";
+import { UserContext } from "../context/UserContext";
+import "./Navbar.css";
 
-export default function Navbar({
-  left = "COM2008 Systems Design and Security",
-  right = "Exam officer",
-}) {
+export default function Navbar() {
+  const { user } = useContext(UserContext);
+
+  console.log("Navbar user:", user);
+
+  const primaryRole = user?.role; // 后端返回的是 user.role
+
   return (
-    <header
-      style={{
-        position: "sticky",
-        top: 0,
-        left: 0,
-        margin: 0,
-        width: "100%",
-        zIndex: 1000,
-        background: "#2d0c73",
-        color: "#fff",
-      }}
-    >
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          width: "100%",
-          boxSizing: "border-box",
-          padding: "12px 24px",
-          fontWeight: 700,
-        }}
-      >
-        <span style={{ fontSize: 20 }}>{left}</span>
-        <span>{right} ▾</span>
+    <header className="navbar">
+      <div className="navbar-left">
+        {user && (
+          <span className="navbar-welcome">
+            Welcome, {user.forename} {user.surname}
+          </span>
+        )}
+      </div>
+
+      <div className="navbar-right">
+        {primaryRole && (
+          <span className="navbar-role">
+            {primaryRole.replaceAll("_", " ")}
+          </span>
+        )}
       </div>
     </header>
   );
