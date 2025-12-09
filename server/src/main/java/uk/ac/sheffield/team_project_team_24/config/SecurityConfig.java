@@ -48,7 +48,7 @@ public class SecurityConfig {
                         // H2 console public
                         .requestMatchers("/h2-console/**").permitAll()
 
-                        // modules — Admin + Exams Officer only
+                        // Admin + Exams Officer only
                         .requestMatchers(HttpMethod.GET, "/api/modules").hasAnyRole("ADMIN", "EXAMS_OFFICER")
                         .requestMatchers(HttpMethod.POST, "/api/modules").hasAnyRole("ADMIN", "EXAMS_OFFICER")
                         .requestMatchers(HttpMethod.PUT, "/api/modules/**").hasAnyRole("ADMIN", "EXAMS_OFFICER")
