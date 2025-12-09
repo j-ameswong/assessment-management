@@ -68,15 +68,14 @@ class UserServiceTest {
     // createUser tests
     @Test
     void createUser_shouldReturnSavedUser() {
-        // create user
         User savedUser = dummyUser1();
         savedUser.setId(1L);
-        // define the repository behaviour
+
         when(userRepository.save(any())).thenReturn(savedUser);
-        User result = classUnderTest.createUser(new User());
-        // make sure the id of the returned User matches the one we created
+
+        User result = classUnderTest.createUser(savedUser);
+
         assertEquals(1L, result.getId());
-        // check save was only called once
         verify(userRepository, times(1)).save(savedUser);
     }
     // no failure cases as there's no validation
