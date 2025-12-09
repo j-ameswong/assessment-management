@@ -1,18 +1,17 @@
 
 import {useEffect, useState} from "react";
 import axios from "axios";
-import "./CreateModule.css";
+import "./EditModule.css";
 import Navbar from "../components/Navbar.jsx";
 import Footer from "../components/Footer.jsx";
 
-export default function CreateModule() {
+export default function EditModule() {
     // Module Fields
     const [name, setName] = useState("");
     const [modCode, setModCode] = useState("");
     const [modLead, setModLead] = useState("");
     const [modModerator, setModModerator] = useState("");
     const [modStaff, setModStaff] = useState([]);
-    const [csvFile, setCsvFile] = useState(null);
 
     // Fetch users
     const [staffList, setStaffList] = useState([]);
@@ -29,9 +28,9 @@ export default function CreateModule() {
             .catch(err => console.error("Error loading staff members: ", err));
     }, []);
 
-    const Create = async () => {
+    const Edit = async () => {
         try {
-            if (!name || !modCode || !modLead || !modModerator) {
+            if (!name || !modCode) {
                 alert("Please fill all required fields");
                 return;
             }
@@ -47,49 +46,27 @@ export default function CreateModule() {
             console.log("payload send:", payload);
 
             const response = await axios.post(
-                "http://localhost:8080/api/modules",
+                "http://localhost:8080/api/modules/edit",
                 payload
             );
 
-            console.log("Created:", response.data);
-            alert("module created!");
+            console.log("Module edited!:", response.data);
+            alert("module edited!");
         } catch (err) {
             console.error(err);
-            alert("Failed to create module.");
+            alert("Failed to edit module.");
         }
-    };
-
-    const CsvUpload = async () => {
-        const formData = new FormData();
-        formData.append("file", csvFile);
-
-        await axios.post(
-            "http://localhost:8080/api/modules/uploadCsv",
-            formData,
-            {
-                headers: { "Content-Type": "multipart/form-data" },
-            }
-        );
-
-        alert("CSV uploaded!");
     };
 
     return (
         <>
-            <Navbar left="Create new module" right="Role" />
+            <Navbar left="Editing module: module name" right="Role" />
             <div className="module-page">
                 <div className="module-container">
-                    <h1 className="title">Create New Module</h1>
+                    <h1 className="title">Editing module: module name</h1>
                     <div className="grid-container">
                         {/* left area */}
                         <div className="left-column">
-                            <label className="label">Module Name</label>
-                            <input
-                                className="input"
-                                value={name}
-                                onChange={(e) => setName(e.target.value)}
-                            />
-
                             <label className="label">Module Code</label>
                             <input
                                 className="input"
@@ -97,31 +74,13 @@ export default function CreateModule() {
                                 onChange={(e) => setModCode(e.target.value)}
                             />
 
-                            <div className="or">
-                                <p>OR</p>
-                            </div>
+                            <label className="label">Module Name</label>
+                            <input
+                                className="input"
+                                value={name}
+                                onChange={(e) => setName(e.target.value)}
+                            />
 
-                            <label className="label">Upload .csv file</label>
-                            <div className="csv-wrapper">
-                                <input
-                                    className="csv-input"
-                                    type="file"
-                                    accept=".csv"
-                                    onChange={(e) => setCsvFile(e.target.files[0])}
-                                />
-
-                                <div className="file-display">
-                                    <img
-                                        src="/icons/file.svg"
-                                        alt="file upload icon"
-                                        className="file-icon"
-                                    />
-                                </div>
-
-                                <button className="attach-btn" onClick={CsvUpload}>
-                                    Attach
-                                </button>
-                            </div>
                         </div>
 
                         {/* right area */}
@@ -175,8 +134,8 @@ export default function CreateModule() {
                                 ))}
                             </select>
 
-                            <button className="create-btn" onClick={Create}>
-                                Create
+                            <button className="edit-btn" onClick={Edit}>
+                                Submit Edit
                             </button>
                         </div>
 

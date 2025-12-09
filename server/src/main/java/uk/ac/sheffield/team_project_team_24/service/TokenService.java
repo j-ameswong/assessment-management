@@ -1,5 +1,6 @@
 package uk.ac.sheffield.team_project_team_24.service;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -22,18 +23,13 @@ import java.util.Collection;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class TokenService {
 
     private final JwtEncoder jwtEncoder;
     private final JwtDecoder jwtDecoder;
     private final CustomUserDetailsService customUserDetailsService;
 
-    public TokenService(JwtEncoder jwtEncoder, JwtDecoder jwtDecoder,
-            CustomUserDetailsService customUserDetailsService) {
-        this.jwtEncoder = jwtEncoder;
-        this.jwtDecoder = jwtDecoder;
-        this.customUserDetailsService = customUserDetailsService;
-    }
 
     public TokenDTO generateToken(Collection<? extends GrantedAuthority> authorities, String username) {
         Instant now = Instant.now();

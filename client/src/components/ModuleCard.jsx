@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import "../componentStyles/ModuleCard.css"
+import "./ModuleCard.css"
 import dropdownIcon from "../assets/moduleCardDropdown.png"
 
 // Dropdown arrow source: "https://www.flaticon.com/free-icons/down-arrow"
@@ -18,7 +18,7 @@ export default function ModuleCard({ moduleCode, moduleTitle, isOpen, onToggle }
                     { isOpen && (
                         <div className="dropdown-content">
                             <Link to="/modules/assessments" className="dropdown-link">See assignments</Link>
-                            <Link to="/modules/assessments" className="dropdown-link">Edit module details</Link>
+                            <Link to="/modules/edit" className="dropdown-link">Edit module details</Link>
                             <Link to={`/modules/delete/${moduleCode}`} className="dropdown-link">Delete module</Link>
                         </div>
                     )}

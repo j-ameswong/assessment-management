@@ -1,6 +1,6 @@
 import React from "react";
 import { useState } from "react";
-import "../componentStyles/AssessmentStage.css";
+import "./AssessmentStage.css";
 
 export default function AssessmentStage({
   title,

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Routes, Route } from "react-router-dom";
+import {Routes, Route, useLocation} from "react-router-dom";
 import Login from "./pages/Login.jsx";
 import Home from "./pages/Home.jsx";
 import Modules from './pages/Modules.jsx';
@@ -10,22 +10,38 @@ import CreateModule from './pages/CreateModule.jsx';
 import DeleteModule from './pages/DeleteModule.jsx';
 import UserCreation from './pages/UserCreation.jsx';
 import Logout from './pages/Logout.jsx';
+import EditModule from './pages/EditModule.jsx';
 import UpdatePassword from "./pages/UpdatePassword.jsx";
+import Layout from "./components/Layout.jsx";
 
 function App() {
+  const location = useLocation();
+  const hideNavbar = location.pathname === "/";
+
+  if (hideNavbar) {
+    return (
+      <Routes>
+        <Route path="/" element={<Login />} />
+      </Routes>
+    );
+  }
+
   return (
-    <Routes>
-      <Route path="/" element={<Login />} />
-      <Route path="/home" element={<Home />} />
-      <Route path="/modules" element={<Modules />} />
-      <Route path="/modules/create" element={<CreateModule />} />
-      <Route path="/modules/:moduleId/assessments/new" element={<CreateAssessment />} />
-      <Route path="/modules/:moduleId/assessments" element={<AssessmentOverview />} />
-      <Route path="/modules/:moduleId/assessments/:assessmentId/progress" element={<AssessmentProgression />} />
-      <Route path="/create-new-user" element={<UserCreation />} />
-      <Route path="/logout" element={<Logout />} />
-      <Route path="/update-password" element={<UpdatePassword />} />
-    </Routes>
+    <Layout>
+      <Routes>
+        <Route path="/" element={<Login />} />
+        <Route path="/home" element={<Home />} />
+        <Route path="/modules" element={<Modules />} />
+        <Route path="/modules/create" element={<CreateModule />} />
+        <Route path="/modules/edit" element={<EditModule />} />
+        <Route path="/modules/:moduleId/assessments/new" element={<CreateAssessment />} />
+        <Route path="/modules/:moduleId/assessments" element={<AssessmentOverview />} />
+        <Route path="/modules/:moduleId/assessments/:assessmentId/progress" element={<AssessmentProgression />} />
+        <Route path="/create-new-user" element={<UserCreation />} />
+        <Route path="/logout" element={<Logout />} />
+        <Route path="/update-password" element={<UpdatePassword />} />
+      </Routes>
+    </Layout>
   );
 }
 
