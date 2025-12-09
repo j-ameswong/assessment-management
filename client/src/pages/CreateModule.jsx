@@ -76,7 +76,13 @@ export default function CreateModule() {
 
             const response = await axios.post(
                 "http://localhost:8080/api/modules",
-                payload
+                payload,
+                {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem("token")}`,
+                        "Content-Type": "application/json"
+                    }
+                }
             );
 
             console.log("Created:", response.data);
