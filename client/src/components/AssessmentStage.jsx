@@ -58,7 +58,7 @@ export default function AssessmentStage({
         </div>
       )}
 
-      {(isChecked) && (
+      {isChecked || (actor === "EXTERNAL_EXAMINER" && enableButton) && (
         <div className="stage-info-row">
           <span className="stage-info-label">Feedback:</span>
           <textarea

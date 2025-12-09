@@ -16,7 +16,7 @@ public class AssessmentDTO {
     private Long assessmentStageId;
     private Long moduleId;
     private Long setterId;
-    private long externalExaminerId;
+    private Long externalExaminerId;
     private Long checkerId;
 
     public static AssessmentDTO fromEntity(Assessment a) {
