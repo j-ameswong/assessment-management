@@ -20,7 +20,8 @@ export default function CreateModule() {
     useEffect(() => {
         fetch("http://localhost:8080/api/users", {
             headers: {
-                "Authorization": `Bearer ${localStorage.getItem("token")}`
+                "Authorization": `Bearer ${localStorage.getItem("token")}`,
+                "Content-Type": "application/json"
             }
         })
             .then(res => {
