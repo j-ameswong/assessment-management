@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import {useEffect, useState} from "react";
 import axios from "axios";
 import "./CreateModule.css";
 import Navbar from "../components/Navbar.jsx";
@@ -11,9 +11,23 @@ export default function CreateModule() {
     const [modCode, setModCode] = useState("");
     const [modLead, setModLead] = useState("");
     const [modModerator, setModModerator] = useState("");
-    const [modStaff, setModStaff] = useState("");
-
+    const [modStaff, setModStaff] = useState([]);
     const [csvFile, setCsvFile] = useState(null);
+
+    // Fetch users
+    const [staffList, setStaffList] = useState([]);
+    useEffect(() => {
+        fetch("http://localhost:8080/api/users")
+            .then(res => {
+                console.log("Status code: ", res.status); // for debugging
+                return res.json();
+            })
+            .then(data => {
+                console.log("Fetched users: ", data); // for debugging
+                setStaffList(data);
+            })
+            .catch(err => console.error("Error loading staff members: ", err));
+    }, []);
 
     const Create = async () => {
         try {
@@ -23,12 +37,11 @@ export default function CreateModule() {
             }
 
             const payload = {
-                name: name,
-                modCode: modCode,
-                modLead: modLead,
-                modModerator: modModerator,
-                modStaff: modStaff
-
+                moduleName: name,
+                moduleCode: modCode,
+                moduleLeadId: Number(modLead),
+                moduleModeratorId: Number(modModerator),
+                staffIds: modStaff.map(Number)
             };
 
             console.log("payload send:", payload);
@@ -114,25 +127,53 @@ export default function CreateModule() {
                         {/* right area */}
                         <div className="right-column">
                             <label className="label">Module Lead</label>
-                            <input
-                                className="input"
-                                value={name}
+                            <select
+                                id="lead"
+                                value={modLead}
                                 onChange={(e) => setModLead(e.target.value)}
-                            />
+                                className="module-input"
+                            >
+                                <option value="">Select Lead</option>
+                                {staffList.map(user => (
+                                    <option key={user.id} value={user.id}>
+                                        {`${user.forename} ${user.surname}`}
+                                    </option>
+                                ))}
+                            </select>
 
                             <label className="label">Module Moderator</label>
-                            <input
-                                className="input"
-                                value={name}
+                            <select
+                                id="moderator"
+                                value={modModerator}
                                 onChange={(e) => setModModerator(e.target.value)}
-                            />
+                                className="module-input"
+                            >
+                                <option value="">Select Moderator</option>
+                                {staffList.map(user => (
+                                    <option key={user.id} value={user.id}>
+                                        {`${user.forename} ${user.surname}`}
+                                    </option>
+                                ))}
+                            </select>
 
                             <label className="label">Module Staff</label>
-                            <textarea
-                                className="textarea"
-                                 value={modStaff}
-                                onChange={(e) => setModStaff(e.target.value)}
-                            ></textarea>
+                            <select
+                                id="otherStaff"
+                                multiple
+                                value={modStaff}
+                                onChange={(e) =>
+                                    setModStaff(
+                                        Array.from(e.target.selectedOptions, opt => opt.value)
+                                    )
+                                }
+                                className="module-input"
+                            >
+                                {staffList.map(user => (
+                                    <option key={user.id} value={user.id}>
+                                        {`${user.forename} ${user.surname}`}
+                                    </option>
+                                ))}
+                            </select>
 
                             <button className="create-btn" onClick={Create}>
                                 Create
@@ -140,11 +181,11 @@ export default function CreateModule() {
                         </div>
 
                     </div>
-                </div>     
+                </div>
             </div>
             <div className="footer-box">
                     <Footer/>
-            </div>        
+            </div>
         </>
     );
 }
