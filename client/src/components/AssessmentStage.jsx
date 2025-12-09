@@ -6,6 +6,7 @@ export default function AssessmentStage({
   title,
   status, // completed/current/uncompleted
   actor, // setter/checker/moderator/exams officer/external examiner
+  actorName,
   step,
   enableButton, // if user is the actor
   onProgress,
@@ -22,6 +23,14 @@ export default function AssessmentStage({
     setFurtherActionReq(!isChecked);
   }
 
+  const toCapitalize = (str) => {
+    let newStr = str.replaceAll("_", " ");
+    newStr = newStr[0] + newStr.slice(1).toLowerCase();
+
+    return newStr;
+
+  }
+
   return (
     <div className={`stage-card stage-${status}`}>
       <div className="stage-header">
@@ -33,7 +42,9 @@ export default function AssessmentStage({
 
       <div className="stage-info-row">
         <span className="stage-info-label">Responsible:</span>
-        <span className="stage-info-value">{actor}</span>
+        <span className="stage-info-value">{toCapitalize(actor) + (
+          !(actor === "ADMIN" || actor === "SYSTEM") ? ` (${actorName})` : ""
+        )}</span>
       </div>
 
       <div className="stage-info-row">
@@ -58,7 +69,7 @@ export default function AssessmentStage({
         </div>
       )}
 
-      {(isChecked) && (
+      {isChecked || (actor === "EXTERNAL_EXAMINER" && enableButton) && (
         <div className="stage-info-row">
           <span className="stage-info-label">Feedback:</span>
           <textarea

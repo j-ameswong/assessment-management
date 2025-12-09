@@ -86,19 +86,28 @@ export default function AssessmentProgression() {
       }
 
       let actingStaff = null;
-      let actorName = "PLACEHOLDER";
+      let actorName = "PLACEHOLDER_NAME";
       switch (stage.actor) {
         case "SETTER":
           actingStaff = module.moduleStaff.find(s => s.staffId === assessment.setterId);
-          actorName = actingStaff.forename + " " + actingStaff.surname;
+          actorName = (actingStaff.forename + " " + actingStaff.surname);
+          break;
         case "CHECKER":
           actingStaff = module.moduleStaff.find(s => s.staffId === assessment.checkerId);
-          actorName = actingStaff.forename + " " + actingStaff.surname;
+          actorName = (actingStaff.forename + " " + actingStaff.surname);
+          break;
         case "MODERATOR":
           actingStaff = module.moduleStaff.find(s => s.moduleRole === "MODERATOR");
-          actorName = actingStaff.forename + " " + actingStaff.surname;
+          actorName = (actingStaff.forename + " " + actingStaff.surname);
+          break;
+        case "ANY":
+          actorName = ("Any staff member");
+          break;
+        default:
+          break;
         // TODO: EXAMS_OFFICER, ADMIN, SYSTEM, EXTERNAL_EXAMINER
       }
+      console.log(stage.actor, actorName);
       // determine if enable button is true based on status & user
       let enableButton = false;
 
@@ -121,7 +130,7 @@ export default function AssessmentProgression() {
         summaryRequired = true;
       }
 
-      return { ...stage, status, enableButton, log, summaryRequired };
+      return { ...stage, status, actorName, enableButton, log, summaryRequired };
     }) ?? [];
 
   const [furtherActionReq, setFurtherActionReq] = useState(false);
@@ -158,6 +167,7 @@ export default function AssessmentProgression() {
             title={stage.description}
             status={stage.status}
             actor={stage.actor}
+            actorName={stage.actorName}
             step={stage.step}
             enableButton={stage.enableButton ?? false}
             onProgress={() => progressStage(furtherActionReq, note)}
