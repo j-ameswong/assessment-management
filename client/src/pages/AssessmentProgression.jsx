@@ -117,7 +117,7 @@ export default function AssessmentProgression() {
         if (roles.includes("ADMIN")
           || roles.includes("EXAMS_OFFICER")) {
           enableButton = true;
-          enableReverse = true;
+          if (stage.step > 1) { enableReverse = true; }
           // allow module lead to act as setter even if not setter for assessment
         } else if (stage.actor === "SETTER" && roles.includes("MODULE_LEAD")) {
           enableButton = true;
@@ -158,7 +158,7 @@ export default function AssessmentProgression() {
 
   const reverseStage = async () => {
     try {
-      const response = await Axios.post(`http://localhost:8080/api/assessments/${assessment.id}/reverse`, payload,
+      const response = await Axios.post(`http://localhost:8080/api/assessments/${assessment.id}/reverse`,
         { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
       console.log("Success: ", response.data);
       window.location.reload();

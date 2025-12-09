@@ -102,7 +102,7 @@ export default function AssessmentStage({
         ? (<button className="stage-reverse-btn" onClick={onReverse}>
           Reverse Stage
         </button>)
-        : (<button disabled className="stage-progress-btn-disabled" onClick={onReverse}>
+        : (<button disabled className="stage-reverse-btn-disabled" onClick={onReverse}>
           Reverse Stage
         </button>)
       }

@@ -95,6 +95,18 @@ public class AssessmentController {
         return ResponseEntity.ok(AssessmentDTO.fromEntity(updated));
     }
 
+    @PostMapping("/assessments/{id}/reverse")
+    public ResponseEntity<AssessmentDTO> reverse(
+            @PathVariable Long id,
+            @AuthenticationPrincipal CustomUserDetails currentUser) {
+
+        Assessment updated = assessmentService.reverseStage(
+                id,
+                currentUser.getId());
+
+        return ResponseEntity.ok(AssessmentDTO.fromEntity(updated));
+    }
+
     // View process history
     @GetMapping("/assessments/{id}/history")
     public ResponseEntity<List<AssessmentStageLog>> history(@PathVariable Long id) {
