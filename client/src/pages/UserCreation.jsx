@@ -6,6 +6,7 @@ export default function UserCreation(){
 
   const userRole = localStorage.getItem('userRole');
   const auth = userRole === 'EXAMS_OFFICER' || userRole === 'ADMIN';
+  const [selectedRole, setSelectedRole] = React.useState("ADMIN");
 
 return (
   <>
@@ -48,6 +49,12 @@ return (
                     className="login-input"
                   />
                 </div>
+                <label htmlFor="role">Role </label>
+                <select value={selectedRole} onChange={(e) => setSelectedRole(e.target.value)}>
+                  <option value="ADMIN">Admin</option>
+                  <option value="EXAMS_OFFICER">Exams Officer</option>
+                  <option value="ACADEMIC_STAFF">Academic Staff</option>
+                  </select>
               </form>
             </div>
           </section>
