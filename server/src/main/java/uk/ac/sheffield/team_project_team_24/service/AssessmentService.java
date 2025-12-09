@@ -45,6 +45,7 @@ public class AssessmentService {
         // createAssessment should always set to first stage
         a.setAssessmentStage(assessmentStageService.getFirstStage(
                 a.getAssessmentType()));
+        a.setIsComplete(false);
 
         createAssessment(a);
         log(a, userService.getAdmin(), "Initialized by system", false);
@@ -154,6 +155,9 @@ public class AssessmentService {
         // spagetthi, TODO: fix this mess
         if (assessment.getAssessmentStage() == assessmentStageService.getLastStage(assessment.getAssessmentType())) {
             log(assessment, userService.getUser(actorId), note, !furtherActionReq);
+            if (!furtherActionReq) {
+                assessment.setIsComplete(true);
+            }
         } else if (assessment.getAssessmentStage().getStep() != 1
                 && !getLastLogOfStep(assessment,
                         assessment.getAssessmentStage().getStep() - 1)

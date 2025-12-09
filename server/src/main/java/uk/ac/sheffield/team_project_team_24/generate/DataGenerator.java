@@ -147,6 +147,8 @@ public class DataGenerator {
                         + "_" + newAssessment.getAssessmentType().toString());
                 newAssessment.setAssessmentStage(assessmentStageService.getFirstStage(
                         newAssessment.getAssessmentType()));
+                newAssessment.setIsComplete(false);
+                newAssessment.setDescription("This is a sample description");
 
                 assessmentService.createAssessment(newAssessment);
                 assessmentService.log(newAssessment, userService.getAdmin(), "Initialized by system", false);

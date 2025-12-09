@@ -34,6 +34,8 @@ public class Assessment {
     @JoinColumn(name = "current_assessment_stage")
     private AssessmentStage assessmentStage;
 
+    private Boolean isComplete;
+
     @ManyToOne
     @JoinColumn(name = "moduleId")
     private Module module;

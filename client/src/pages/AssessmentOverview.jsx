@@ -33,10 +33,11 @@ export default function AssessmentOverview() {
     // capitalized assessment type
     assessmentType: a.type[0] + a.type.substring(1).toLowerCase(),
     title: a.name,
+    description: a.description,
     // Show stage/total stages for progress status
     status: "Stage: " + (stages[a.assessmentStageId - 1]?.step ?? "0")
       + "/" + (stages?.filter(s => s.assessmentType === a.type)).length, //getStage(a.assessmentStageId),
-    type: "ok"
+    type: a.isComplete ? "ok" : "warn"
   }
   ))
 
@@ -53,11 +54,12 @@ export default function AssessmentOverview() {
               <h4 className="ao-card-title">{c.title}</h4>
 
               <div className="ao-card-details">{c.assessmentType}</div>
+              <div className="ao-card-description">{c.description}</div>
               <div className={`ao-pill ${c.type}`}>{c.status}</div>
 
               <button
                 className="ao-arrow"
-                onClick={() => navigate(`/modules/${moduleId}/assessments/${c.key}`)}
+                onClick={() => navigate(`/modules/${moduleId}/assessments/${c.key}/progress`)}
                 aria-label={`Open ${c.title}`}
               >
                 »
