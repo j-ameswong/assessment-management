@@ -66,6 +66,7 @@ public class ModuleService {
 
         // Save module name and code
         Module module = new Module(dto.getModuleCode(), dto.getModuleName());
+        module.setModuleStaff(new ArrayList<>());
         module = moduleRepository.save(module);
 
         List<ModuleStaff> staffEntries = new ArrayList<>();
@@ -109,11 +110,6 @@ public class ModuleService {
                 staffEntries.add(new ModuleStaff(module, staffUser, ModuleRole.STAFF));
                 userIdList.add(id);
             }
-        }
-
-        // Save staff entries
-        if (!staffEntries.isEmpty()) {
-            moduleStaffRepository.saveAll(staffEntries);
         }
 
         module.setModuleStaff(staffEntries);

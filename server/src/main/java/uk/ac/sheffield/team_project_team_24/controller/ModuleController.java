@@ -33,7 +33,7 @@ public class ModuleController {
     private final ModuleStaffService moduleStaffService;
 
     // Create module
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/modules")
     public ResponseEntity<ModuleDTO> createModule(@RequestBody CreateModuleDTO moduleDTO) {
         Module module = moduleService.createModule(moduleDTO);
