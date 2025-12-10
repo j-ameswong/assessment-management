@@ -11,7 +11,6 @@ export default function Home() {
       <Link to="/modules/1/assessments">View Module 1 Assessments</Link>
       <br></br>
       <Link to="/modules">Modules</Link>
-<<<<<<< HEAD
       <br/>
       <Link to="/create-new-user">Create new user</Link>
         <br></br>
