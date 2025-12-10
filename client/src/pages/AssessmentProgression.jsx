@@ -115,7 +115,6 @@ export default function AssessmentProgression() {
           break;
         // TODO: EXAMS_OFFICER, ADMIN, SYSTEM, EXTERNAL_EXAMINER
       }
-      console.log(stage.actor, actorName);
       // determine if enable button is true based on status & user
       let enableButton = false;
       let enableReverse = false;
@@ -204,7 +203,6 @@ export default function AssessmentProgression() {
             setFurtherActionReq={setFurtherActionReq}
             summaryRequired={stage.summaryRequired}
             logs={logsByStage[stage.id] || []}
-            moduleStaff={module?.moduleStaff || []}
           />
         ))}
       </div>

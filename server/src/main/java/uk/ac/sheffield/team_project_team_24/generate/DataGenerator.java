@@ -63,6 +63,8 @@ public class DataGenerator {
         User admin = new User();
         admin.setEmail("admin@sheffield.ac.uk");
         admin.setPassword(passwordEncoder.encode("admin"));
+        admin.setForename("System");
+        admin.setSurname("Admin");
         admin.setRole(UserRole.ADMIN);
         users.add(admin);
 

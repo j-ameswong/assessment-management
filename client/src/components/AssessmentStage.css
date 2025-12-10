@@ -176,8 +176,14 @@
 .stage-logs-container {
   margin-top: 10px;
   padding: 10px;
+  padding-bottom: 5px;
   background: #f7f7f7;
-  border-radius: 8px;
+  border: 1px solid rgba(50, 50, 50, 0.1);
+  border-radius: 15px;
+}
+
+.stage-logs-container:hover {
+  border: 1px solid rgba(50, 50, 50, 0.5);
 }
 
 .stage-log-entry {
@@ -186,7 +192,7 @@
 
 .stage-log-entry hr {
   border: 0;
-  border-top: 1px solid #ddd;
+  border-top: 1px solid #555;
   margin-top: 8px;
 }
 
