@@ -43,8 +43,6 @@ export default function AssessmentOverview() {
 
   return (
     <>
-      <Navbar left={moduleTitle} right="Exam officer" />
-
       <div className="ao-wrap">
         <h2 className="ao-subtitle">Assessment Overview</h2>
 

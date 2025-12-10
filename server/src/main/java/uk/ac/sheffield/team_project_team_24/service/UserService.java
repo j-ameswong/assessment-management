@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -12,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import uk.ac.sheffield.team_project_team_24.domain.user.User;
 import uk.ac.sheffield.team_project_team_24.domain.user.UserRole;
 import uk.ac.sheffield.team_project_team_24.dto.FirstTimeLoginDTO;
@@ -133,6 +133,7 @@ public class UserService {
         }
 
         user.setPassword(passwordEncoder.encode(body.getNewPassword()));
+        user.setMustChangePassword(false);
         userRepository.save(user);
     }
 

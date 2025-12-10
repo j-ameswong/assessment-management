@@ -110,7 +110,6 @@ export default function CreateModule() {
 
     return (
         <>
-            <Navbar left="Create new module" right="Role" />
             <div className="module-page">
                 <div className="module-container">
                     <h1 className="title">Create New Module</h1>

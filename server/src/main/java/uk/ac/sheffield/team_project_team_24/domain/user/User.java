@@ -1,6 +1,13 @@
 package uk.ac.sheffield.team_project_team_24.domain.user;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -30,6 +37,9 @@ public class User {
     @Column(nullable = false)
     private UserRole role;
 
+    @Column(nullable = false)
+    private boolean mustChangePassword = true;
+
     public User(String forename, String surname, String email, String password, UserRole role) {
         this.forename = forename;
         this.surname = surname;
@@ -37,4 +47,6 @@ public class User {
         this.password = password;
         this.role = role;
     }
+    public boolean isMustChangePassword() { return mustChangePassword; }
+    public void setMustChangePassword(boolean mustChangePassword) { this.mustChangePassword = mustChangePassword; }
 }

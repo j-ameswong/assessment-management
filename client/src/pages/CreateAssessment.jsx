@@ -185,7 +185,6 @@ export default function CreateAssessment() {
 
     return (
       <>
-        
         <div className="assessment-page">
           <div className="assessment-container">
 

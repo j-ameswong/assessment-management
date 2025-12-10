@@ -7,7 +7,6 @@ import CreateAssessment from "./pages/CreateAssessment.jsx";
 import AssessmentProgression from "./pages/AssessmentProgression.jsx";
 import AssessmentOverview from "./pages/AssessmentOverview.jsx";
 import CreateModule from './pages/CreateModule.jsx';
-import DeleteModule from './pages/DeleteModule.jsx';
 import UserCreation from './pages/UserCreation.jsx';
 import Logout from './pages/Logout.jsx';
 import EditModule from './pages/EditModule.jsx';
@@ -16,12 +15,13 @@ import Layout from "./components/Layout.jsx";
 
 function App() {
   const location = useLocation();
-  const hideNavbar = location.pathname === "/";
+  const hideNavbar = location.pathname === "/" || location.pathname === "/create-new-user";
 
   if (hideNavbar) {
     return (
       <Routes>
         <Route path="/" element={<Login />} />
+        <Route path="/create-new-user" element={<UserCreation />} />
       </Routes>
     );
   }

@@ -42,7 +42,6 @@ function Modules() {
 
     return(
         <>
-            <Navbar left="Modules" right="Role"/>
             <div className="modules-page">
 
                 {

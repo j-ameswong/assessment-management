@@ -61,6 +61,7 @@ function UpdatePassword() {
 
       setOk(true);
       setMsg("Password updated. Redirecting...");
+      localStorage.setItem("mustChangePassword", "false");
       setTimeout(() => navigate("/modules"), 800);
     } catch {
       setMsg("Cannot connect to server");
