@@ -124,6 +124,19 @@ export default function AssessmentProgression() {
           actorName = "ADMIN";
           break;
       }
+      // set deadline/exam date for this stage if relevant
+      let dateType = null;
+      let date = null;
+      switch (assessment.type) {
+        case "COURSEWORK":
+          dateType = "DEADLINE";
+          date = new Date(assessment.deadline);
+          break;
+        default: // exams and tests use assessmentDate
+          dateType = "ASSESSMENT_DATE"
+          date = new Date(assessment.assessmentDate);
+          break;
+      }
       // determine if enable button is true based on status & user
       let enableButton = false;
       let enableReverse = false;
@@ -148,7 +161,7 @@ export default function AssessmentProgression() {
         summaryRequired = true;
       }
 
-      return { ...stage, status, actorName, enableButton, log, summaryRequired, enableReverse };
+      return { ...stage, status, actorName, enableButton, log, summaryRequired, enableReverse, date, dateType };
     }) ?? [];
 
   const [furtherActionReq, setFurtherActionReq] = useState(false);
@@ -218,6 +231,8 @@ export default function AssessmentProgression() {
             setFurtherActionReq={setFurtherActionReq}
             summaryRequired={stage.summaryRequired}
             logs={logsByStage[stage.id] || []}
+            date={stage.date}
+            dateType={stage.dateType}
           />
         ))}
       </div>

@@ -1,5 +1,6 @@
 package uk.ac.sheffield.team_project_team_24.generate;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -154,6 +155,18 @@ public class DataGenerator {
                         newAssessment.getAssessmentType()));
                 newAssessment.setIsComplete(false);
                 newAssessment.setDescription("This is a sample description");
+
+                switch (newAssessment.getAssessmentType()) {
+                    case EXAM:
+                        newAssessment.setExamDate(LocalDateTime.now().plusDays(1));
+                        break;
+                    case TEST:
+                        newAssessment.setExamDate(LocalDateTime.now().plusDays(1));
+                        break;
+                    case COURSEWORK:
+                        newAssessment.setDeadline(LocalDateTime.now().plusDays(1));
+                        break;
+                }
 
                 assessmentService.createAssessment(newAssessment);
                 assessmentService.log(newAssessment, userService.getAdmin(), "Initialized by system", false);

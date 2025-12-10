@@ -17,6 +17,8 @@ export default function AssessmentStage({
   setNote,
   summaryRequired,
   logs,
+  date,
+  dateType
 }) {
 
   const [isChecked, setIsChecked] = useState(false);
@@ -28,6 +30,15 @@ export default function AssessmentStage({
   const onCheckHandler = () => {
     setIsChecked(!isChecked);
     setFurtherActionReq(!isChecked);
+  }
+
+  const formatTimeDiff = (ms) => {
+    const seconds = Math.floor(ms / 1000) % 60;
+    const minutes = Math.floor(ms / (1000 * 60)) % 60;
+    const hours = Math.floor(ms / (1000 * 60 * 60)) % 24;
+    const days = Math.floor(ms / (1000 * 60 * 60 * 24));
+
+    return `${days}d ${hours}h ${minutes}m ${seconds}s`;
   }
 
   const toCapitalize = (str) => {
@@ -86,6 +97,24 @@ export default function AssessmentStage({
           </textarea>
         </div>
       )}
+
+      {(actor === "SYSTEM" && date && (
+        <div>
+          {(dateType === "ASSESSMENT_DATE")
+            ? (
+              <>
+                <span className="stage-info-label">Assessment date: </span>
+                {`${date.toLocaleString()} (${formatTimeDiff(date - Date.now())} remaining)`}
+              </>
+            )
+            : (
+              <>
+                <span className="stage-info-label">Deadline: </span>
+                {date.toLocaleString()}
+              </>
+            )
+          }
+        </div>))}
 
       {(status === "pending") && (
         <div className="stage-info-row">
