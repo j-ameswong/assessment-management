@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import lombok.RequiredArgsConstructor;
 import uk.ac.sheffield.team_project_team_24.domain.user.User;
+import uk.ac.sheffield.team_project_team_24.domain.user.UserRole;
 import uk.ac.sheffield.team_project_team_24.dto.UpdatePasswordDTO;
 import uk.ac.sheffield.team_project_team_24.security.CustomUserDetails;
 import uk.ac.sheffield.team_project_team_24.service.UserService;
@@ -76,6 +77,15 @@ public class UserController {
 
         userService.updatePassword(userId, body);
         return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/users/{id}/role")
+    @PreAuthorize("hasRole('EXAMS_OFFICER')")
+    public ResponseEntity<User> updateUserRole(
+            @PathVariable Long id,
+            @RequestBody UserRole newRole) {
+        User updatedUser = userService.updateUserRole(id, newRole);
+        return ResponseEntity.ok(updatedUser);
     }
 
 

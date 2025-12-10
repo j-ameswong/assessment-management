@@ -97,6 +97,12 @@ public class UserService {
         return getUsers(UserRole.EXAMS_OFFICER).get(0);
     }
 
+    public User updateUserRole(Long id, UserRole newRole) {
+        User user = getUser(id);
+        user.setRole(newRole);
+        return userRepository.save(user);
+    }
+
     public boolean existsUserByEmail(String email) {
         return userRepository.existsUserByEmail(email);
     }
