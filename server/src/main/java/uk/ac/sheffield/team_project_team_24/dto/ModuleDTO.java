@@ -1,5 +1,6 @@
 package uk.ac.sheffield.team_project_team_24.dto;
 
+import java.util.Collections;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
@@ -21,10 +22,14 @@ public class ModuleDTO {
         dto.id = m.getId();
         dto.moduleCode = m.getModuleCode();
         dto.moduleName = m.getModuleName();
-        dto.moduleStaff = m.getModuleStaff()
-                .stream()
-                .map(ModuleStaffDTO::fromEntity)
-                .toList();
+
+        var staff = m.getModuleStaff();
+        if (staff == null){
+            dto.moduleStaff = Collections.emptyList();
+        } else {
+            dto.moduleStaff = staff.stream().map(ModuleStaffDTO::fromEntity).toList();
+        }
+
 
         return dto;
     }
