@@ -1,43 +1,90 @@
 
 import {useEffect, useState} from "react";
 import axios from "axios";
+import Select from "react-select";
+import { useParams } from "react-router-dom";
 import "./EditModule.css";
 import Navbar from "../components/Navbar.jsx";
 import Footer from "../components/Footer.jsx";
 
 export default function EditModule() {
     // Module Fields
+    const { moduleCode } = useParams();
+    const [currentModule, setCurrentModule] = useState(null);
+
     const [name, setName] = useState("");
-    const [modCode, setModCode] = useState("");
+    const [newModCode, setnewModCode] = useState("");
     const [modLead, setModLead] = useState("");
     const [modModerator, setModModerator] = useState("");
     const [modStaff, setModStaff] = useState([]);
 
-    // Fetch users
+
+    // Fetch Staff
     const [staffList, setStaffList] = useState([]);
     useEffect(() => {
-        fetch("http://localhost:8080/api/users")
+        fetch("http://localhost:8080/api/users", {
+            headers: {
+                "Authorization": `Bearer ${localStorage.getItem("token")}`,
+                "Content-Type": "application/json"
+            }
+        })
             .then(res => {
-                console.log("Status code: ", res.status); // for debugging
+                console.log("Staff Status code: ", res.status); // for debugging
                 return res.json();
             })
             .then(data => {
-                console.log("Fetched users: ", data); // for debugging
+                console.log("Fetched users: ", data);
                 setStaffList(data);
             })
             .catch(err => console.error("Error loading staff members: ", err));
     }, []);
 
+    // Fetch current module and staff
+    useEffect(() => {
+        fetch(`http://localhost:8080/api/modules/edit/${moduleCode}`, {
+            headers: {
+                "Authorization": `Bearer ${localStorage.getItem("token")}`,
+                "Content-Type": "application/json"
+            }
+        })
+            .then(res => {
+                console.log("Module Status code: ", res.status);
+                return res.json();
+            })
+            .then(data => {
+                console.log("Fetched module: ", data);
+                setCurrentModule(data);
+
+            })
+            .catch(err => console.error("Error loading staff members: ", err));
+    }, []);
+
+    const modStaffOptions = staffList.map(user => ({
+        value: user.id,
+        label: `${user.forename} ${user.surname}`
+    }));
+
+    const filteredLeadOptions = modStaffOptions.filter(option =>
+        option.value !== modModerator && !modStaff.includes(option.value)
+    )
+    const filteredModeratorOptions = modStaffOptions.filter(option =>
+        option.value !== modLead && !modStaff.includes(option.value)
+    );
+    const filteredStaffOptions = modStaffOptions.filter(option =>
+        option.value !== modLead && option.value !== modModerator
+    );
+
     const Edit = async () => {
         try {
-            if (!name || !modCode) {
+            if (!name || !newModCode) {
                 alert("Please fill all required fields");
                 return;
             }
 
             const payload = {
                 moduleName: name,
-                moduleCode: modCode,
+                oldModuleCode: currentModule.moduleCode,
+                newModuleCode: newModCode,
                 moduleLeadId: Number(modLead),
                 moduleModeratorId: Number(modModerator),
                 staffIds: modStaff.map(Number)
@@ -47,7 +94,13 @@ export default function EditModule() {
 
             const response = await axios.post(
                 "http://localhost:8080/api/modules/edit",
-                payload
+                payload,
+                {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem("token")}`,
+                        "Content-Type": "application/json"
+                    }
+                }
             );
 
             console.log("Module edited!:", response.data);
@@ -62,15 +115,16 @@ export default function EditModule() {
         <>
             <div className="module-page">
                 <div className="module-container">
-                    <h1 className="title">Editing module: module name</h1>
+                    <h1 className="title">Editing module: {currentModule?.moduleCode}- {currentModule?.moduleName}</h1>
                     <div className="grid-container">
                         {/* left area */}
                         <div className="left-column">
                             <label className="label">Module Code</label>
                             <input
                                 className="input"
-                                value={modCode}
-                                onChange={(e) => setModCode(e.target.value)}
+                                value={newModCode}
+                                onChange={(e) => setnewModCode(e.target.value)}
+                                placeholder={currentModule?.moduleCode}
                             />
 
                             <label className="label">Module Name</label>
@@ -78,6 +132,7 @@ export default function EditModule() {
                                 className="input"
                                 value={name}
                                 onChange={(e) => setName(e.target.value)}
+                                placeholder={currentModule?.moduleName}
                             />
 
                         </div>
@@ -85,56 +140,70 @@ export default function EditModule() {
                         {/* right area */}
                         <div className="right-column">
                             <label className="label">Module Lead</label>
-                            <select
-                                id="lead"
-                                value={modLead}
-                                onChange={(e) => setModLead(e.target.value)}
+                            <Select
+                                options={filteredLeadOptions}
+                                value={
+                                    (function() {
+                                        const found = filteredLeadOptions.find(option => option.value === modLead);
+                                        if (found) {
+                                            return found;
+                                        } else {
+                                            return null;
+                                        }
+                                    })()
+                                }
+                                onChange={(option) => {
+                                    if (option) {
+                                        setModLead(option.value);
+                                    } else {
+                                        setModLead("");
+                                    }
+                                }}
                                 className="module-input"
-                            >
-                                <option value="">Select Lead</option>
-                                {staffList.map(user => (
-                                    <option key={user.id} value={user.id}>
-                                        {`${user.forename} ${user.surname}`}
-                                    </option>
-                                ))}
-                            </select>
+                                classNamePrefix="react-select"
+                                placeholder="Select Lead"
+                            />
 
                             <label className="label">Module Moderator</label>
-                            <select
-                                id="moderator"
-                                value={modModerator}
-                                onChange={(e) => setModModerator(e.target.value)}
+                            <Select
+                                options={filteredModeratorOptions}
+                                value={
+                                    (function() {
+                                        const found = filteredModeratorOptions.find(option => option.value === modModerator);
+                                        if (found) {
+                                            return found;
+                                        } else {
+                                            return null;
+                                        }
+                                    })()
+                                }
+                                onChange={(option) => {
+                                    if (option) {
+                                        setModModerator(option.value);
+                                    } else {
+                                        setModModerator("");
+                                    }
+                                }}
                                 className="module-input"
-                            >
-                                <option value="">Select Moderator</option>
-                                {staffList.map(user => (
-                                    <option key={user.id} value={user.id}>
-                                        {`${user.forename} ${user.surname}`}
-                                    </option>
-                                ))}
-                            </select>
+                                classNamePrefix="react-select"
+                                placeholder="Select Moderator"
+                            />
 
                             <label className="label">Module Staff</label>
-                            <select
-                                id="otherStaff"
-                                multiple
-                                value={modStaff}
-                                onChange={(e) =>
-                                    setModStaff(
-                                        Array.from(e.target.selectedOptions, opt => opt.value)
-                                    )
-                                }
+                            <Select
+                                isMulti
+                                options={filteredStaffOptions}
+                                value={filteredStaffOptions.filter(option => modStaff.includes(option.value))}
+                                onChange={(selected) => {
+                                    setModStaff(selected.map(option => option.value));
+                                }}
                                 className="module-input"
-                            >
-                                {staffList.map(user => (
-                                    <option key={user.id} value={user.id}>
-                                        {`${user.forename} ${user.surname}`}
-                                    </option>
-                                ))}
-                            </select>
+                                classNamePrefix="react-select"
+                                placeholder="Select module staff"
+                            />
 
-                            <button className="edit-btn" onClick={Edit}>
-                                Submit Edit
+                            <button className="create-btn" onClick={Edit}>
+                                Create
                             </button>
                         </div>
 

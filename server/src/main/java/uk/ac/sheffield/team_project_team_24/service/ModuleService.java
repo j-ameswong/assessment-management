@@ -16,6 +16,7 @@ import uk.ac.sheffield.team_project_team_24.domain.module.ModuleRole;
 import uk.ac.sheffield.team_project_team_24.domain.module.ModuleStaff;
 import uk.ac.sheffield.team_project_team_24.domain.user.User;
 import uk.ac.sheffield.team_project_team_24.dto.CreateModuleDTO;
+import uk.ac.sheffield.team_project_team_24.dto.EditModuleDTO;
 import uk.ac.sheffield.team_project_team_24.repository.ModuleRepository;
 import uk.ac.sheffield.team_project_team_24.repository.ModuleStaffRepository;
 import uk.ac.sheffield.team_project_team_24.repository.UserRepository;
@@ -114,5 +115,83 @@ public class ModuleService {
 
         module.setModuleStaff(staffEntries);
         return module;
+    }
+
+    public Module editModule(EditModuleDTO dto){
+        System.out.println("EditModuleDTO: " + dto);
+
+        if (dto.getOldModuleCode() == null || dto.getOldModuleCode().isBlank()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Old Module code is mandatory");
+        }
+
+        if (dto.getNewModuleCode() == null || dto.getNewModuleCode().isBlank()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "New Module code is mandatory");
+        }
+
+        Module module = getModule(dto.getOldModuleCode());
+
+        if (!dto.getOldModuleCode().equals(dto.getNewModuleCode())
+            && moduleRepository.findByModuleCode(dto.getNewModuleCode()).isPresent()) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Module code already in use");
+        }
+
+        module.setModuleCode(dto.getNewModuleCode());
+        module.setModuleName(dto.getModuleName());
+
+        List<ModuleStaff> currentStaff = module.getModuleStaff();
+
+        if (currentStaff == null) {
+            currentStaff = new ArrayList<>();
+            module.setModuleStaff(currentStaff);
+        } else {
+            currentStaff.clear();
+        }
+
+        List<ModuleStaff> staffEntries = new ArrayList<>();
+        Set<Long> userIdList = new HashSet<>();
+
+        // Module lead logic
+        if (dto.getModuleLeadId() != null) {
+            Long id = dto.getModuleLeadId();
+            User leadUser = userRepository.findById(id)
+                    .orElseThrow(() -> new ResponseStatusException(
+                            HttpStatus.NOT_FOUND, "User not found: " + id));
+
+            staffEntries.add(new ModuleStaff(module, leadUser, ModuleRole.MODULE_LEAD));
+            userIdList.add(id);
+        }
+
+        // Module moderator logic
+        if (dto.getModuleModeratorId() != null) {
+            Long id = dto.getModuleModeratorId();
+            if (!userIdList.contains(id)) {
+                User moderatorUser = userRepository.findById(id)
+                        .orElseThrow(() -> new ResponseStatusException(
+                                HttpStatus.NOT_FOUND, "User not found: " + id));
+
+                staffEntries.add(new ModuleStaff(module, moderatorUser, ModuleRole.MODERATOR));
+                userIdList.add(id);
+            }
+        }
+
+        // Module staff logic
+        if (dto.getStaffIds() != null) {
+            for (Long id : dto.getStaffIds()) {
+
+                if (id == null) continue;
+                if (userIdList.contains(id)) continue;
+
+                User staffUser = userRepository.findById(id)
+                        .orElseThrow(() -> new ResponseStatusException(
+                                HttpStatus.NOT_FOUND, "User not found: " + id));
+
+                staffEntries.add(new ModuleStaff(module, staffUser, ModuleRole.STAFF));
+                userIdList.add(id);
+            }
+        }
+
+        currentStaff.addAll(staffEntries);
+
+        return moduleRepository.save(module);
     }
 }

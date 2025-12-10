@@ -33,7 +33,7 @@ function App() {
         <Route path="/home" element={<Home />} />
         <Route path="/modules" element={<Modules />} />
         <Route path="/modules/create" element={<CreateModule />} />
-        <Route path="/modules/edit" element={<EditModule />} />
+        <Route path="/modules/edit/:moduleCode" element={<EditModule />} />
         <Route path="/modules/:moduleId/assessments/new" element={<CreateAssessment />} />
         <Route path="/modules/:moduleId/assessments" element={<AssessmentOverview />} />
         <Route path="/modules/:moduleId/assessments/:assessmentId/progress" element={<AssessmentProgression />} />
