@@ -2,7 +2,6 @@ import React, {useState} from "react";
 import Navbar from "../components/Navbar.jsx";
 import Footer from "../components/Footer.jsx";
 import {useNavigate} from "react-router-dom";
-import {Navigate} from "react-router-dom";
 import {useEffect} from "react";
 
 
@@ -56,7 +55,7 @@ export default function UserCreation() {
 
 return (
   <>
-    <Navbar left="COM2008 Systems Design and Security" right="Exam officer"></Navbar>
+    <Navbar left="COM2008 Systems Design and Security" right={userRole}></Navbar>
     {auth ? (
       <div className="login-page">
         <div className="login-card">
@@ -127,7 +126,6 @@ return (
                 <label htmlFor="role">Role </label>
                 <select value={selectedRole} onChange={(e) => setSelectedRole(e.target.value)}>
                   <option value="ADMIN">Admin</option>
-                  <option value="EXAMS_OFFICER">Exams Officer</option>
                   <option value="ACADEMIC_STAFF">Academic Staff</option>
                   <option value="EXTERNAL_EXAMINER">External Examiner</option>
                   </select>

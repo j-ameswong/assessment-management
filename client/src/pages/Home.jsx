@@ -12,7 +12,9 @@ export default function Home() {
       <br></br>
       <Link to="/modules">Modules</Link>
       <br/>
-      <Link to="/create-new-user">Create new user</Link>
+      <Link to="/create-new-user">Create New User</Link>
+      <br/>
+      <Link to="/role-management">Manage Roles</Link>
     </div>
   );
 }
