@@ -7,6 +7,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -39,6 +41,7 @@ public class SecurityConfig {
         http
                 // CORS + CSRF
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .cors(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
 
                 // Authorisation rules
@@ -47,12 +50,14 @@ public class SecurityConfig {
                         .requestMatchers("/api/auth/**").permitAll()
                         // H2 console public
                         .requestMatchers("/h2-console/**").permitAll()
-
                         // Admin and Exams Officer can see all modules
                         .requestMatchers(HttpMethod.GET, "/api/modules").hasAnyRole("ADMIN", "EXAMS_OFFICER")
                         .requestMatchers(HttpMethod.POST, "/api/modules").hasAnyRole("ADMIN", "EXAMS_OFFICER")
                         .requestMatchers(HttpMethod.PUT, "/api/modules/**").hasAnyRole("ADMIN", "EXAMS_OFFICER")
                         .requestMatchers(HttpMethod.DELETE, "/api/modules/**").hasAnyRole("ADMIN", "EXAMS_OFFICER")
+
+                        // module creation
+                        .requestMatchers(HttpMethod.POST, "/api/modules/**").hasAuthority("ROLE_ADMIN")
 
                         // module staff list
                         .requestMatchers(HttpMethod.GET, "/api/modules/*/staff")

@@ -2,24 +2,20 @@ package uk.ac.sheffield.team_project_team_24.controller;
 
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 import uk.ac.sheffield.team_project_team_24.domain.module.Module;
 import uk.ac.sheffield.team_project_team_24.domain.module.ModuleRole;
 import uk.ac.sheffield.team_project_team_24.dto.CreateModuleDTO;
 import uk.ac.sheffield.team_project_team_24.dto.ModuleDTO;
 import uk.ac.sheffield.team_project_team_24.dto.ModuleStaffDTO;
+import uk.ac.sheffield.team_project_team_24.service.ModuleCsvService;
 import uk.ac.sheffield.team_project_team_24.service.ModuleService;
 import uk.ac.sheffield.team_project_team_24.service.ModuleStaffService;
 
@@ -32,13 +28,29 @@ public class ModuleController {
 
     private final ModuleService moduleService;
     private final ModuleStaffService moduleStaffService;
+    private final ModuleCsvService moduleCsvService;
 
     // Create module
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/modules")
     public ResponseEntity<ModuleDTO> createModule(@RequestBody CreateModuleDTO moduleDTO) {
         Module module = moduleService.createModule(moduleDTO);
         return ResponseEntity.ok(ModuleDTO.fromEntity(module));
+    }
+
+    @PostMapping(
+            path = "/modules/uploadCsv",
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity<List<ModuleDTO>> uploadModulesCsv(@RequestPart("file") MultipartFile file) {
+
+        if (file.isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        return ResponseEntity.ok(moduleCsvService.processCsv(file));
     }
 
     // Get one module

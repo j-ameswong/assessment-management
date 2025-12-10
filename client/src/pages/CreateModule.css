@@ -17,8 +17,9 @@
 
 .grid-container {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 450px 450px;
     gap: 150px;
+    margin-top: 70px;
 }
 
 
@@ -202,3 +203,17 @@
 .type-btn:hover {
     background: #6f935f;
 }
+
+/*Select fields styles*/
+.module-input {
+    width: 90%;
+    max-width: 460px;
+}
+
+.module-input .react-select__control {
+    width: 100%;
+    min-height: 50px;
+    border-radius: 20px;
+}
+
+

@@ -1,5 +1,6 @@
 
 import {useEffect, useState} from "react";
+import Select from "react-select";
 import axios from "axios";
 import "./CreateModule.css";
 import Navbar from "../components/Navbar.jsx";
@@ -17,7 +18,12 @@ export default function CreateModule() {
     // Fetch users
     const [staffList, setStaffList] = useState([]);
     useEffect(() => {
-        fetch("http://localhost:8080/api/users")
+        fetch("http://localhost:8080/api/users", {
+            headers: {
+                "Authorization": `Bearer ${localStorage.getItem("token")}`,
+                "Content-Type": "application/json"
+            }
+        })
             .then(res => {
                 console.log("Status code: ", res.status); // for debugging
                 return res.json();
@@ -28,6 +34,28 @@ export default function CreateModule() {
             })
             .catch(err => console.error("Error loading staff members: ", err));
     }, []);
+
+    // Staff
+    const modStaffOptions = staffList.map(user => ({
+        value: user.id,
+        label: `${user.forename} ${user.surname}`
+    }));
+
+    // Filtered options for selection
+    const filteredLeadOptions = modStaffOptions.filter(option =>
+        option.value !== modModerator && !modStaff.includes(option.value)
+    )
+    const filteredModeratorOptions = modStaffOptions.filter(option =>
+        option.value !== modLead && !modStaff.includes(option.value)
+    );
+    const filteredStaffOptions = modStaffOptions.filter(option =>
+        option.value !== modLead && option.value !== modModerator
+    );
+
+    // For debugging : see what users have been selected
+    console.log("Selected lead:", modLead);
+    console.log("Selected moderator:", modModerator);
+    console.log("Selected module staff:", modStaff);
 
     const Create = async () => {
         try {
@@ -48,7 +76,13 @@ export default function CreateModule() {
 
             const response = await axios.post(
                 "http://localhost:8080/api/modules",
-                payload
+                payload,
+                {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem("token")}`,
+                        "Content-Type": "application/json"
+                    }
+                }
             );
 
             console.log("Created:", response.data);
@@ -127,53 +161,67 @@ export default function CreateModule() {
                         {/* right area */}
                         <div className="right-column">
                             <label className="label">Module Lead</label>
-                            <select
-                                id="lead"
-                                value={modLead}
-                                onChange={(e) => setModLead(e.target.value)}
+                            <Select
+                                options={filteredLeadOptions}
+                                value={
+                                    (function() {
+                                        const found = filteredLeadOptions.find(option => option.value === modLead);
+                                        if (found) {
+                                            return found;
+                                        } else {
+                                            return null;
+                                        }
+                                    })()
+                                }
+                                onChange={(option) => {
+                                    if (option) {
+                                        setModLead(option.value);
+                                    } else {
+                                        setModLead("");
+                                    }
+                                }}
                                 className="module-input"
-                            >
-                                <option value="">Select Lead</option>
-                                {staffList.map(user => (
-                                    <option key={user.id} value={user.id}>
-                                        {`${user.forename} ${user.surname}`}
-                                    </option>
-                                ))}
-                            </select>
+                                classNamePrefix="react-select"
+                                placeholder="Select Lead"
+                            />
 
                             <label className="label">Module Moderator</label>
-                            <select
-                                id="moderator"
-                                value={modModerator}
-                                onChange={(e) => setModModerator(e.target.value)}
+                            <Select
+                                options={filteredModeratorOptions}
+                                value={
+                                    (function() {
+                                        const found = filteredModeratorOptions.find(option => option.value === modModerator);
+                                        if (found) {
+                                            return found;
+                                        } else {
+                                            return null;
+                                        }
+                                    })()
+                                }
+                                onChange={(option) => {
+                                    if (option) {
+                                        setModModerator(option.value);
+                                    } else {
+                                        setModModerator("");
+                                    }
+                                }}
                                 className="module-input"
-                            >
-                                <option value="">Select Moderator</option>
-                                {staffList.map(user => (
-                                    <option key={user.id} value={user.id}>
-                                        {`${user.forename} ${user.surname}`}
-                                    </option>
-                                ))}
-                            </select>
+                                classNamePrefix="react-select"
+                                placeholder="Select Moderator"
+                            />
 
                             <label className="label">Module Staff</label>
-                            <select
-                                id="otherStaff"
-                                multiple
-                                value={modStaff}
-                                onChange={(e) =>
-                                    setModStaff(
-                                        Array.from(e.target.selectedOptions, opt => opt.value)
-                                    )
-                                }
+                            <Select
+                                isMulti
+                                options={filteredStaffOptions}
+                                value={filteredStaffOptions.filter(option => modStaff.includes(option.value))}
+                                onChange={(selected) => {
+                                    setModStaff(selected.map(option => option.value));
+                                }}
                                 className="module-input"
-                            >
-                                {staffList.map(user => (
-                                    <option key={user.id} value={user.id}>
-                                        {`${user.forename} ${user.surname}`}
-                                    </option>
-                                ))}
-                            </select>
+                                classNamePrefix="react-select"
+                                placeholder="Select module staff"
+                            />
 
                             <button className="create-btn" onClick={Create}>
                                 Create
