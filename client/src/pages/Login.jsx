@@ -32,6 +32,19 @@ function Login() {
         localStorage.setItem("role", data.role);
 
         setMessage("Login successful");
+        // check if the account must change password on first login
+        const meRes = await fetch("http://localhost:8080/api/auth/me", {
+          headers: { Authorization: `Bearer ${data.token}` }
+        });
+        if (meRes.ok) {
+          const me = await meRes.json();
+          localStorage.setItem("mustChangePassword", String(!!me.mustChangePassword));
+          if (me.mustChangePassword) {
+            navigate("/update-password");
+            return; // stop here so we do not go to /home
+          }
+        }
+
         navigate("/home");
       }
 
