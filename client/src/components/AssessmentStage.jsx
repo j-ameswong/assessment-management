@@ -52,7 +52,7 @@ export default function AssessmentStage({
   return (
     <div className={`stage-card stage-${status}`}>
       <div className="stage-header">
-        <h4 className="stage-title">{title}</h4>
+        <h4 className="stage-title">{`${step}. ${title}`}</h4>
         <span className={`stage-status-label stage-status-${status}`}>
           {status.toUpperCase()}
         </span>
@@ -101,16 +101,16 @@ export default function AssessmentStage({
       {(actor === "SYSTEM" && date && (
         <div>
           {(dateType === "ASSESSMENT_DATE")
-            ? (
+            ? ( // date of exam/test
               <>
                 <span className="stage-info-label">Assessment date: </span>
                 {`${date.toLocaleString()} (${formatTimeDiff(date - Date.now())} remaining)`}
               </>
             )
-            : (
+            : ( // deadline for coursework submission
               <>
                 <span className="stage-info-label">Deadline: </span>
-                {date.toLocaleString()}
+                {`${date.toLocaleString()} (${formatTimeDiff(date - Date.now())} remaining)`}
               </>
             )
           }
