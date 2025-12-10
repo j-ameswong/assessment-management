@@ -203,6 +203,8 @@ export default function AssessmentProgression() {
             setNote={setNote}
             setFurtherActionReq={setFurtherActionReq}
             summaryRequired={stage.summaryRequired}
+            logs={logsByStage[stage.id] || []}
+            moduleStaff={module?.moduleStaff || []}
           />
         ))}
       </div>

@@ -16,9 +16,15 @@ export default function AssessmentStage({
   note,
   setNote,
   summaryRequired,
+  logs,
+  moduleStaff
 }) {
 
   const [isChecked, setIsChecked] = useState(false);
+
+  const [expanded, setExpanded] = useState(false);
+
+  const toggleExpanded = () => setExpanded(e => !e);
 
   const onCheckHandler = () => {
     setIsChecked(!isChecked);
@@ -32,6 +38,12 @@ export default function AssessmentStage({
     return newStr;
 
   }
+
+  const getActorName = (id) => {
+    const staff = moduleStaff.find(s => s.staffId === id);
+    if (!staff) return "Unknown";
+    return `${staff.forename} ${staff.surname}`;
+  };
 
   return (
     <div className={`stage-card stage-${status}`}>
@@ -106,6 +118,31 @@ export default function AssessmentStage({
           Reverse Stage
         </button>)
       }
+
+      {/* expand button */}
+      {(logs.length > 0) && (
+        <div className="stage-expand-toggle" onClick={toggleExpanded}>
+          {expanded ? "▲ Hide Logs" : "▼ Show Logs"}
+        </div>
+      )}
+
+      {expanded && (logs.length > 0) && (
+        <div className="stage-logs-container">
+          {logs.length === 0 ? (
+            <p className="no-logs">No logs for this stage.</p>
+          ) : (
+            logs.map(log => (
+              <div key={log.id} className="stage-log-entry">
+                <p><strong>Actor:</strong> {getActorName(log.actedById)}</p>
+                <p><strong>Time:</strong> {new Date(log.changedAt).toLocaleString()}</p>
+                <p><strong>Status:</strong> {log.isComplete ? "Complete" : "Pending"}</p>
+                {log.note && <p><strong>Note:</strong> {log.note}</p>}
+                <hr />
+              </div>
+            ))
+          )}
+        </div>
+      )}
     </div>
   )
 }
