@@ -18,8 +18,8 @@ public class AssessmentDTO {
     private Long assessmentStageId;
     private Long moduleId;
     private Long setterId;
-    private Long externalExaminerId;
     private Long checkerId;
+    private UserDTO externalExaminer;
 
     public static AssessmentDTO fromEntity(Assessment a) {
         return new AssessmentDTO(
@@ -31,8 +31,8 @@ public class AssessmentDTO {
                 a.getAssessmentStage().getId(),
                 a.getModule() != null ? a.getModule().getId() : null,
                 a.getSetter() != null ? a.getSetter().getId() : null,
-                a.getExternalExaminer() != null ? a.getExternalExaminer().getId() : null,
-                a.getChecker() != null ? a.getChecker().getId() : null);
+                a.getChecker() != null ? a.getChecker().getId() : null,
+                a.getExternalExaminer() != null ? new UserDTO(a.getExternalExaminer()) : null);
     }
 
     // public Assessment toEntity() {

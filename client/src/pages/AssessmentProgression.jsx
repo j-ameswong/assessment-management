@@ -30,7 +30,8 @@ export default function AssessmentProgression() {
   if (!progress) return <p>Loading...</p>;
 
   // extract data from dto
-  const { module, assessment, assessmentStages, assessmentStageLogs } = progress;
+  const { module, assessment, assessmentStages, assessmentStageLogs,
+    examsOfficer, system } = progress;
 
   // always ensure placeholder if api missing data
   const moduleTitle = module
@@ -62,6 +63,7 @@ export default function AssessmentProgression() {
     s.staffId === Number(localStorage.getItem("userId")))?.moduleRole);
   if (assessment?.setterId === id) { roles.push("SETTER") };
   if (assessment?.checkerId === id) { roles.push("CHECKER") };
+  if (assessment?.externalExaminer.id === id) { roles.push("EXTERNAL_EXAMINER") };
 
   // group logs by stageId
   const logsByStage = {};
@@ -108,12 +110,18 @@ export default function AssessmentProgression() {
           actingStaff = module.moduleStaff.find(s => s.moduleRole === "MODERATOR");
           actorName = (actingStaff.forename + " " + actingStaff.surname);
           break;
+        case "EXAMS_OFFICER":
+          actorName = `${examsOfficer.forename} ${examsOfficer.surname}`;
+          break;
+        case "EXTERNAL_EXAMINER":
+          actorName = `${assessment.externalExaminer.forename} ${assessment.externalExaminer.surname}`;
+          break;
         case "ANY":
           actorName = ("Any staff member");
           break;
         default:
+          actorName = "ADMIN";
           break;
-        // TODO: EXAMS_OFFICER, ADMIN, SYSTEM, EXTERNAL_EXAMINER
       }
       // determine if enable button is true based on status & user
       let enableButton = false;

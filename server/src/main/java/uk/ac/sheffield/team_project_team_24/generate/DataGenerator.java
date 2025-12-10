@@ -143,6 +143,7 @@ public class DataGenerator {
                         ModuleRole.MODULE_LEAD));
                 newAssessment.setChecker(moduleStaffService.getUserByRole(m.getId(),
                         ModuleRole.MODERATOR));
+                newAssessment.setExternalExaminer(userService.getExternalExaminer());
                 newAssessment.setAssessmentType(AssessmentType.getAllTypes().get(
                         new Random().nextInt(3)));
                 // this will cause problems occasionally skull:

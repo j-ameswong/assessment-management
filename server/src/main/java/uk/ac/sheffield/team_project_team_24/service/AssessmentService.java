@@ -20,6 +20,7 @@ import uk.ac.sheffield.team_project_team_24.dto.AssessmentProgressDTO;
 import uk.ac.sheffield.team_project_team_24.dto.AssessmentStageDTO;
 import uk.ac.sheffield.team_project_team_24.dto.AssessmentStageLogDTO;
 import uk.ac.sheffield.team_project_team_24.dto.ModuleDTO;
+import uk.ac.sheffield.team_project_team_24.dto.UserDTO;
 import uk.ac.sheffield.team_project_team_24.exception.assessment.AssessmentNotFoundException;
 import uk.ac.sheffield.team_project_team_24.repository.AssessmentRepository;
 
@@ -67,8 +68,8 @@ public class AssessmentService {
                         .toList(),
                 AssessmentDTO.fromEntity(a),
                 ModuleDTO.fromEntity(a.getModule()),
-                userService.getExamsOfficer().getId(),
-                userService.getAdmin().getId());
+                new UserDTO(userService.getExamsOfficer()),
+                new UserDTO(userService.getAdmin()));
     }
 
     // For when actor is not system
