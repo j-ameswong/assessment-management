@@ -1,5 +1,5 @@
 import React from 'react';
-import {Routes, Route, useLocation} from "react-router-dom";
+import { Routes, Route, useLocation } from "react-router-dom";
 import Login from "./pages/Login.jsx";
 import Home from "./pages/Home.jsx";
 import Modules from './pages/Modules.jsx';

@@ -53,12 +53,6 @@ export default function AssessmentProgression() {
     }
   }
 
-  // const completedLogs = assessmentStageLogs?.filter(log => log.isComplete)
-  //   .sort((a, b) => new Date(a.changedAt) - new Date(b.changedAt)) ?? [];
-  //
-  // const lastCompletedStageId = completedLogs.at(-1)?.assessmentStageId ?? null;
-  // const lastCompletedStage = assessmentStages?.find(s => s.id === lastCompletedStageId) ?? {};
-  // const lastCompletedStep = lastCompletedStage?.step ?? 0;
   const currentStep = assessmentStages?.find(
     s => s.id === assessment.assessmentStageId)?.step ?? 0;
 
@@ -69,6 +63,20 @@ export default function AssessmentProgression() {
   if (assessment?.setterId === id) { roles.push("SETTER") };
   if (assessment?.checkerId === id) { roles.push("CHECKER") };
 
+  // group logs by stageId
+  const logsByStage = {};
+  for (const log of assessmentStageLogs ?? []) {
+    const id = log.assessmentStageId;
+    if (!logsByStage[id]) logsByStage[id] = [];
+    logsByStage[id].push(log);
+  }
+
+  // sort logs oldest → newest
+  for (const key in logsByStage) {
+    logsByStage[key].sort((a, b) => new Date(a.changedAt) - new Date(b.changedAt));
+  }
+
+  // stages with status for AssessmentStage
   const stagesWithStatus = assessmentStages?.sort((a, b) => a.step - b.step)
     .map(stage => {
       let log = latestLogs[stage.id];
