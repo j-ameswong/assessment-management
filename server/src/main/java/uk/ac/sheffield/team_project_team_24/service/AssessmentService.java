@@ -182,10 +182,13 @@ public class AssessmentService {
         if (a.getAssessmentStage().getStep() == 1) {
             return a;
         } else {
+            // mark this current stage as incomplete then set stage to prev
+            log(a, userService.getUser(adminId), "Reversed by admin/exams officer", false);
             AssessmentStage prevStage = assessmentStageService.getPrevStage(
                     a.getAssessmentStage());
             a.setAssessmentStage(prevStage);
-            log(a, userService.getUser(adminId), "Reversed by admin/exams officer", false);
+            // mark the prev stage as incomplete
+            log(a, userService.getUser(adminId), "Reversed from next stage by admin/exams officer", false);
 
             assessmentRepository.save(a);
             return a;

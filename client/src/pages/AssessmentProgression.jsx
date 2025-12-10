@@ -3,6 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import Axios from "axios";
 import Navbar from "../components/Navbar.jsx";
 import "./AssessmentProgression.css";
+import AssessmentInfo from "../components/AssessmentInfo.jsx";
 import AssessmentStage from "../components/AssessmentStage.jsx";
 
 export default function AssessmentProgression() {
@@ -31,7 +32,7 @@ export default function AssessmentProgression() {
 
   // extract data from dto
   const { module, assessment, assessmentStages, assessmentStageLogs,
-    examsOfficer, system } = progress;
+    examsOfficer } = progress;
 
   // always ensure placeholder if api missing data
   const moduleTitle = module
@@ -192,6 +193,12 @@ export default function AssessmentProgression() {
   return (
     <>
       <div className="assessment-progress-container">
+        <AssessmentInfo
+          assessment={assessment}
+          module={module}
+          currentStage={assessmentStages?.find(s => s.id === assessment.assessmentStageId)}
+        />
+
         <h2 className="assessment-progress-title">Assessment Progress</h2>
 
         {stagesWithStatus.map(stage => (
