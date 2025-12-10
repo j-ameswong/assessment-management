@@ -60,7 +60,6 @@ export default function EditModule() {
 
     return (
         <>
-            <Navbar left="Editing module: module name" right="Role" />
             <div className="module-page">
                 <div className="module-container">
                     <h1 className="title">Editing module: module name</h1>

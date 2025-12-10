@@ -4,10 +4,9 @@ import "./Navbar.css";
 
 export default function Navbar() {
   const { user } = useContext(UserContext);
+  const primaryRole = user?.role;
 
   console.log("Navbar user:", user);
-
-  const primaryRole = user?.role;
 
   return (
     <header className="navbar">

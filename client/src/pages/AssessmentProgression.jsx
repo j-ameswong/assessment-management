@@ -176,8 +176,6 @@ export default function AssessmentProgression() {
 
   return (
     <>
-      <Navbar left={moduleTitle} right="Exam officer" />
-
       <div className="assessment-progress-container">
         <h2 className="assessment-progress-title">Assessment Progress</h2>
 

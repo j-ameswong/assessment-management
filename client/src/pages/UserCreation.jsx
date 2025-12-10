@@ -22,7 +22,6 @@ export default function UserCreation() {
 
 return (
   <>
-    <Navbar left="COM2008 Systems Design and Security" right="Exam officer"></Navbar>
     {auth ? (
       <div className="login-page">
         <div className="login-card">
