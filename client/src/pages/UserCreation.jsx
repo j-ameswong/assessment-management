@@ -42,6 +42,11 @@ export default function UserCreation() {
         setMessage("Failed to create user");
       } else {
         setMessage("User created successfully");
+        navigate("/create-new-user", {replace: true});
+        setSurname("");
+        setForename("");
+        setEmail("");
+        setPassword("");
       }
     } catch (error) {
       console.error(error);
