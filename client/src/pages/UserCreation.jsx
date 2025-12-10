@@ -1,15 +1,24 @@
 import React from "react";
 import Navbar from "../components/Navbar.jsx";
 import Footer from "../components/Footer.jsx";
+import {useNavigate} from "react-router-dom";
+import {Navigate} from "react-router-dom";
+import {useEffect} from "react";
 
-export default function UserCreation(){
 
-  const userRole = localStorage.getItem('userRole');
+
+export default function UserCreation() {
+
+  const navigate = useNavigate();
+  const userRole = localStorage.getItem('role');
   const auth = userRole === 'EXAMS_OFFICER' || userRole === 'ADMIN';
-<<<<<<< HEAD
-=======
+
+  useEffect(() =>{
+    if (!auth) {
+      navigate("/home", {replace: true});
+    }
+  }, [navigate]);
   const [selectedRole, setSelectedRole] = React.useState("ADMIN");
->>>>>>> user-creation
 
 return (
   <>
