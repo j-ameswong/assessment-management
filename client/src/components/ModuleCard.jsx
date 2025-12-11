@@ -6,21 +6,21 @@ import dropdownIcon from "../assets/moduleCardDropdown.png"
 
 // Dropdown arrow source: "https://www.flaticon.com/free-icons/down-arrow"
 
-export default function ModuleCard({ moduleId, moduleCode, moduleTitle, isOpen, onToggle }) {
+export default function ModuleCard({ module, isOpen, onToggle }) {
   return (
     <div className="module-box">
-      <h2 className="module-code">{moduleCode}</h2>
+      <Link to={`/modules/${module.id}/assessments`} className="module-code">{module.moduleCode}</Link>
       <div className="module-info">
         <div className="module-title-dropdown-row">
-          <p className="module-title">{moduleTitle}</p>
+          <p className="module-title">{module.moduleName}</p>
           <button className="dropdown-btn" onClick={onToggle}>
             <img className="dropdown-icon" src={dropdownIcon}></img>
           </button>
           {isOpen && (
             <div className="dropdown-content">
-              <Link to={`/modules/${moduleId}/assessments`} className="dropdown-link">See assignments</Link>
-              <Link to={`/modules/edit/${moduleCode}`} className="dropdown-link">Edit module details</Link>
-              <Link to={`/modules/delete/${moduleCode}`} className="dropdown-link">Delete module</Link>
+              <Link to={`/modules/${module.id}/assessments`} className="dropdown-link">See assignments</Link>
+              <Link to={`/modules/edit/${module.moduleCode}`} className="dropdown-link">Edit module details</Link>
+              <Link to={`/modules/delete/${module.moduleCode}`} className="dropdown-link">Delete module</Link>
             </div>
           )}
         </div>
