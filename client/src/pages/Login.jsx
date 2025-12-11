@@ -45,7 +45,7 @@ function Login() {
           }
         }
 
-        navigate("/home");
+        navigate("/modules");
       }
 
     } catch (error) {
