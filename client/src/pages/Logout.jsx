@@ -6,6 +6,6 @@ export default function Logout() {
 
   useEffect(() => {
     localStorage.clear();
-    navigate("/");
+    navigate("/login");
   }, [navigate]);
 }

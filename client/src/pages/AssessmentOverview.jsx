@@ -19,7 +19,7 @@ export default function AssessmentOverview() {
     const fetchOverview = async () => {
       try {
         const response = await Axios.get(
-          ((role === "ADMIN" || role === "EXAMS_OFFICER") && (!moduleId)
+          ((role === "ADMIN" || role === "EXAMS_OFFICER") && (moduleId)
             ? `http://localhost:8080/api/modules/${moduleId}/assessments`
             : `http://localhost:8080/api/assessments`),
           {
@@ -100,9 +100,13 @@ export default function AssessmentOverview() {
   return (
     <>
       <div className="ao-wrap">
-        <ModuleInfo module={overview?.module} />
-        <h2 className="ao-subtitle">Assessment Overview</h2>
-        <hr />
+        {moduleId && (
+          <>
+            <ModuleInfo module={overview?.modules[0]} />
+            <h2 className="ao-subtitle">Assessment Overview</h2>
+            <hr />
+          </>
+        )}
 
         <div className="ao-grid">
           {CARDS.map((c) => (!c.hidden &&

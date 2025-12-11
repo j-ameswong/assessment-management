@@ -23,6 +23,7 @@ import uk.ac.sheffield.team_project_team_24.service.AttachmentService;
 import uk.ac.sheffield.team_project_team_24.service.CsvService;
 import uk.ac.sheffield.team_project_team_24.service.ModuleService;
 
+import java.util.Arrays;
 import java.util.List;
 
 @RestController
@@ -53,11 +54,22 @@ public class AssessmentController {
 
     // Get all assessments
     @GetMapping("/assessments")
-    public ResponseEntity<List<AssessmentDTO>> list() {
+    public ResponseEntity<AssessmentOverviewDTO> list() {
+        List<ModuleDTO> moduleDTO = moduleService.getModules()
+                .stream()
+                .map(ModuleDTO::fromEntity)
+                .toList();
+        List<AssessmentDTO> assessmentDTOs = assessmentService.getAllAssessments()
+                .stream()
+                .map(AssessmentDTO::fromEntity)
+                .toList();
+        List<AssessmentStageDTO> assessmentStageDTOs = assessmentStageService.getAllStages()
+                .stream()
+                .map(AssessmentStageDTO::fromEntity)
+                .toList();
+
         return ResponseEntity.ok(
-                assessmentService.getAllAssessments().stream()
-                        .map(AssessmentDTO::fromEntity)
-                        .toList());
+                AssessmentOverviewDTO.combineEntities(moduleDTO, assessmentDTOs, assessmentStageDTOs));
     }
 
     // Update assessment
@@ -158,7 +170,7 @@ public class AssessmentController {
                 .toList();
 
         return ResponseEntity.ok(
-                AssessmentOverviewDTO.combineEntities(moduleDTO, assessmentDTOs, assessmentStageDTOs));
+                AssessmentOverviewDTO.combineEntities(Arrays.asList(moduleDTO), assessmentDTOs, assessmentStageDTOs));
     }
 
     @GetMapping("/assessments/stages")
