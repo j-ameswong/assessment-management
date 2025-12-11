@@ -39,7 +39,7 @@ export default function Navbar() {
 
             {(primaryRole === "ADMIN" || primaryRole === "EXAMS_OFFICER") && (
               <div className="navbar-dropdown">
-                <button className="navbar-dropbtn">Admin</button>
+                <button className="navbar-dropbtn">▼</button>
                 <div className="navbar-dropdown-content">
                   <Link
                     className="navbar-dropdown-item"
