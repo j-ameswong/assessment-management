@@ -27,7 +27,7 @@
 }
 
 .logs-back-btn:hover {
-  background: #c9b8ff;
+  background: #ad9aec;
 }
 
 
@@ -53,6 +53,12 @@
 }
 
 
+.logs-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
 .logs-table th,
 .logs-table td {
   border: 1px solid #e0d5ff;
@@ -60,8 +66,35 @@
   vertical-align: top;
 }
 
+
+.logs-table thead tr:first-child th {
+  border-top: none;
+}
+
+.logs-table tr:last-child td {
+  border-bottom: none;
+}
+
+.logs-table tr th:first-child,
+.logs-table tr td:first-child {
+  border-left: none;
+}
+
+.logs-table tr th:last-child,
+.logs-table tr td:last-child {
+  border-right: none;
+}
+
 .logs-table th {
   background-color: #ded3ff;
   color: #2b2250;
   text-align: left;
+}
+
+
+.logs-table-wrapper {
+  margin-top: 8px;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid #e0d5ff;
 }

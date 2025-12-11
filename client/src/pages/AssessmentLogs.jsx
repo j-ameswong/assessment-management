@@ -137,37 +137,40 @@ export default function AssessmentLogs() {
         </label>
       </div>
 
-      {sortedLogs.length === 0 ? (
+        {sortedLogs.length === 0 ? (
         <p>No logs recorded for this assessment.</p>
-      ) : (
-        <table className="logs-table">
-          <thead>
-            <tr>
-              <th>Time</th>
-              <th>Stage</th>
-              <th>Role</th>
-              <th>Actor</th>
-              <th>Status</th>
-              <th>Note</th>
-            </tr>
-          </thead>
-          <tbody>
-            {sortedLogs.map((log) => (
-              <tr key={log.id}>
-                <td>{new Date(log.changedAt).toLocaleString()}</td>
-                <td>
-                  {log.step != null ? `${log.step}. ` : ""}
-                  {log.stageDescription}
-                </td>
-                <td>{log.role.replaceAll("_", " ")}</td>
-                <td>{log.actorName}</td>
-                <td>{log.isComplete ? "Complete" : "Pending"}</td>
-                <td>{log.note || ""}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      )}
+        ) : (
+        <div className="logs-table-wrapper">
+            <table className="logs-table">
+            <thead>
+                <tr>
+                <th>Time</th>
+                <th>Stage</th>
+                <th>Role</th>
+                <th>Actor</th>
+                <th>Status</th>
+                <th>Note</th>
+                </tr>
+            </thead>
+            <tbody>
+                {sortedLogs.map((log) => (
+                <tr key={log.id}>
+                    <td>{new Date(log.changedAt).toLocaleString()}</td>
+                    <td>
+                    {log.step != null ? `${log.step}. ` : ""}
+                    {log.stageDescription}
+                    </td>
+                    <td>{log.role.replaceAll("_", " ")}</td>
+                    <td>{log.actorName}</td>
+                    <td>{log.isComplete ? "Complete" : "Pending"}</td>
+                    <td>{log.note || ""}</td>
+                </tr>
+                ))}
+            </tbody>
+            </table>
+        </div>
+        )}
+
     </div>
   );
 }
