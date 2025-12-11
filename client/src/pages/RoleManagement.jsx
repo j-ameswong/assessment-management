@@ -59,7 +59,7 @@ export default function RoleManagement () {
 
     useEffect(() =>{
     if (!auth) {
-    navigate("/home", {replace: true});
+    navigate("/users/delete", {replace: true});
     }
     }, [navigate]); //sends the user to home if they arent an exams officer
 

@@ -14,7 +14,7 @@ export default function UserCreation() {
 
   useEffect(() => {
     if (!auth) {
-      navigate("/home", {replace: true}); //navigates back to the home page if the user is unauthorised
+      navigate("/users/delete", {replace: true}); //navigates back to the home page if the user is unauthorised
     }
   }, [navigate]);
 
