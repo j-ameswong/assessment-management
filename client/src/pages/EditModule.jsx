@@ -203,7 +203,7 @@ export default function EditModule() {
                             />
 
                             <button className="create-btn" onClick={Edit}>
-                                Create
+                                Update
                             </button>
                         </div>
 
