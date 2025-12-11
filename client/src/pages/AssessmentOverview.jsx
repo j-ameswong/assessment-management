@@ -20,7 +20,7 @@ export default function AssessmentOverview() {
     const fetchOverview = async () => {
       try {
         const response = await Axios.get(
-          ((role === "ADMIN" || role === "EXAMS_OFFICER") && (moduleId)
+          ((role === "ADMIN" || role === "EXAMS_OFFICER") && (!moduleId)
             ? `http://localhost:8080/api/assessments`
             : `http://localhost:8080/api/modules/${moduleId}/assessments`),
           {
@@ -65,7 +65,8 @@ export default function AssessmentOverview() {
     status: "Stage: " + (stages[a.assessmentStageId - 1]?.step ?? "0")
       + "/" + (stages?.filter(s => s.assessmentType === a.type)).length, //getStage(a.assessmentStageId),
     type: (a.isActive ? (a.isComplete ? "ok" : "warn") : "danger"),
-    show: a.isActive || (role === "ADMIN" || role === "EXAMS_OFFICER")
+    show: a.isActive || (role === "ADMIN" || role === "EXAMS_OFFICER"),
+    moduleId: a.moduleId
   }
   ))
 
@@ -141,7 +142,7 @@ export default function AssessmentOverview() {
               <button
                 className="ao-details"
                 onClick={() =>
-                  navigate(`/modules/${moduleId}/assessments/${c.key}/progress`)
+                  navigate(`/modules/${c.moduleId}/assessments/${c.key}/progress`)
                 }
                 aria-label={`Open ${c.title}`}
               >

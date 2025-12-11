@@ -152,12 +152,16 @@ public class AssessmentService {
 
         // if previous stage is still incomplete, always revert
         // spagetthi, TODO: fix this mess
+        // if last stage, set assessment to complete
         if (assessment.getAssessmentStage() == assessmentStageService.getLastStage(assessment.getAssessmentType())) {
             log(assessment, userService.getUser(actorId), note, !furtherActionReq);
             if (!furtherActionReq) {
                 assessment.setIsComplete(true);
             }
+            // otherwise, check if stage is first stage,
+            // then decide to log bsaed on furtherActionReq
         } else if (assessment.getAssessmentStage().getStep() != 1
+                // if previous step is not complete, always revert
                 && !getLastLogOfStep(assessment,
                         assessment.getAssessmentStage().getStep() - 1)
                         .getIsComplete()) {

@@ -241,7 +241,7 @@ export default function AssessmentProgression() {
   };
 
   const goBack = () => {
-    navigate(`/modules/${moduleId}/assessments`);
+    navigate(`/modules/${module.id}/assessments`);
   }
 
   return (
