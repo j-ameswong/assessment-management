@@ -31,6 +31,7 @@ To run backend:
 
 To run frontend:
 - Navigate to directory 'client'
+- Run `npm install` to install dependencies (if first time running)
 - Run 'npm run dev' in CLI (dev command currently)
 
 ## Generating RSA key pair 
@@ -57,4 +58,9 @@ password: test
 role : ADMIN
 ```
 <img width="887" height="228" alt="image" src="https://github.com/user-attachments/assets/1a040784-0ed3-4471-8ed7-8f1c2b0b2d8a" />
+
+### Workflow
+- User home page is a list of their assigned modules. The teaching support team (admins) will see all active (non-deleted) modules
+- Clicking <strong>See assignments</strong> under the module card dropdown will redirect to the list of assessments under that module
+- Clicking assessment details leads to the progression and stage tracking/advance of that assessment. Admins can progress and advance stages at any time, while regular users can only advance stages they have the right context/role for.
 
