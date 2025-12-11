@@ -32,19 +32,15 @@
     align-items: center;
 }
 
-li {
-    color: white;
-}
 
-table {
+.table {
     width: 100%;
     border-collapse: collapse;
     font-size: 0.9rem;
 }
 
-td {
+.table td {
     border: 1px solid #e0d5ff;
     padding: 6px 8px;
     vertical-align: top;
-    color: white
 }

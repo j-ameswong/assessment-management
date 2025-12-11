@@ -77,7 +77,7 @@ export default function RoleManagement () {
               <div className="card">
                 <div className="main">
                   <div className="table-wrapper">
-                    <table>
+                    <table class = "table">
                       <tbody>
                         {names.map((user) => (
                           <tr>
