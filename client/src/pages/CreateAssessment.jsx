@@ -21,6 +21,7 @@ export default function CreateAssessment() {
   // Staff lists
   const [moduleStaff, setModuleStaff] = useState([]);
   const [checkerCandidates, setCheckerCandidates] = useState([]);
+  const [externalExaminers, setExternalExaminers] = useState([]); 
 
   // Setter/Checker/External Examiner
   const [setterId, setSetterId] = useState('');
@@ -101,9 +102,14 @@ export default function CreateAssessment() {
 
       // default setter = module lead
       const lead = staff.find(s => s.moduleRole === "MODULE_LEAD");
-      if (lead) setSetterId(String(lead.staffId));
+      if (lead) {
+        setSetterId(String(lead.staffId));
+      } else {
+        setSetterId('');
+      }
 
-      // fetch all staff
+      const moderator = staff.find(s => s.moduleRole === "MODERATOR");
+
       const resAll = await axios.get(
         "http://localhost:8080/api/users",
         { headers: { Authorization: `Bearer ${token}` } }
@@ -111,13 +117,30 @@ export default function CreateAssessment() {
 
       const allUsers = resAll.data;
 
-      const filtered = allUsers.filter(u =>
-        ["ACADEMIC_STAFF", "EXAMS_OFFICER", "EXTERNAL_EXAMINER"].includes(u.role) &&
+      const externalList = allUsers.filter(u => u.role === "EXTERNAL_EXAMINER");
+      setExternalExaminers(externalList);
+
+      let checkerList = allUsers.filter(u =>
+        ["ACADEMIC_STAFF", "EXAMS_OFFICER"].includes(u.role) && 
         !staff.some(ms => ms.staffId === u.id)
       );
 
+      if (moderator) {
+        const moderatorCandidate = {
+          id: moderator.staffId,
+          forename: moderator.forename,
+          surname: moderator.surname,
+          role: "MODERATOR"
+        };
 
-      setCheckerCandidates(filtered);
+        checkerList = [moderatorCandidate, ...checkerList];
+
+        setCheckerId(String(moderator.staffId));
+      } else {
+        setCheckerId('');
+      }
+
+      setCheckerCandidates(checkerList);
 
     } catch (err) {
       console.error("Failed to load staff", err);
@@ -310,14 +333,16 @@ export default function CreateAssessment() {
                       <label className="label">Setter</label>
                       <select value={setterId} onChange={e => setSetterId(e.target.value)}>
                         <option value="">-- Select Setter --</option>
-                        {moduleStaff.map(s => (
-                          <option
-                            key={s.staffId}
-                            value={String(s.staffId)}
-                          >
-                            {s.forename} {s.surname} — {s.moduleRole}
-                          </option>
-                        ))}
+                        {moduleStaff
+                          .filter(s => s.moduleRole !== "MODERATOR") 
+                          .map(s => (
+                            <option
+                              key={s.staffId}
+                              value={String(s.staffId)}
+                            >
+                              {s.forename} {s.surname} — {s.moduleRole}
+                            </option>
+                          ))}
                       </select>
 
 
@@ -334,13 +359,11 @@ export default function CreateAssessment() {
                       <label className="label">External Examiner</label>
                       <select value={externalExaminerId} onChange={e => setExternalExaminerId(e.target.value)}>
                         <option value="">-- Select External Examiner --</option>
-                        {checkerCandidates
-                          .filter(c => c.role === "EXTERNAL_EXAMINER")
-                          .map(c => (
-                            <option key={c.id} value={c.id}>
-                              {c.forename} {c.surname}
-                            </option>
-                          ))}
+                        {externalExaminers.map(e => (
+                          <option key={e.id} value={e.id}>
+                            {e.forename} {e.surname}
+                          </option>
+                        ))}
                       </select>
 
                     </>
