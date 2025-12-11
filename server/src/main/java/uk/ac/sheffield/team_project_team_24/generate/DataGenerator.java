@@ -158,13 +158,13 @@ public class DataGenerator {
 
                 switch (newAssessment.getAssessmentType()) {
                     case EXAM:
-                        newAssessment.setExamDate(LocalDateTime.now().plusDays(1));
+                        newAssessment.setExamDate(LocalDateTime.now().plusMinutes(1));
                         break;
                     case TEST:
-                        newAssessment.setExamDate(LocalDateTime.now().plusDays(1));
+                        newAssessment.setExamDate(LocalDateTime.now().plusMinutes(1));
                         break;
                     case COURSEWORK:
-                        newAssessment.setDeadline(LocalDateTime.now().plusDays(1));
+                        newAssessment.setDeadline(LocalDateTime.now().plusMinutes(1));
                         break;
                 }
 

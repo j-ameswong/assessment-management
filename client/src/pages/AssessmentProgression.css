@@ -7,8 +7,10 @@
 .assessment-progress-title {
   text-align: center;
   font-family: sans-serif;
-  margin-bottom: 20px;
-  font-weight: 600;
+  font-size: 30px;
+  margin-top: 50px;
+  margin-bottom: 10px;
+  font-weight: 400;
   color: #4b0082;
 }
 

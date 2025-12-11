@@ -213,6 +213,7 @@ export default function AssessmentProgression() {
         />
 
         <h2 className="assessment-progress-title">Assessment Progress</h2>
+        <hr />
 
         {stagesWithStatus.map(stage => (
           <AssessmentStage

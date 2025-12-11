@@ -33,6 +33,7 @@ export default function AssessmentStage({
   }
 
   const formatTimeDiff = (ms) => {
+    if (ms < 0) { ms = 0; window.location.reload() };
     const seconds = Math.floor(ms / 1000) % 60;
     const minutes = Math.floor(ms / (1000 * 60)) % 60;
     const hours = Math.floor(ms / (1000 * 60 * 60)) % 24;
@@ -98,7 +99,7 @@ export default function AssessmentStage({
         </div>
       )}
 
-      {(actor === "SYSTEM" && date && (
+      {date && ((date - Date.now()) / 1000 > -1) && (actor === "SYSTEM") && (
         <div>
           {(dateType === "ASSESSMENT_DATE")
             ? ( // date of exam/test
@@ -114,7 +115,24 @@ export default function AssessmentStage({
               </>
             )
           }
-        </div>))}
+        </div>)}
+
+      {date && ((date - Date.now()) < 0) && (actor === "SYSTEM") && (
+        <div>
+          {(dateType === "ASSESSMENT_DATE")
+            ? (
+              <>
+                <span className="stage-info-label">Assessment date:</span>
+                The exam/test has already been held
+              </>
+            )
+            : (
+              <>
+                <span className="stage-info-label">Deadline:</span>
+                The deadline has already passed
+              </>
+            )}
+        </div>)}
 
       {(status === "pending") && (
         <div className="stage-info-row">

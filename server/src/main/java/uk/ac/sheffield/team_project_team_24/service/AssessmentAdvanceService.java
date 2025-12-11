@@ -44,7 +44,7 @@ public class AssessmentAdvanceService {
                     System.out.println(statusString + testDate);
                     if (LocalDateTime.now().isAfter(testDate)) {
                         assessmentService.advanceStage(a.getId(), userService.getAdmin().getId(),
-                                "The test has been held, progressed automatically by system", false);
+                                "The test has been held, progressed automatically by the system", false);
                     }
                     break;
                 case EXAM:
@@ -52,7 +52,7 @@ public class AssessmentAdvanceService {
                     System.out.println(statusString + examDate);
                     if (LocalDateTime.now().isAfter(examDate)) {
                         assessmentService.advanceStage(a.getId(), userService.getAdmin().getId(),
-                                "The exam has been held, progressed automatically by system", false);
+                                "The exam has been held, progressed automatically by the system", false);
                     }
                     break;
                 case COURSEWORK:
@@ -60,7 +60,7 @@ public class AssessmentAdvanceService {
                     System.out.println(statusString + deadline);
                     if (LocalDateTime.now().isAfter(deadline)) {
                         assessmentService.advanceStage(a.getId(), userService.getAdmin().getId(),
-                                "Coursework deadline has passed, progressed automatically by system", false);
+                                "Coursework deadline has passed, progressed automatically by the system", false);
                     }
                     break;
                 default:
