@@ -77,6 +77,7 @@ function Modules() {
             <ModuleCard
               key={mod.moduleCode}
               userId={localStorage.getItem("userId")}
+              role={localStorage.getItem("role")}
               module={mod}
               isOpen={openDropdown === mod.moduleCode}
               onToggle={() => setOpenDropdown(openDropdown === mod.moduleCode ? null : mod.moduleCode)}

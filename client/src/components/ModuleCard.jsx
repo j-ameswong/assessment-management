@@ -6,8 +6,19 @@ import dropdownIcon from "../assets/moduleCardDropdown.png"
 
 // Dropdown arrow source: "https://www.flaticon.com/free-icons/down-arrow"
 
-export default function ModuleCard({ module, userId, isOpen, onToggle }) {
-  const contextRole = module?.moduleStaff.find(s => s.staffId === userId)?.moduleRole ?? "Staff";
+export default function ModuleCard({ module, userId, role, isOpen, onToggle }) {
+  const contextRole = (role == "EXAMS_OFFICER" || role == "ADMIN")
+    ? role
+    : module?.moduleStaff.find(s => s.staffId == userId)?.moduleRole ?? "PLACEHOLDER"
+
+
+  const toCapitalize = (str) => {
+    let newStr = str.replaceAll("_", " ");
+    newStr = newStr[0] + newStr.slice(1).toLowerCase();
+
+    return newStr;
+  }
+
   return (
     <div className="module-box">
       <Link to={`/modules/${module.id}/assessments`} className="module-code">{module.moduleCode}</Link>
@@ -15,7 +26,7 @@ export default function ModuleCard({ module, userId, isOpen, onToggle }) {
         <div className="module-title-dropdown-row">
           <div className="module-title">
             <p>{module.moduleName}</p>
-            {`(${contextRole.split(1)})`}
+            {`(${toCapitalize(contextRole)})`}
           </div>
           <button className="dropdown-btn" onClick={onToggle}>
             <img className="dropdown-icon" src={dropdownIcon}></img>
