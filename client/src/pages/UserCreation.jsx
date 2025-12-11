@@ -12,7 +12,7 @@ export default function UserCreation() {
   const auth = userRole === 'EXAMS_OFFICER' || userRole === 'ADMIN';  //ensures the user accessing the page is an admin/exam officer
   const [message, setMessage] = useState("");
 
-  useEffect(() =>{
+  useEffect(() => {
     if (!auth) {
       navigate("/home", {replace: true}); //navigates back to the home page if the user is unauthorised
     }
@@ -52,6 +52,7 @@ export default function UserCreation() {
       setMessage("Cannot connect to server");
     }
   }
+
 
 return (
   <>

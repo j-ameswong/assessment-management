@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import "./Navbar.css";
 
 export default function Navbar() {
+  
   const { user } = useContext(UserContext);
   const primaryRole = user?.role;
 
@@ -11,13 +12,19 @@ export default function Navbar() {
 
   return (
     <header className="navbar">
-      <div className="navbar-left">
-        {user && (
-          <span className="navbar-welcome">
-            Welcome, {user.forename} {user.surname}
-          </span>
-        )}
-      </div>
+   <div className="navbar-left">
+     {user && (
+       <>
+         <span className="navbar-welcome">
+           Welcome, {user.forename} {user.surname}
+         </span>
+
+         <Link className="navbar-link" to="/modules">
+           Modules
+         </Link>
+       </>
+     )}
+   </div>
 
       <div className="navbar-right">
         {primaryRole && (
@@ -31,18 +38,38 @@ export default function Navbar() {
             </Link>
 
             {(primaryRole === "ADMIN" || primaryRole === "EXAMS_OFFICER") && (
-              <Link className="navbar-link" to="/users/delete">
-                Manage users
-              </Link>
+              <div className="navbar-dropdown">
+                <button className="navbar-dropbtn">Admin</button>
+                <div className="navbar-dropdown-content">
+                  <Link
+                    className="navbar-dropdown-item"
+                    to="/modules/create"
+                  >
+                    Create module
+                  </Link>
+                  <Link
+                    className="navbar-dropdown-item"
+                    to="/create-new-user"
+                  >
+                    Create user
+                  </Link>
+                  <Link
+                    className="navbar-dropdown-item"
+                    to="/users/delete"
+                  >
+                    Manage users
+                  </Link>
+                </div>
+              </div>
             )}
 
-            {/* 新增的 Logout 按钮 */}
             <Link className="navbar-logout" to="/logout">
               Logout
             </Link>
           </>
         )}
       </div>
+
     </header>
   );
 }

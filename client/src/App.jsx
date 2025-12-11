@@ -20,7 +20,9 @@ import RoleManagement from "./pages/RoleManagement.jsx";
 
 function App() {
   const location = useLocation();
-  const hideNavbar = location.pathname === "/" || location.pathname === "/create-new-user";
+  const hideNavbar =
+  location.pathname === "/" || location.pathname === "/update-password";
+
 
   if (hideNavbar) {
     return (

@@ -4,12 +4,13 @@ import "../index.css";
 import Navbar from "../components/Navbar.jsx";
 import Footer from "../components/Footer.jsx";
 import ModuleCard from "../components/ModuleCard.jsx";
+import { useNavigate } from "react-router-dom";
 
 
 function Modules() {
     const [openDropdown, setOpenDropdown] = useState(null);
     const [modules, setModules] = useState([]);
-
+    const navigate = useNavigate();
 
     const GetModules = async () => {
         const role = localStorage.getItem("role");
@@ -39,9 +40,15 @@ function Modules() {
         }
     };
 
-    useEffect (() => {
-        GetModules()
-    }, [])
+    useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+        navigate("/", { replace: true });
+        return;
+    }
+    GetModules();
+    }, [navigate]);
+
 
     return(
         <>
