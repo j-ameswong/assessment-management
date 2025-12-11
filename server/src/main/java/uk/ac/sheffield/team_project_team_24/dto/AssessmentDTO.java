@@ -21,6 +21,7 @@ public class AssessmentDTO {
     private Long externalExaminerId;
     private Long checkerId;
 
+
     public static AssessmentDTO fromEntity(Assessment a) {
         return new AssessmentDTO(
                 a.getId(),

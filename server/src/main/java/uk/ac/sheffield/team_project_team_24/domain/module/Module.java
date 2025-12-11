@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import uk.ac.sheffield.team_project_team_24.domain.user.User;
 
 @Entity
 @Table(name = "Module")
@@ -14,21 +15,26 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class Module {
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-  @Column(unique = true, nullable = false)
-  private String moduleCode;
+    @Column(unique = true, nullable = false)
+    private String moduleCode;
 
-  @Column(unique = true)
-  private String moduleName;
+    @Column(unique = true)
+    private String moduleName;
 
-  @OneToMany(mappedBy = "module", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
-  private List<ModuleStaff> moduleStaff;
+    @ManyToOne
+    @JoinColumn(name = "module_lead_id")
+    private User moduleLead;
 
-  public Module(String moduleCode, String moduleName) {
-    this.moduleCode = moduleCode;
-    this.moduleName = moduleName;
-  }
+
+    @OneToMany(mappedBy = "module", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ModuleStaff> moduleStaff;
+
+    public Module(String moduleCode, String moduleName) {
+      this.moduleCode = moduleCode;
+      this.moduleName = moduleName;
+    }
 }

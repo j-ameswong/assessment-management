@@ -13,17 +13,17 @@ import uk.ac.sheffield.team_project_team_24.domain.user.User;
 
 public interface ModuleStaffRepository extends JpaRepository<ModuleStaff, ModuleStaffId> {
     @Query("SELECT ms FROM ModuleStaff ms WHERE ms.id.moduleId = :moduleId")
-    public Optional<List<ModuleStaff>> findByModuleId(@Param("moduleId") Long moduleId);
+    Optional<List<ModuleStaff>> findByModuleId(@Param("moduleId") Long moduleId);
 
     // list all staff per ModuleRole
-    public ModuleStaff findByModuleRole(ModuleRole moduleRole);
+    ModuleStaff findByModuleRole(ModuleRole moduleRole);
 
     // find all staff in this module
-    // public ModuleStaff findAllByModuleId(Long moduleId);
+    List<ModuleStaff> findByModule(Module module);
 
-    public Optional<ModuleStaff> findByUserAndModule(User user, Module module);
+    Optional<ModuleStaff> findByUserAndModule(User user, Module module);
 
     // this query works because staff can only have one role per module
-    public Optional<ModuleStaff> findFirstByModuleRoleAndModuleId(
+    Optional<ModuleStaff> findFirstByModuleRoleAndModuleId(
             ModuleRole moduleRole, Long moduleId);
 }

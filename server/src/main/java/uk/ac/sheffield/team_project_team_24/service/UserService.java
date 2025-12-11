@@ -111,6 +111,21 @@ public class UserService {
         return userRepository.findByEmail(email).orElse(null);
     }
 
+    public User findByFullName(String fullName) {
+        String[] parts = fullName.trim().split(" ", 2);
+
+        if (parts.length < 2) {
+            throw new IllegalArgumentException("Invalid full name: " + fullName);
+        }
+
+        String forename = parts[0];
+        String surname = parts[1];
+
+        return userRepository.findByForenameAndSurname(forename, surname)
+                .orElseThrow(() ->
+                        new RuntimeException("User not found: " + fullName)
+                );
+    }
 
     public void updatePassword(Long userId, uk.ac.sheffield.team_project_team_24.dto.UpdatePasswordDTO body) {
         if (body == null

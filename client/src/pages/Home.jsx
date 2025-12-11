@@ -16,7 +16,7 @@ export default function Home() {
       <br></br>
       <Link to="/modules/create">Create Module</Link>
       <br></br>
-      <Link to ="/modules/edit">Edit Module</Link>
+      <Link to ="/modules/edit/:moduleCode">Edit Module</Link>
     </div>
   );
 }

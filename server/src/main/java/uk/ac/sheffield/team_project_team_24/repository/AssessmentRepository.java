@@ -2,6 +2,7 @@ package uk.ac.sheffield.team_project_team_24.repository;
 
 import java.util.List;
 import java.util.Optional;
+import uk.ac.sheffield.team_project_team_24.domain.module.Module;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -11,4 +12,6 @@ public interface AssessmentRepository extends JpaRepository<Assessment, Long> {
     Optional<Assessment> findById(Long id);
 
     Optional<List<Assessment>> findAllByModuleId(Long moduleId);
+    List<Assessment> findByModule(Module module);
+
 }
