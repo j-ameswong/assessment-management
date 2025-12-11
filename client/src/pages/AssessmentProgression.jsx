@@ -22,11 +22,37 @@ export default function AssessmentProgression() {
 
   // fetch req info from api
   useEffect(() => {
-    if (!assessmentId) { return };
-    Axios.get(
-      `http://localhost:8080/api/assessments/${assessmentId}/progress`,
-      { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } })
-      .then(({ data }) => setProgress(data))
+    if (!assessmentId) return;
+
+    const fetchProgress = async () => {
+      try {
+        const response = await Axios.get(
+          `http://localhost:8080/api/assessments/${assessmentId}/progress`,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
+        setProgress(response.data);
+      } catch (error) {
+        console.error("Failed to fetch progress:", error);
+
+        if (error.response) {
+          // Server responded with an error code
+          console.error("Status:", error.response.status);
+          console.error("Data:", error.response.data);
+        } else if (error.request) {
+          // No response received
+          console.error("No response from server");
+        } else {
+          // Something else happened
+          console.error("Error:", error.message);
+        }
+      }
+    };
+
+    fetchProgress();
   }, [assessmentId]);
   if (!progress) return <p>Loading...</p>;
 
@@ -166,41 +192,51 @@ export default function AssessmentProgression() {
 
   const [furtherActionReq, setFurtherActionReq] = useState(false);
   const [note, setNote] = useState("");
-  const progressStage = async (furtherActionReq, note) => {
-    try {
-      const payload = {
-        actorId: id,
-        furtherActionReq: furtherActionReq,
-        note: note,
-      }
 
-      console.log("Payload sent: ", payload);
-
-      const response = await Axios.post(`http://localhost:8080/api/assessments/${assessment.id}/advance`, payload,
-        { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
-      console.log("Success: ", response.data);
+  const handleAxiosError = (error) => {
+    if (error.response) {
+      console.error("Server error:", error.response.status, error.response.data);
       window.location.reload();
-    } catch (err) {
-      console.error(err);
-      alert("Error when progressing stage");
+    } else if (error.request) {
+      console.error("Network error: no response received", error.request);
+    } else {
+      console.error("Unexpected error:", error.message);
     }
   };
 
-  const reverseStage = async () => {
+  const sendStageRequest = async (endpoint, payload) => {
     try {
-      const payload = {
-        actorId: id,
-        furtherActionReq: furtherActionReq,
-        note: note,
-      }
-      const response = await Axios.post(`http://localhost:8080/api/assessments/${assessment.id}/reverse`, payload,
-        { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
-      console.log("Success: ", response.data);
+      console.log(`Sending request to ${endpoint}:`, payload);
+
+      const response = await Axios.post(
+        `http://localhost:8080/api/assessments/${assessment.id}/${endpoint}`,
+        payload,
+        { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } }
+      );
+
+      console.log("Success:", response.data);
       window.location.reload();
-    } catch (err) {
-      console.error(err);
-      alert("Error when progressing stage");
+    } catch (error) {
+      handleAxiosError(error);
     }
+  };
+
+  const progressStage = (furtherActionReq, note) => {
+    sendStageRequest("advance", {
+      actorId: id,
+      stageId: assessment.assessmentStageId,
+      furtherActionReq,
+      note,
+    });
+  };
+
+  const reverseStage = () => {
+    sendStageRequest("reverse", {
+      actorId: id,
+      stageId: assessment.assessmentStageId,
+      furtherActionReq,
+      note,
+    });
   };
 
   return (
