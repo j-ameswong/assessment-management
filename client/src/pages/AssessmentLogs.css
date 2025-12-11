@@ -1,0 +1,67 @@
+.logs-page {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.logs-header h2 {
+  margin-bottom: 0.5rem;
+}
+
+.logs-header p {
+  margin: 0.25rem 0;
+}
+
+.logs-back-btn {
+  display: inline-block;
+  margin-top: 10px;
+  margin-bottom: 16px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  border: none;
+  background: #ded3ff;
+  color: #2b2250;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.logs-back-btn:hover {
+  background: #c9b8ff;
+}
+
+
+.logs-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin: 1rem 0;
+  align-items: center;
+}
+
+.logs-controls select {
+  padding: 4px 6px;
+}
+
+.logs-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 0.9rem;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+
+.logs-table th,
+.logs-table td {
+  border: 1px solid #e0d5ff;
+  padding: 6px 8px;
+  vertical-align: top;
+}
+
+.logs-table th {
+  background-color: #ded3ff;
+  color: #2b2250;
+  text-align: left;
+}

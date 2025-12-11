@@ -57,13 +57,27 @@ export default function AssessmentOverview() {
 
               <button
                 className="ao-arrow"
-                onClick={() => navigate(`/modules/${moduleId}/assessments/${c.key}/progress`)}
+                onClick={() =>
+                  navigate(`/modules/${moduleId}/assessments/${c.key}/progress`)
+                }
                 aria-label={`Open ${c.title}`}
               >
                 »
               </button>
+
+              <button
+                className="ao-logs-button"
+                onClick={() =>
+                  navigate(`/modules/${moduleId}/assessments/${c.key}/logs`)
+                }
+                aria-label={`View logs for ${c.title}`}
+              >
+                View logs
+              </button>
             </div>
           ))}
+
+
         </div>
 
         <button
