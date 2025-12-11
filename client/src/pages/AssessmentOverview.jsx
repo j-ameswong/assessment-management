@@ -4,6 +4,7 @@ import Axios from "axios";
 import Navbar from "../components/Navbar.jsx";
 import "./AssessmentOverview.css";
 import ModuleInfo from "../components/ModuleInfo.jsx";
+import StatusLegend from "../components/StatusLegend.jsx";
 
 export default function AssessmentOverview() {
   const navigate = useNavigate();
@@ -52,10 +53,9 @@ export default function AssessmentOverview() {
 
   // Always check if exists first else empty/temp value
   const assessments = overview?.assessments ?? [];
-  const activeAssessments = assessments.filter(a => a.isActive);
   const stages = overview?.stages ?? [];
 
-  const CARDS = activeAssessments?.map(a => ({
+  const CARDS = assessments?.map(a => ({
     key: a.id,
     // capitalized assessment type
     assessmentType: a.type[0] + a.type.substring(1).toLowerCase(),
@@ -64,8 +64,8 @@ export default function AssessmentOverview() {
     // Show stage/total stages for progress status
     status: "Stage: " + (stages[a.assessmentStageId - 1]?.step ?? "0")
       + "/" + (stages?.filter(s => s.assessmentType === a.type)).length, //getStage(a.assessmentStageId),
-    type: a.isComplete ? "ok" : "warn",
-    hidden: showAll,
+    type: (a.isActive ? (a.isComplete ? "ok" : "warn") : "danger"),
+    show: a.isActive || (role === "ADMIN" || role === "EXAMS_OFFICER")
   }
   ))
 
@@ -107,9 +107,10 @@ export default function AssessmentOverview() {
             <hr />
           </>
         )}
+        <StatusLegend />
 
         <div className="ao-grid">
-          {CARDS.map((c) => (!c.hidden &&
+          {CARDS.map((c) => (c.show &&
             <div key={c.key} className="ao-card">
               <h4 className="ao-card-title">{c.title}</h4>
 
@@ -117,13 +118,23 @@ export default function AssessmentOverview() {
               <div className="ao-card-description">{c.description}</div>
               <div className={`ao-pill ${c.type}`}>{c.status}</div>
 
-              {["ADMIN", "EXAMS_OFFICER"].includes(role) && (
+              {(c.type != "danger") && ["ADMIN", "EXAMS_OFFICER"].includes(role) && (
                 <button
                   className="ao-delete"
                   onClick={() => toggleAssessmentActivity(c.key)}
-                  aria-label={`Open ${c.title}`}
+                  aria-label={`Delete ${c.title}`}
                 >
                   Delete 🗑
+                </button>
+              )}
+
+              {(c.type === "danger") && ["ADMIN", "EXAMS_OFFICER"].includes(role) && (
+                <button
+                  className="ao-delete"
+                  onClick={() => toggleAssessmentActivity(c.key)}
+                  aria-label={`Restore ${c.title}`}
+                >
+                  Restore ♲
                 </button>
               )}
 
