@@ -12,6 +12,7 @@ import Logout from './pages/Logout.jsx';
 import EditModule from './pages/EditModule.jsx';
 import UpdatePassword from "./pages/UpdatePassword.jsx";
 import Layout from "./components/Layout.jsx";
+import AssessmentLogs from "./pages/AssessmentLogs.jsx";
 
 function App() {
   const location = useLocation();
@@ -37,6 +38,10 @@ function App() {
         <Route path="/modules/:moduleId/assessments/new" element={<CreateAssessment />} />
         <Route path="/modules/:moduleId/assessments" element={<AssessmentOverview />} />
         <Route path="/modules/:moduleId/assessments/:assessmentId/progress" element={<AssessmentProgression />} />
+        <Route
+          path="/modules/:moduleId/assessments/:assessmentId/logs"
+          element={<AssessmentLogs />}
+        />
         <Route path="/create-new-user" element={<UserCreation />} />
         <Route path="/logout" element={<Logout />} />
         <Route path="/update-password" element={<UpdatePassword />} />

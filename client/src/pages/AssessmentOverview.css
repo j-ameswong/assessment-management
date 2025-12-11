@@ -78,6 +78,23 @@
   cursor: pointer;
 }
 
+.ao-logs-button {
+  display: block;
+  margin: 8px auto 0;
+  padding: 6px 14px;
+  border-radius: 999px;
+  border: none;
+  background: #ded3ff;
+  color: #2b2250;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.ao-logs-button:hover {
+  background: #c9b8ff;         /* 鼠标悬停稍微深一点 */
+}
+
 .ao-details {
   position: absolute;
   right: 16px;
