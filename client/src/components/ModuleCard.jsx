@@ -17,10 +17,11 @@ export default function ModuleCard({ module, userId, role, isOpen, onToggle }) {
     newStr = newStr[0] + newStr.slice(1).toLowerCase();
 
     return newStr;
+    ALL
   }
 
   return (
-    <div className="module-box">
+    <div className={`module-box ${isOpen ? "open" : ""}`}>
       <Link to={`/modules/${module.id}/assessments`} className="module-code">{module.moduleCode}</Link>
       <div className="module-info">
         <div className="module-title-dropdown-row">
@@ -28,9 +29,11 @@ export default function ModuleCard({ module, userId, role, isOpen, onToggle }) {
             <p>{module.moduleName}</p>
             {`(${toCapitalize(contextRole)})`}
           </div>
-          <button className="dropdown-btn" onClick={onToggle}>
-            <img className="dropdown-icon" src={dropdownIcon}></img>
-          </button>
+          {(role == "ADMIN" || role == "EXAMS_OFFICER") && (
+            <button className="dropdown-btn" onClick={onToggle}>
+              <img className="dropdown-icon" src={dropdownIcon}></img>
+            </button>
+          )}
           {isOpen && (
             <div className="dropdown-content">
               <Link to={`/modules/${module.id}/assessments`} className="dropdown-link">See assignments</Link>

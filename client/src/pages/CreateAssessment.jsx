@@ -180,6 +180,7 @@ export default function CreateAssessment() {
       .then(response => {
         console.log("Created:", response.data);
         alert("Assessment created!");
+        window.location.reload(true);
       })
       .catch(error => {
         console.error(error);
