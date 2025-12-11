@@ -74,24 +74,27 @@ export default function RoleManagement () {
         {auth ? (
           <>
             <div className="page">
-              <div className="card">
-                <div className="main">
-                  <div className="table-wrapper">
-                    <table class = "table">
-                      <tbody>
-                        {names.map((user) => (
-                          <tr>
-                            <td>{user.forename} {user.surname} </td>
-                            <td>{user.role}</td>
-                            <td><button onClick={() => handleRoleChange(user.id, user.role)}>
-                              Change Role
-                            </button></td>
-                          </tr>
-                          ))}
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
+              <div className="table-wrapper">
+                <table class = "table">
+                  <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Role</th>
+                    <th style={{ width: "110px" }}>Actions</th>
+                  </tr>
+                  </thead>
+                    <tbody>
+                      {names.map((user) => (
+                        <tr>
+                          <td>{user.forename} {user.surname} </td>
+                          <td>{user.role}</td>
+                          <td><button onClick={() => handleRoleChange(user.id, user.role)}>
+                            Change Role
+                          </button></td>
+                        </tr>
+                        ))}
+                    </tbody>
+                </table>
               </div>
             </div>
           </>
