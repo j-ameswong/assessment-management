@@ -97,9 +97,6 @@ export default function UserDeletion() {
   return (
     <div className="user-delete-page">
       <div className="user-delete-header">
-        <Link to="/create-new-user">Create new user</Link>
-        <br/>
-        <Link to="/role-management">Manage Roles</Link>
         <h2>User Deletion</h2>
         <p>
           Deleting a user <strong>disables their account</strong> but keeps all

@@ -65,6 +65,14 @@ export default function Navbar() {
                     >
                       Manage users
                     </Link>
+                    {primaryRole === "EXAMS_OFFICER" && (
+                      <Link
+                        className="navbar-dropdown-item"
+                        to="/role-management"
+                      >
+                        Manage roles
+                      </Link>
+                    )}
                   </div>
                 </div>
               )}
