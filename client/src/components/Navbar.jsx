@@ -25,18 +25,24 @@ export default function Navbar() {
             <span className="navbar-role">
               {primaryRole.replaceAll("_", " ")}
             </span>
+
             <Link className="navbar-link" to="/my-tasks">
               My tasks
             </Link>
+
             {(primaryRole === "ADMIN" || primaryRole === "EXAMS_OFFICER") && (
               <Link className="navbar-link" to="/users/delete">
                 Manage users
               </Link>
             )}
+
+            {/* 新增的 Logout 按钮 */}
+            <Link className="navbar-logout" to="/logout">
+              Logout
+            </Link>
           </>
         )}
       </div>
-
     </header>
   );
 }
