@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class AdvanceRequestDTO {
     private Long actorId;
+    private Long stageId;
     private Boolean furtherActionReq;
     private String note;
 }

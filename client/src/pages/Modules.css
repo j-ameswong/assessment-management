@@ -2,6 +2,10 @@ html {
     background-color: #f6f0ff;
 }
 
+h2 {
+    margin-top: 20px;
+}
+
 .modules-page {
     background-color: #f6f0ff;
     border: 1px solid #f6f0ff;
@@ -15,3 +19,23 @@ html {
     padding: 0;
     margin: 0;
 }
+
+.create-module-btn {
+    color: #fff;
+    background-color:  #4b0082;
+    border-radius: 40px;
+    width: 250px;
+    border: none;
+    font-weight: 400;
+}
+
+.create-module-btn:hover {
+    box-shadow: 0 0 1px #000;
+}
+
+.top-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+

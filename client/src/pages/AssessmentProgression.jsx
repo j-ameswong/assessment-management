@@ -3,6 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import Axios from "axios";
 import Navbar from "../components/Navbar.jsx";
 import "./AssessmentProgression.css";
+import AssessmentInfo from "../components/AssessmentInfo.jsx";
 import AssessmentStage from "../components/AssessmentStage.jsx";
 
 export default function AssessmentProgression() {
@@ -21,16 +22,43 @@ export default function AssessmentProgression() {
 
   // fetch req info from api
   useEffect(() => {
-    if (!assessmentId) { return };
-    Axios.get(
-      `http://localhost:8080/api/assessments/${assessmentId}/progress`,
-      { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } })
-      .then(({ data }) => setProgress(data))
+    if (!assessmentId) return;
+
+    const fetchProgress = async () => {
+      try {
+        const response = await Axios.get(
+          `http://localhost:8080/api/assessments/${assessmentId}/progress`,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
+        setProgress(response.data);
+      } catch (error) {
+        console.error("Failed to fetch progress:", error);
+
+        if (error.response) {
+          // Server responded with an error code
+          console.error("Status:", error.response.status);
+          console.error("Data:", error.response.data);
+        } else if (error.request) {
+          // No response received
+          console.error("No response from server");
+        } else {
+          // Something else happened
+          console.error("Error:", error.message);
+        }
+      }
+    };
+
+    fetchProgress();
   }, [assessmentId]);
   if (!progress) return <p>Loading...</p>;
 
   // extract data from dto
-  const { module, assessment, assessmentStages, assessmentStageLogs } = progress;
+  const { module, assessment, assessmentStages, assessmentStageLogs,
+    examsOfficer } = progress;
 
   // always ensure placeholder if api missing data
   const moduleTitle = module
@@ -53,12 +81,6 @@ export default function AssessmentProgression() {
     }
   }
 
-  // const completedLogs = assessmentStageLogs?.filter(log => log.isComplete)
-  //   .sort((a, b) => new Date(a.changedAt) - new Date(b.changedAt)) ?? [];
-  //
-  // const lastCompletedStageId = completedLogs.at(-1)?.assessmentStageId ?? null;
-  // const lastCompletedStage = assessmentStages?.find(s => s.id === lastCompletedStageId) ?? {};
-  // const lastCompletedStep = lastCompletedStage?.step ?? 0;
   const currentStep = assessmentStages?.find(
     s => s.id === assessment.assessmentStageId)?.step ?? 0;
 
@@ -68,7 +90,22 @@ export default function AssessmentProgression() {
     s.staffId === Number(localStorage.getItem("userId")))?.moduleRole);
   if (assessment?.setterId === id) { roles.push("SETTER") };
   if (assessment?.checkerId === id) { roles.push("CHECKER") };
+  if (assessment?.externalExaminer.id === id) { roles.push("EXTERNAL_EXAMINER") };
 
+  // group logs by stageId
+  const logsByStage = {};
+  for (const log of assessmentStageLogs ?? []) {
+    const id = log.assessmentStageId;
+    if (!logsByStage[id]) logsByStage[id] = [];
+    logsByStage[id].push(log);
+  }
+
+  // sort logs oldest → newest
+  for (const key in logsByStage) {
+    logsByStage[key].sort((a, b) => new Date(a.changedAt) - new Date(b.changedAt));
+  }
+
+  // stages with status for AssessmentStage
   const stagesWithStatus = assessmentStages?.sort((a, b) => a.step - b.step)
     .map(stage => {
       let log = latestLogs[stage.id];
@@ -100,14 +137,32 @@ export default function AssessmentProgression() {
           actingStaff = module.moduleStaff.find(s => s.moduleRole === "MODERATOR");
           actorName = (actingStaff.forename + " " + actingStaff.surname);
           break;
+        case "EXAMS_OFFICER":
+          actorName = `${examsOfficer.forename} ${examsOfficer.surname}`;
+          break;
+        case "EXTERNAL_EXAMINER":
+          actorName = `${assessment.externalExaminer.forename} ${assessment.externalExaminer.surname}`;
+          break;
         case "ANY":
           actorName = ("Any staff member");
           break;
         default:
+          actorName = "ADMIN";
           break;
-        // TODO: EXAMS_OFFICER, ADMIN, SYSTEM, EXTERNAL_EXAMINER
       }
-      console.log(stage.actor, actorName);
+      // set deadline/exam date for this stage if relevant
+      let dateType = null;
+      let date = null;
+      switch (assessment.type) {
+        case "COURSEWORK":
+          dateType = "DEADLINE";
+          date = new Date(assessment.deadline);
+          break;
+        default: // exams and tests use assessmentDate
+          dateType = "ASSESSMENT_DATE"
+          date = new Date(assessment.assessmentDate);
+          break;
+      }
       // determine if enable button is true based on status & user
       let enableButton = false;
       let enableReverse = false;
@@ -132,52 +187,69 @@ export default function AssessmentProgression() {
         summaryRequired = true;
       }
 
-      return { ...stage, status, actorName, enableButton, log, summaryRequired, enableReverse };
+      return { ...stage, status, actorName, enableButton, log, summaryRequired, enableReverse, date, dateType };
     }) ?? [];
 
   const [furtherActionReq, setFurtherActionReq] = useState(false);
   const [note, setNote] = useState("");
-  const progressStage = async (furtherActionReq, note) => {
-    try {
-      const payload = {
-        actorId: id,
-        furtherActionReq: furtherActionReq,
-        note: note,
-      }
 
-      console.log("Payload sent: ", payload);
-
-      const response = await Axios.post(`http://localhost:8080/api/assessments/${assessment.id}/advance`, payload,
-        { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
-      console.log("Success: ", response.data);
+  const handleAxiosError = (error) => {
+    if (error.response) {
+      console.error("Server error:", error.response.status, error.response.data);
       window.location.reload();
-    } catch (err) {
-      console.error(err);
-      alert("Error when progressing stage");
+    } else if (error.request) {
+      console.error("Network error: no response received", error.request);
+    } else {
+      console.error("Unexpected error:", error.message);
     }
   };
 
-  const reverseStage = async () => {
+  const sendStageRequest = async (endpoint, payload) => {
     try {
-      const payload = {
-        actorId: id,
-        furtherActionReq: furtherActionReq,
-        note: note,
-      }
-      const response = await Axios.post(`http://localhost:8080/api/assessments/${assessment.id}/reverse`, payload,
-        { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
-      console.log("Success: ", response.data);
+      console.log(`Sending request to ${endpoint}:`, payload);
+
+      const response = await Axios.post(
+        `http://localhost:8080/api/assessments/${assessment.id}/${endpoint}`,
+        payload,
+        { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } }
+      );
+
+      console.log("Success:", response.data);
       window.location.reload();
-    } catch (err) {
-      console.error(err);
-      alert("Error when progressing stage");
+    } catch (error) {
+      handleAxiosError(error);
     }
+  };
+
+  const progressStage = (furtherActionReq, note) => {
+    sendStageRequest("advance", {
+      actorId: id,
+      stageId: assessment.assessmentStageId,
+      furtherActionReq,
+      note,
+    });
+  };
+
+  const reverseStage = () => {
+    sendStageRequest("reverse", {
+      actorId: id,
+      stageId: assessment.assessmentStageId,
+      furtherActionReq,
+      note,
+    });
   };
 
   return (
     <>
       <div className="assessment-progress-container">
+        <AssessmentInfo
+          assessment={assessment}
+          module={module}
+          currentStage={assessmentStages?.find(s => s.id === assessment.assessmentStageId)}
+        />
+
         <h2 className="assessment-progress-title">Assessment Progress</h2>
+        <hr />
 
         {stagesWithStatus.map(stage => (
           <AssessmentStage
@@ -195,6 +267,9 @@ export default function AssessmentProgression() {
             setNote={setNote}
             setFurtherActionReq={setFurtherActionReq}
             summaryRequired={stage.summaryRequired}
+            logs={logsByStage[stage.id] || []}
+            date={stage.date}
+            dateType={stage.dateType}
           />
         ))}
       </div>

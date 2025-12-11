@@ -10,6 +10,7 @@
     box-sizing: border-box;
     position: fixed;
     top: 0;
+    z-index: 9999;
 }
 
 .navbar-left {
@@ -34,4 +35,15 @@
     border-radius: 20px;
     font-weight: 600;
     font-size: 15px;
+}
+
+.navbar-link {
+  margin-left: 1rem;
+  text-decoration: none;
+  color: #94849a;
+  font-weight: 500;
+}
+
+.navbar-link:hover {
+  text-decoration: underline;
 }

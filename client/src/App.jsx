@@ -1,5 +1,5 @@
 import React from 'react';
-import {Routes, Route, useLocation} from "react-router-dom";
+import { Routes, Route, useLocation } from "react-router-dom";
 import Login from "./pages/Login.jsx";
 import Home from "./pages/Home.jsx";
 import Modules from './pages/Modules.jsx';
@@ -13,6 +13,8 @@ import EditModule from './pages/EditModule.jsx';
 import UpdatePassword from "./pages/UpdatePassword.jsx";
 import Layout from "./components/Layout.jsx";
 import DeleteModule from './pages/DeleteModule.jsx';
+import AssessmentLogs from "./pages/AssessmentLogs.jsx";
+import UserDeletion from "./pages/UserDeletion.jsx";
 
 function App() {
   const location = useLocation();
@@ -39,9 +41,14 @@ function App() {
         <Route path="/modules/:moduleId/assessments/new" element={<CreateAssessment />} />
         <Route path="/modules/:moduleId/assessments" element={<AssessmentOverview />} />
         <Route path="/modules/:moduleId/assessments/:assessmentId/progress" element={<AssessmentProgression />} />
+        <Route
+          path="/modules/:moduleId/assessments/:assessmentId/logs"
+          element={<AssessmentLogs />}
+        />
         <Route path="/create-new-user" element={<UserCreation />} />
         <Route path="/logout" element={<Logout />} />
         <Route path="/update-password" element={<UpdatePassword />} />
+        <Route path="/users/delete" element={<UserDeletion />} />
       </Routes>
     </Layout>
   );

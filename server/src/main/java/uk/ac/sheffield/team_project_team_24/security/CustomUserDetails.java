@@ -1,13 +1,14 @@
 package uk.ac.sheffield.team_project_team_24.security;
 
-import lombok.Getter;
+import java.util.Collection;
+import java.util.List;
+
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import uk.ac.sheffield.team_project_team_24.domain.user.User;
 
-import java.util.Collection;
-import java.util.List;
+import lombok.Getter;
+import uk.ac.sheffield.team_project_team_24.domain.user.User;
 
 @Getter
 public class CustomUserDetails implements UserDetails {
@@ -52,7 +53,7 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return !user.isDeleted();
     }
 
 }

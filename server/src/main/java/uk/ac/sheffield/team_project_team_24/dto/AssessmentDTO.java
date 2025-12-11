@@ -1,5 +1,8 @@
 package uk.ac.sheffield.team_project_team_24.dto;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,12 +17,15 @@ public class AssessmentDTO {
     private String name;
     private AssessmentType type;
     private Boolean isComplete;
+    private Boolean isActive;
     private String description;
     private Long assessmentStageId;
     private Long moduleId;
     private Long setterId;
-    private Long externalExaminerId;
     private Long checkerId;
+    private UserDTO externalExaminer;
+    private LocalDateTime deadline;
+    private LocalDateTime assessmentDate;
 
     public static AssessmentDTO fromEntity(Assessment a) {
         return new AssessmentDTO(
@@ -27,12 +33,15 @@ public class AssessmentDTO {
                 a.getAssessmentName(),
                 a.getAssessmentType(),
                 a.getIsComplete(),
+                a.getIsActive(),
                 a.getDescription(),
                 a.getAssessmentStage().getId(),
                 a.getModule() != null ? a.getModule().getId() : null,
                 a.getSetter() != null ? a.getSetter().getId() : null,
-                a.getExternalExaminer() != null ? a.getExternalExaminer().getId() : null,
-                a.getChecker() != null ? a.getChecker().getId() : null);
+                a.getChecker() != null ? a.getChecker().getId() : null,
+                a.getExternalExaminer() != null ? new UserDTO(a.getExternalExaminer()) : null,
+                a.getDeadline(),
+                a.getExamDate());
     }
 
     // public Assessment toEntity() {

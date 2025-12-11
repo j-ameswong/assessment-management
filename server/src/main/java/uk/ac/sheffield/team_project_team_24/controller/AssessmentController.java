@@ -1,6 +1,8 @@
 package uk.ac.sheffield.team_project_team_24.controller;
 
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -77,10 +79,15 @@ public class AssessmentController {
 
     // Advance the assessment process
     @PostMapping("/assessments/{id}/advance")
-    public ResponseEntity<AssessmentDTO> advance(
+    public ResponseEntity<?> advance(
             @PathVariable Long id,
             @RequestBody AdvanceRequestDTO request,
             @AuthenticationPrincipal CustomUserDetails currentUser) {
+
+        Assessment target = assessmentService.getAssessment(id);
+        if (target.getAssessmentStage().getId() != request.getStageId()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid stage");
+        }
 
         Assessment updated = assessmentService.advanceStage(
                 id,
@@ -92,9 +99,14 @@ public class AssessmentController {
     }
 
     @PostMapping("/assessments/{id}/reverse")
-    public ResponseEntity<AssessmentDTO> reverse(
+    public ResponseEntity<?> reverse(
             @RequestBody AdvanceRequestDTO request,
             @PathVariable Long id) {
+
+        Assessment target = assessmentService.getAssessment(id);
+        if (target.getAssessmentStage().getId() != request.getStageId()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid stage");
+        }
 
         Assessment updated = assessmentService.reverseStage(
                 id,
@@ -130,6 +142,7 @@ public class AssessmentController {
         }
     }
 
+    // get assessment overview
     @GetMapping("/modules/{moduleId}/assessments")
     public ResponseEntity<AssessmentOverviewDTO> getOverview(
             @PathVariable Long moduleId) {
@@ -176,5 +189,11 @@ public class AssessmentController {
     public ResponseEntity<AssessmentProgressDTO> getProgress(
             @PathVariable Long id) {
         return ResponseEntity.ok(assessmentService.getProgress(id));
+    }
+
+    @PostMapping("/assessments/{id}/activity")
+    public ResponseEntity<AssessmentDTO> toggleActivity(
+            @PathVariable Long id) {
+        return ResponseEntity.ok(assessmentService.toggleActivity(id));
     }
 }

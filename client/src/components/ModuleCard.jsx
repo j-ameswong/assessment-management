@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import "../index.css"
 import "./ModuleCard.css"
 import dropdownIcon from "../assets/moduleCardDropdown.png"
 
@@ -11,7 +12,7 @@ export default function ModuleCard({ moduleCode, moduleTitle, isOpen, onToggle }
             <h2 className="module-code">{moduleCode}</h2>
             <div className="module-info">
                 <div className="module-title-dropdown-row">
-                    <h2 className="module-title">{moduleTitle}</h2>
+                    <p className="module-title">{moduleTitle}</p>
                     <button className="dropdown-btn" onClick={onToggle}>
                         <img className="dropdown-icon" src={dropdownIcon}></img>
                     </button>

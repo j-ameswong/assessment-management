@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./Modules.css";
+import "../index.css";
 import Navbar from "../components/Navbar.jsx";
 import Footer from "../components/Footer.jsx";
 import ModuleCard from "../components/ModuleCard.jsx";
@@ -46,6 +47,24 @@ function Modules() {
         <>
             <div className="modules-page">
 
+                <div className="top-container">
+                <h2>Assigned Modules</h2>
+
+                {/*Create module admin button */}
+                {
+                    localStorage.getItem("role") === "ADMIN" && (
+                        <button
+                            className="create-module-btn"
+                            onClick={() => window.location.href = "/modules/create"}
+                        >
+                            Create Module
+                        </button>
+                    )
+                }
+
+                </div>
+
+                {/*Module cards */}
                 {
                     modules.map((mod) => (
                         <ModuleCard

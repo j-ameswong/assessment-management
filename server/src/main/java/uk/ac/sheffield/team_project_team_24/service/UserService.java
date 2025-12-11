@@ -56,7 +56,7 @@ public class UserService {
     }
 
     public List<User> getAllUsers() {
-        List<User> users = userRepository.findAll();
+        List<User> users = userRepository.findAllByDeletedFalse();
         if (users.isEmpty()) {
             throw new EmptyRepositoryException("UserRepository");
         } else {
@@ -75,7 +75,7 @@ public class UserService {
     }
 
     public List<User> getUsers(UserRole userRole) {
-        return userRepository.findAllByRole(userRole);
+        return userRepository.findAllByRoleAndDeletedFalse(userRole);
     }
 
     public User getUser(Long id) {
@@ -96,21 +96,37 @@ public class UserService {
         return getUsers(UserRole.EXAMS_OFFICER).get(0);
     }
 
+    public User getExternalExaminer() {
+        return getUsers(UserRole.EXTERNAL_EXAMINER).get(0);
+    }
+
     public boolean existsUserByEmail(String email) {
         return userRepository.existsUserByEmail(email);
     }
 
     public void deleteUser(Long id) {
-        if (!userRepository.existsById(id)) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, USER_NOT_FOUND);
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, USER_NOT_FOUND));
+
+        if (user.getRole() == UserRole.EXAMS_OFFICER) {
+            throw new ResponseStatusException(
+                    HttpStatus.CONFLICT,
+                    "Cannot delete exams officer user. Please assign a new exams officer and demote the old one first.");
         }
-        userRepository.deleteById(id);
+
+        if (user.isDeleted()) {
+            return;
+        }
+
+        user.setDeleted(true);
+
+        userRepository.save(user);
     }
+
 
     public User getUserByEmail(String email) {
         return userRepository.findByEmail(email).orElse(null);
     }
-
 
     public void updatePassword(Long userId, uk.ac.sheffield.team_project_team_24.dto.UpdatePasswordDTO body) {
         if (body == null
@@ -125,8 +141,8 @@ public class UserService {
         }
 
         Optional<uk.ac.sheffield.team_project_team_24.domain.user.User> opt = userRepository.findById(userId);
-        uk.ac.sheffield.team_project_team_24.domain.user.User user = opt.orElseThrow(() ->
-                new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+        uk.ac.sheffield.team_project_team_24.domain.user.User user = opt
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
 
         if (!passwordEncoder.matches(body.getOldPassword(), user.getPassword())) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Old password incorrect");
@@ -137,5 +153,4 @@ public class UserService {
         userRepository.save(user);
     }
 
-    
 }
