@@ -23,10 +23,10 @@ public class AssessmentDTO {
     private Long moduleId;
     private Long setterId;
     private Long checkerId;
+    private Long externalExaminerId;
     private UserDTO externalExaminer;
     private LocalDateTime deadline;
     private LocalDateTime assessmentDate;
-
 
     public static AssessmentDTO fromEntity(Assessment a) {
         return new AssessmentDTO(
@@ -40,6 +40,7 @@ public class AssessmentDTO {
                 a.getModule() != null ? a.getModule().getId() : null,
                 a.getSetter() != null ? a.getSetter().getId() : null,
                 a.getChecker() != null ? a.getChecker().getId() : null,
+                a.getExternalExaminer() != null ? a.getExternalExaminer().getId() : null,
                 a.getExternalExaminer() != null ? new UserDTO(a.getExternalExaminer()) : null,
                 a.getDeadline(),
                 a.getExamDate());

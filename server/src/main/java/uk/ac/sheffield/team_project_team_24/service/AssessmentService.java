@@ -36,6 +36,7 @@ public class AssessmentService {
         Module m = moduleService.getModule(req.getModuleId());
 
         a.setModule(m);
+        a.setDescription(req.getDescription());
         a.setSetter(userService.getUser(req.getSetterId()));
         a.setChecker(userService.getUser(req.getCheckerId()));
         a.setAssessmentType(req.getType());
@@ -45,6 +46,20 @@ public class AssessmentService {
                 a.getAssessmentType()));
         a.setIsComplete(false);
         a.setIsActive(true);
+        a.setExternalExaminer(userService.getUser(req.getExternalExaminerId()));
+        switch (a.getAssessmentType()) {
+            case EXAM:
+                a.setExamDate(req.getDeadline());
+                break;
+            case TEST:
+                a.setExamDate(req.getDeadline());
+                break;
+            case COURSEWORK:
+                a.setDeadline(req.getDeadline());
+                break;
+            default:
+                throw new RuntimeException("Invalid assessment type");
+        }
 
         createAssessment(a);
         log(a, userService.getAdmin(), "Initialized by system", false);

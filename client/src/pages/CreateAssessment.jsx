@@ -166,7 +166,7 @@ export default function CreateAssessment() {
       moduleId: moduleId,
       setterId: setterId,
       checkerId: checkerId,
-      externalExaminer: externalExaminerId,
+      externalExaminerId: externalExaminerId,
       description: description,
       deadline: deadline ? new Date(deadline).toISOString() : null
 

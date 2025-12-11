@@ -165,12 +165,12 @@ export default function AssessmentOverview() {
 
         </div>
 
-        <button
+        {(role == "ADMIN" || role == "EXAMS_OFFiCER") && (<button
           className="ao-primary"
           onClick={() => navigate(`/modules/${moduleId}/assessments/new`)}
         >
           Create New Assessment
-        </button>
+        </button>)}
       </div>
     </>
   );
