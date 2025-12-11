@@ -5,6 +5,15 @@
 This repository contains the codebase for our team software project.  
 It is built with Java and managed using Maven.
 
+## Team Members
+Benjamin Grassie
+Connor McGough
+Olena Shevchenko
+Rhys Womack
+Cheng An Wong
+Jiaying Ye
+Wanlin Zhong
+
 ## Tech Stack
 - Java 17+
 - Maven
@@ -24,12 +33,28 @@ To run frontend:
 - Navigate to directory 'client'
 - Run 'npm run dev' in CLI (dev command currently)
 
-## Team Members
-Benjamin Grassie
-Connor McGough
-Olena Shevchenko
-Rhys Womack
-Cheng An Wong
-Jiaying Ye
-Wanlin Zhong
+## Generating RSA key pair 
+- Navigate to /src/main/resources
+- Execute the following :
+```bash
+mkdir certs
+cd certs
+openssl genrsa -out keypair.pem 2048
+openssl rsa -in keypair.pem -pubout -out public.pem
+openssl pkcs8 -topk8 -inform PEM -outform PEM -nocrypt -in keypair.pem -out private.pem
+rm keypair.pem
+```
+<img width="444" height="186" alt="image" src="https://github.com/user-attachments/assets/440c7f8b-1074-46b5-b082-8a4d40995350" />
+
+
+## Login credentials 
+- Testing different roles : could be adjusted in CommandLineRunner main class
+- Accessing pages for users in database is done through same email and password input (check /h2-console)
+- Default user credentials : 
+```bash
+email : test@sheffield.ac.uk
+password: test
+role : ADMIN
+```
+<img width="887" height="228" alt="image" src="https://github.com/user-attachments/assets/1a040784-0ed3-4471-8ed7-8f1c2b0b2d8a" />
 
