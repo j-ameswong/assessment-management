@@ -10,7 +10,7 @@ export default function AssessmentProgression() {
   // redirect to login if no token
   const navigate = useNavigate();
   useEffect(() => {
-    if (!localStorage.getItem("token")) { navigate("/") };
+    if (!localStorage.getItem("token")) { navigate("/login") };
   }, [navigate]);
 
   const id = Number(localStorage.getItem("userId"));

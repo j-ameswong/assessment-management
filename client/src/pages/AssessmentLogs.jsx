@@ -9,7 +9,7 @@ export default function AssessmentLogs() {
 
   useEffect(() => {
     if (!localStorage.getItem("token")) {
-      navigate("/");
+      navigate("/login");
     }
   }, [navigate]);
 
@@ -18,7 +18,7 @@ export default function AssessmentLogs() {
   const [error, setError] = useState(null);
 
   const [sortBy, setSortBy] = useState("time-desc");
-  const [roleFilter, setRoleFilter] = useState("ALL"); 
+  const [roleFilter, setRoleFilter] = useState("ALL");
 
   useEffect(() => {
     if (!assessmentId) return;
@@ -68,7 +68,7 @@ export default function AssessmentLogs() {
     return {
       ...log,
       actorName,
-      role: stage?.actor || "UNKNOWN", 
+      role: stage?.actor || "UNKNOWN",
       stageDescription: stage?.description || "",
       step: stage?.step ?? null,
     };
@@ -89,12 +89,12 @@ export default function AssessmentLogs() {
     if (sortBy === "actor") {
       return a.actorName.localeCompare(b.actorName);
     }
-            return new Date(b.changedAt) - new Date(a.changedAt);
+    return new Date(b.changedAt) - new Date(a.changedAt);
   });
 
-    const handleBack = () => {
-        navigate(-1);
-    };
+  const handleBack = () => {
+    navigate(-1);
+  };
 
 
   return (
@@ -137,39 +137,39 @@ export default function AssessmentLogs() {
         </label>
       </div>
 
-        {sortedLogs.length === 0 ? (
+      {sortedLogs.length === 0 ? (
         <p>No logs recorded for this assessment.</p>
-        ) : (
+      ) : (
         <div className="logs-table-wrapper">
-            <table className="logs-table">
+          <table className="logs-table">
             <thead>
-                <tr>
+              <tr>
                 <th>Time</th>
                 <th>Stage</th>
                 <th>Role</th>
                 <th>Actor</th>
                 <th>Status</th>
                 <th>Note</th>
-                </tr>
+              </tr>
             </thead>
             <tbody>
-                {sortedLogs.map((log) => (
+              {sortedLogs.map((log) => (
                 <tr key={log.id}>
-                    <td>{new Date(log.changedAt).toLocaleString()}</td>
-                    <td>
+                  <td>{new Date(log.changedAt).toLocaleString()}</td>
+                  <td>
                     {log.step != null ? `${log.step}. ` : ""}
                     {log.stageDescription}
-                    </td>
-                    <td>{log.role.replaceAll("_", " ")}</td>
-                    <td>{log.actorName}</td>
-                    <td>{log.isComplete ? "Complete" : "Pending"}</td>
-                    <td>{log.note || ""}</td>
+                  </td>
+                  <td>{log.role.replaceAll("_", " ")}</td>
+                  <td>{log.actorName}</td>
+                  <td>{log.isComplete ? "Complete" : "Pending"}</td>
+                  <td>{log.note || ""}</td>
                 </tr>
-                ))}
+              ))}
             </tbody>
-            </table>
+          </table>
         </div>
-        )}
+      )}
 
     </div>
   );

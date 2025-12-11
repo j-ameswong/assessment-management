@@ -11,6 +11,7 @@ function Modules() {
   const [openDropdown, setOpenDropdown] = useState(null);
   const [modules, setModules] = useState([]);
   const navigate = useNavigate();
+  if (!localStorage.getItem("token")) { navigate("/login") }
 
   const GetModules = async () => {
     const role = localStorage.getItem("role");

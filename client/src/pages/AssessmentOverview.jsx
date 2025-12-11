@@ -8,6 +8,7 @@ import StatusLegend from "../components/StatusLegend.jsx";
 
 export default function AssessmentOverview() {
   const navigate = useNavigate();
+  if (!localStorage.getItem("token")) { navigate("/login") }
   // example url: /modules/assessments/1
   const moduleId = useParams().moduleId;
   const role = localStorage.getItem("role");
