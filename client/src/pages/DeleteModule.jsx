@@ -6,7 +6,7 @@ export default function DeleteModule(){
     const {moduleCode} = useParams();
     const navigate = useNavigate();
 
-    const DeleteModule = async () => {
+    const handleDelete = async () => {
         const response = await axios.delete(
                 `http://localhost:8080/api/modules/delete/${moduleCode}`,
                 {
@@ -17,7 +17,7 @@ export default function DeleteModule(){
                 }
             );
 
-        if(response.ok){
+        if(response.status == 200){
             navigate("/modules")
         } else {
             console.log("Failed to delete module")
@@ -25,7 +25,7 @@ export default function DeleteModule(){
     };
 
     useEffect(() => {
-        DeleteModule();
+        handleDelete();
     }, [moduleCode, navigate]);
 
     return <div>Deleting Module</div>

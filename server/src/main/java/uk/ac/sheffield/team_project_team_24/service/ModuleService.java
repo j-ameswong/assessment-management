@@ -49,10 +49,10 @@ public class ModuleService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, MODULE_NOT_FOUND));
     }
 
-    public void deleteModule(String moduleCode) {
-        Module module = moduleRepository.findByModuleCode(moduleCode)
-                .orElseThrow(() -> new RuntimeException("Module not found"));
-        moduleRepository.delete(module);
+    public Module deleteModule(String moduleCode) {
+        Module module = getModule(moduleCode);
+        module.setIsActive(false);
+        return moduleRepository.save(module);
     }
 
     // CreateModuleDTO
