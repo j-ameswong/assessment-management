@@ -55,7 +55,7 @@ public class AssessmentCsvService {
             }
 
         } catch (Exception e) {
-            throw new RuntimeException("Cannot processing CSV (AssessmentCsvService): " + e.getMessage(), e);
+            throw new RuntimeException("Cannot processing CSV: " + e.getMessage(), e);
         }
 
         assessmentService.saveAll(assessments);
