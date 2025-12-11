@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "./Login.css";
 import Footer from "../components/Footer.jsx";
@@ -6,6 +6,12 @@ import Footer from "../components/Footer.jsx";
 
 function Login() {
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (localStorage.getItem("token")) {
+      navigate("/modules");
+    }
+  })
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
