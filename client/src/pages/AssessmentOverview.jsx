@@ -12,11 +12,37 @@ export default function AssessmentOverview() {
   // fetch data from api
   const [overview, setOverview] = useState(null);
   useEffect(() => {
-    if (!moduleId) { return }
-    Axios.get(`http://localhost:8080/api/modules/${moduleId}/assessments`,
-      { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } })
-      .then(({ data }) => setOverview(data))
+    const fetchOverview = async () => {
+      try {
+        const response = await Axios.get(
+          `http://localhost:8080/api/modules/${moduleId}/overview`,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
+        setOverview(response.data);
+      } catch (error) {
+        console.error("Failed to fetch overview:", error);
+
+        if (error.response) {
+          // Server responded with an error code
+          console.error("Status:", error.response.status);
+          console.error("Data:", error.response.data);
+        } else if (error.request) {
+          // No response received
+          console.error("No response from server");
+        } else {
+          // Something else happened
+          console.error("Error:", error.message);
+        }
+      }
+    };
+
+    fetchProgress();
   }, [moduleId]);
+  if (!overview) return <p>Loading...</p>;
 
   // Always check if exists first else empty/temp value
   const moduleTitle =

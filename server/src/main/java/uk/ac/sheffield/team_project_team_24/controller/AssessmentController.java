@@ -142,6 +142,7 @@ public class AssessmentController {
         }
     }
 
+    // get assessment overview
     @GetMapping("/modules/{moduleId}/assessments")
     public ResponseEntity<AssessmentOverviewDTO> getOverview(
             @PathVariable Long moduleId) {
