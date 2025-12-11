@@ -1,29 +1,32 @@
 package uk.ac.sheffield.team_project_team_24.service;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.server.ResponseStatusException;
+import uk.ac.sheffield.team_project_team_24.domain.module.Module;
+import uk.ac.sheffield.team_project_team_24.domain.module.ModuleRole;
+import uk.ac.sheffield.team_project_team_24.domain.module.ModuleStaff;
 import uk.ac.sheffield.team_project_team_24.domain.user.User;
 import uk.ac.sheffield.team_project_team_24.dto.CreateModuleDTO;
-import uk.ac.sheffield.team_project_team_24.dto.ModuleDTO;
-import uk.ac.sheffield.team_project_team_24.repository.UserRepository;
+import uk.ac.sheffield.team_project_team_24.repository.ModuleStaffRepository;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.util.HashSet;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
 public class ModuleCsvService {
 
+    private final UserService userService;
     private final ModuleService moduleService;
-    private final UserRepository userRepository;
+    private final ModuleStaffRepository moduleStaffRepository;
 
-    public List<ModuleDTO> processCsv(MultipartFile file) {
-        List<ModuleDTO> createdModules = new ArrayList<>();
+    public List<Module> parse(MultipartFile file) {
+        List<Module> modules = new ArrayList<>();
 
         try (BufferedReader br = new BufferedReader(new InputStreamReader(file.getInputStream()))) {
             String line;
@@ -36,65 +39,66 @@ public class ModuleCsvService {
                     continue;
                 }
 
-                String[] fields = line.split(",", -1);
-                if (fields.length < 3)
+                String[] fields = line.split(",");
+                if (fields.length < 4)
                     continue;
 
                 String moduleCode = fields[0].trim();
                 String moduleName = fields[1].trim();
                 String leadFullName = fields[2].trim();
-                String staffList = fields.length >= 4 ? fields[3].trim() : "";
+                String staffList = fields[3].trim();
 
-                // Reading module lead name
-                String[] leadFullNameParts = leadFullName.split(" ", 2);
-                if (leadFullNameParts.length < 2) {
-                    System.err.println("Full name not found:  " + leadFullName);
-                    continue;
-                }
-                String leadForename = leadFullNameParts[0];
-                String leadSurname = leadFullNameParts[1];
-                User leadUser = userRepository.findByForenameAndSurname(leadForename, leadSurname)
-                        .orElseThrow(() ->
-                                new ResponseStatusException(HttpStatus.NOT_FOUND,
-                                        "Lead full name not found: " + leadFullName)
-                        );
+                // find module lead
+                User moduleLead = userService.findByFullName(leadFullName);
 
-                // Reading other staff members
-                List<Long> staffIds = new ArrayList<>();
+                // staff list
+                List<User> staffIds = new ArrayList<>();
+                Set<Long> staffIdSet = new HashSet<>();
+
                 if (!staffList.isBlank()) {
-                    String[] staffNames = staffList.split(",");
-                    for (String staffFullName : staffNames) {
-                        String trimmed = staffFullName.trim();
-                        String[] parts = trimmed.split(" ", 2);
+                    String[] staffNames = staffList.split(";");
 
-                        if (parts.length < 2)
-                            continue;
+                    for (String s : staffNames) {
+                        String trimmed = s.trim();
+                        if (trimmed.isEmpty()) continue;
 
-                        userRepository.findByForenameAndSurname(parts[0], parts[1])
-                                .ifPresentOrElse(
-                                        user -> staffIds.add(user.getId()),
-                                        () -> System.err.println("Staff not found: " + trimmed)
-                                );
+                        User u = userService.findByFullName(trimmed);
+
+                        if (!u.getId().equals(moduleLead.getId()) && staffIdSet.add(u.getId())) {
+                            staffIds.add(u);
+                        }
                     }
                 }
 
-                CreateModuleDTO dto = new CreateModuleDTO();
-                dto.setModuleCode(moduleCode);
-                dto.setModuleName(moduleName);
-                dto.setModuleLeadId(leadUser.getId());
-                dto.setModuleModeratorId(null);
-                dto.setStaffIds(staffIds);
+                // create module
+                CreateModuleDTO dto = new CreateModuleDTO(
+                        moduleCode,
+                        moduleName,
+                        null,
+                        null,
+                        new ArrayList<>()
+                );
 
-                createdModules.add(ModuleDTO.fromEntity(
-                        moduleService.createModule(dto)
-                ));
+                Module module = moduleService.createModule(dto);
+                modules.add(module);
+
+                // module lead entry
+                moduleStaffRepository.save(
+                        new ModuleStaff(module, moduleLead, ModuleRole.MODULE_LEAD)
+                );
+
+                // create staff list
+                for (User u : staffIds) {
+                    moduleStaffRepository.save(
+                            new ModuleStaff(module, u, ModuleRole.STAFF)
+                    );
+                }
             }
 
         } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                    "Error processing .csv: " + e.getMessage());
+            throw new RuntimeException("Cannot processing CSV (ModuleCsvService): " + e.getMessage(), e);
         }
 
-        return createdModules;
+        return modules;
     }
 }

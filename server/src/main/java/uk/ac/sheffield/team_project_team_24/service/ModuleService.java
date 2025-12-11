@@ -11,6 +11,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import uk.ac.sheffield.team_project_team_24.domain.assessment.Assessment;
 import uk.ac.sheffield.team_project_team_24.domain.module.Module;
 import uk.ac.sheffield.team_project_team_24.domain.module.ModuleRole;
 import uk.ac.sheffield.team_project_team_24.domain.module.ModuleStaff;
@@ -193,5 +194,9 @@ public class ModuleService {
         currentStaff.addAll(staffEntries);
 
         return moduleRepository.save(module);
+    }
+
+    public List<Module> saveAll(List<Module> modules) {
+        return moduleRepository.saveAll(modules);
     }
 }
