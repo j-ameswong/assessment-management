@@ -25,7 +25,9 @@ export default function Navbar() {
             <span className="navbar-role">
               {primaryRole.replaceAll("_", " ")}
             </span>
-
+            <Link className="navbar-link" to="/my-tasks">
+              My tasks
+            </Link>
             {(primaryRole === "ADMIN" || primaryRole === "EXAMS_OFFICER") && (
               <Link className="navbar-link" to="/users/delete">
                 Manage users

@@ -15,6 +15,7 @@ import Layout from "./components/Layout.jsx";
 import DeleteModule from './pages/DeleteModule.jsx';
 import AssessmentLogs from "./pages/AssessmentLogs.jsx";
 import UserDeletion from "./pages/UserDeletion.jsx";
+import MyTasks from "./pages/MyTasks.jsx";
 
 function App() {
   const location = useLocation();
@@ -49,6 +50,7 @@ function App() {
         <Route path="/logout" element={<Logout />} />
         <Route path="/update-password" element={<UpdatePassword />} />
         <Route path="/users/delete" element={<UserDeletion />} />
+        <Route path="/my-tasks" element={<MyTasks />} />
       </Routes>
     </Layout>
   );
