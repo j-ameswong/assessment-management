@@ -85,11 +85,19 @@ export default function AssessmentOverview() {
               <div className={`ao-pill ${c.type}`}>{c.status}</div>
 
               <button
-                className="ao-arrow"
+                className="ao-delete"
                 onClick={() => navigate(`/modules/${moduleId}/assessments/${c.key}/progress`)}
                 aria-label={`Open ${c.title}`}
               >
-                »
+                Delete 🗑
+              </button>
+
+              <button
+                className="ao-details"
+                onClick={() => navigate(`/modules/${moduleId}/assessments/${c.key}/progress`)}
+                aria-label={`Open ${c.title}`}
+              >
+                Details »
               </button>
             </div>
           ))}

@@ -67,13 +67,24 @@
 .ao-pill.warn { background: #f08a21; color: #fff; }
 .ao-pill.danger { background: #b91818; color: #fff; }
 
-.ao-arrow {
+.ao-delete {
+  position: absolute;
+  left: 16px;
+  bottom: 14px;
+  border: none;
+  background: transparent;
+  font-size: 15px;
+  color: #6d679b;
+  cursor: pointer;
+}
+
+.ao-details {
   position: absolute;
   right: 16px;
   bottom: 14px;
   border: none;
   background: transparent;
-  font-size: 22px;
+  font-size: 15px;
   color: #6d679b;
   cursor: pointer;
 }
