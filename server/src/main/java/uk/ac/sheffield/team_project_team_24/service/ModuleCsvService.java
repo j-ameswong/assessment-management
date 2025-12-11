@@ -96,7 +96,7 @@ public class ModuleCsvService {
             }
 
         } catch (Exception e) {
-            throw new RuntimeException("Cannot processing CSV (ModuleCsvService): " + e.getMessage(), e);
+            throw new RuntimeException("Cannot processing CSV: " + e.getMessage(), e);
         }
 
         return modules;
