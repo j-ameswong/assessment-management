@@ -3,6 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import Axios from "axios";
 import Navbar from "../components/Navbar.jsx";
 import "./AssessmentOverview.css";
+import ModuleInfo from "../components/ModuleInfo.jsx";
 
 export default function AssessmentOverview() {
   const navigate = useNavigate();
@@ -15,7 +16,7 @@ export default function AssessmentOverview() {
     const fetchOverview = async () => {
       try {
         const response = await Axios.get(
-          `http://localhost:8080/api/modules/${moduleId}/overview`,
+          `http://localhost:8080/api/modules/${moduleId}/assessments`,
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -40,7 +41,7 @@ export default function AssessmentOverview() {
       }
     };
 
-    fetchProgress();
+    fetchOverview();
   }, [moduleId]);
   if (!overview) return <p>Loading...</p>;
 
@@ -70,6 +71,7 @@ export default function AssessmentOverview() {
   return (
     <>
       <div className="ao-wrap">
+        <ModuleInfo module={overview?.module} />
         <h2 className="ao-subtitle">Assessment Overview</h2>
 
         <div className="ao-grid">

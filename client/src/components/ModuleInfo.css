@@ -1,0 +1,45 @@
+.module-info {
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  background: #fafafa;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+}
+
+.module-title {
+  font-size: 1.6rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+/* Staff grid */
+.module-staff-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 1rem;
+}
+
+/* Individual staff card */
+.module-staff-card {
+  padding: 1rem;
+  background: white;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+}
+
+.module-staff-name {
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.module-staff-email {
+  font-size: 0.9rem;
+  color: #555;
+  margin: 0.3rem 0;
+}
+
+.module-staff-role {
+  display: inline-block;
+  font-size: 0.85rem;
+  padding: 0
+
