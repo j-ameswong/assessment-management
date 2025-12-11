@@ -13,6 +13,7 @@ import EditModule from './pages/EditModule.jsx';
 import UpdatePassword from "./pages/UpdatePassword.jsx";
 import Layout from "./components/Layout.jsx";
 import AssessmentLogs from "./pages/AssessmentLogs.jsx";
+import UserDeletion from "./pages/UserDeletion.jsx";
 
 function App() {
   const location = useLocation();
@@ -45,6 +46,7 @@ function App() {
         <Route path="/create-new-user" element={<UserCreation />} />
         <Route path="/logout" element={<Logout />} />
         <Route path="/update-password" element={<UpdatePassword />} />
+        <Route path="/users/delete" element={<UserDeletion />} />
       </Routes>
     </Layout>
   );
