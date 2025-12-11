@@ -1,5 +1,6 @@
 .ao-wrap {
   padding: 24px;
+  margin-bottom: 8%;
   background: #f4f0ff;
   min-height: 100vh;
   text-align: center;
@@ -9,9 +10,9 @@
 
 .ao-subtitle {
   margin: 20px 8px 12px;
-  font-size: 20px;
+  font-size: 30px;
   color: #2b2250;
-  font-weight: 800;
+  font-weight: 400;
 }
 
 .ao-grid {

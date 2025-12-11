@@ -7,25 +7,24 @@ export default function ModuleInfo({ module }) {
   const { moduleCode, moduleName, moduleStaff } = module;
 
   return (
-    <div className="module-info">
-      <h2 className="module-title">
-        {moduleCode} — {moduleName}
-      </h2>
+    <div className="module-info-card">
+      <h3 className="module-info-title">{moduleCode} — {moduleName}</h3>
 
-      <div className="module-staff-grid">
-        {moduleStaff.map((staff) => (
+      <div className="module-info-grid">
+        {moduleStaff.map(staff => (
           <div key={staff.staffId} className="module-staff-card">
-            <div className="module-staff-name">
+            <span className="module-staff-name">
               {staff.forename} {staff.surname}
-            </div>
-            <div className="module-staff-email">{staff.email}</div>
-            <div className="module-staff-role">
+            </span>
+
+            <span className="module-staff-email">{staff.email}</span>
+
+            <span className="module-staff-role">
               {staff.moduleRole.replace(/_/g, " ")}
-            </div>
+            </span>
           </div>
         ))}
       </div>
     </div>
   );
 }
-

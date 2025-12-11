@@ -1,45 +1,56 @@
-.module-info {
-  margin-bottom: 2rem;
-  padding: 1.5rem;
-  background: #fafafa;
-  border: 1px solid #ddd;
+.module-info-card {
+  background: #ffffff;
+  padding: 20px;
   border-radius: 12px;
+  box-shadow: 0px 4px 10px rgba(0,0,0,0.08);
+  margin: auto;
+  margin-bottom: 25px;
+  width: 90%;
 }
 
-.module-title {
-  font-size: 1.6rem;
+.module-info-title {
+  margin-bottom: 12px;
+  font-size: 30px;
   font-weight: 600;
-  margin-bottom: 1rem;
+  color: #4b0082;
 }
 
-/* Staff grid */
-.module-staff-grid {
+.module-info-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-  gap: 1rem;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px 20px;
 }
 
-/* Individual staff card */
 .module-staff-card {
-  padding: 1rem;
-  background: white;
-  border: 1px solid #ccc;
+  display: flex;
+  flex-direction: column;
+  padding: 12px;
+  background: #fafafa;
+  border: 1px solid #e0e0e0;
   border-radius: 10px;
 }
 
 .module-staff-name {
-  font-size: 1.1rem;
+  font-size: 1rem;
   font-weight: 600;
+  color: #222;
 }
 
 .module-staff-email {
   font-size: 0.9rem;
   color: #555;
-  margin: 0.3rem 0;
+  margin-top: 4px;
 }
 
 .module-staff-role {
-  display: inline-block;
+  margin-top: 6px;
+  padding: 4px 8px;
+  background: #e7f1ff;
+  color: #1a4fa3;
+  border-radius: 6px;
   font-size: 0.85rem;
-  padding: 0
+  display: inline-block;
+  text-transform: capitalize;
+}
 
+/* Full width*

@@ -73,6 +73,7 @@ export default function AssessmentOverview() {
       <div className="ao-wrap">
         <ModuleInfo module={overview?.module} />
         <h2 className="ao-subtitle">Assessment Overview</h2>
+        <hr />
 
         <div className="ao-grid">
           {CARDS.map((c) => (
