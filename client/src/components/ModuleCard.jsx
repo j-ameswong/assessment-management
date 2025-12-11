@@ -6,13 +6,17 @@ import dropdownIcon from "../assets/moduleCardDropdown.png"
 
 // Dropdown arrow source: "https://www.flaticon.com/free-icons/down-arrow"
 
-export default function ModuleCard({ module, isOpen, onToggle }) {
+export default function ModuleCard({ module, userId, isOpen, onToggle }) {
+  const contextRole = module?.moduleStaff.find(s => s.staffId === userId)?.moduleRole ?? "Staff";
   return (
     <div className="module-box">
       <Link to={`/modules/${module.id}/assessments`} className="module-code">{module.moduleCode}</Link>
       <div className="module-info">
         <div className="module-title-dropdown-row">
-          <p className="module-title">{module.moduleName}</p>
+          <div className="module-title">
+            <p>{module.moduleName}</p>
+            {`(${contextRole.split(1)})`}
+          </div>
           <button className="dropdown-btn" onClick={onToggle}>
             <img className="dropdown-icon" src={dropdownIcon}></img>
           </button>

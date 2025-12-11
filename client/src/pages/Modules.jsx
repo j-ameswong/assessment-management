@@ -76,6 +76,7 @@ function Modules() {
           modules.map((mod) => (
             <ModuleCard
               key={mod.moduleCode}
+              userId={localStorage.getItem("userId")}
               module={mod}
               isOpen={openDropdown === mod.moduleCode}
               onToggle={() => setOpenDropdown(openDropdown === mod.moduleCode ? null : mod.moduleCode)}
