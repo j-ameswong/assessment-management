@@ -1,5 +1,6 @@
 .ao-wrap {
   padding: 24px;
+  margin-bottom: 8%;
   background: #f4f0ff;
   min-height: 100vh;
   text-align: center;
@@ -9,9 +10,9 @@
 
 .ao-subtitle {
   margin: 20px 8px 12px;
-  font-size: 20px;
+  font-size: 30px;
   color: #2b2250;
-  font-weight: 800;
+  font-weight: 400;
 }
 
 .ao-grid {
@@ -66,6 +67,17 @@
 .ao-pill.warn { background: #f08a21; color: #fff; }
 .ao-pill.danger { background: #b91818; color: #fff; }
 
+.ao-delete {
+  position: absolute;
+  left: 16px;
+  bottom: 14px;
+  border: none;
+  background: transparent;
+  font-size: 15px;
+  color: #6d679b;
+  cursor: pointer;
+}
+
 .ao-logs-button {
   display: block;
   margin: 8px auto 0;
@@ -83,13 +95,13 @@
   background: #c9b8ff;         /* 鼠标悬停稍微深一点 */
 }
 
-.ao-arrow {
+.ao-details {
   position: absolute;
   right: 16px;
   bottom: 14px;
   border: none;
   background: transparent;
-  font-size: 22px;
+  font-size: 15px;
   color: #6d679b;
   cursor: pointer;
 }

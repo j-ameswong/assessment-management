@@ -142,6 +142,7 @@ public class AssessmentController {
         }
     }
 
+    // get assessment overview
     @GetMapping("/modules/{moduleId}/assessments")
     public ResponseEntity<AssessmentOverviewDTO> getOverview(
             @PathVariable Long moduleId) {
@@ -188,5 +189,11 @@ public class AssessmentController {
     public ResponseEntity<AssessmentProgressDTO> getProgress(
             @PathVariable Long id) {
         return ResponseEntity.ok(assessmentService.getProgress(id));
+    }
+
+    @PostMapping("/assessments/{id}/activity")
+    public ResponseEntity<AssessmentDTO> toggleActivity(
+            @PathVariable Long id) {
+        return ResponseEntity.ok(assessmentService.toggleActivity(id));
     }
 }

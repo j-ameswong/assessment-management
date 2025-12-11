@@ -17,6 +17,7 @@ public class AssessmentDTO {
     private String name;
     private AssessmentType type;
     private Boolean isComplete;
+    private Boolean isActive;
     private String description;
     private Long assessmentStageId;
     private Long moduleId;
@@ -32,6 +33,7 @@ public class AssessmentDTO {
                 a.getAssessmentName(),
                 a.getAssessmentType(),
                 a.getIsComplete(),
+                a.getIsActive(),
                 a.getDescription(),
                 a.getAssessmentStage().getId(),
                 a.getModule() != null ? a.getModule().getId() : null,

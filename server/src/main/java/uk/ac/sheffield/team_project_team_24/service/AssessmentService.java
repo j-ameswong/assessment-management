@@ -47,6 +47,7 @@ public class AssessmentService {
         a.setAssessmentStage(assessmentStageService.getFirstStage(
                 a.getAssessmentType()));
         a.setIsComplete(false);
+        a.setIsActive(true);
 
         createAssessment(a);
         log(a, userService.getAdmin(), "Initialized by system", false);
@@ -222,6 +223,13 @@ public class AssessmentService {
 
     public List<Assessment> getAll() {
         return assessmentRepository.findAll();
+    }
+
+    public AssessmentDTO toggleActivity(Long id) {
+        Assessment a = getAssessment(id);
+        a.setIsActive(!a.getIsActive());
+
+        return AssessmentDTO.fromEntity(a);
     }
 
 }
