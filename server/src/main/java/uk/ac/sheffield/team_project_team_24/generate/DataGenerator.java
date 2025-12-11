@@ -154,6 +154,7 @@ public class DataGenerator {
                 newAssessment.setAssessmentStage(assessmentStageService.getFirstStage(
                         newAssessment.getAssessmentType()));
                 newAssessment.setIsComplete(false);
+                newAssessment.setIsActive(true);
                 newAssessment.setDescription("This is a sample description");
 
                 switch (newAssessment.getAssessmentType()) {

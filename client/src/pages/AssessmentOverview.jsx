@@ -9,6 +9,7 @@ export default function AssessmentOverview() {
   const navigate = useNavigate();
   // example url: /modules/assessments/1
   const moduleId = useParams().moduleId;
+  const [showAll, setShowAll] = useState(false);
 
   // fetch data from api
   const [overview, setOverview] = useState(null);
@@ -46,16 +47,11 @@ export default function AssessmentOverview() {
   if (!overview) return <p>Loading...</p>;
 
   // Always check if exists first else empty/temp value
-  const moduleTitle =
-    overview?.module
-      ? overview.module.moduleCode + " " + overview.module.moduleName
-      : "COMXXXX UNKNOWN";
-
   const assessments = overview?.assessments ?? [];
-
+  const activeAssessments = assessments.filter(a => a.isActive);
   const stages = overview?.stages ?? [];
 
-  const CARDS = assessments.map(a => ({
+  const CARDS = activeAssessments?.map(a => ({
     key: a.id,
     // capitalized assessment type
     assessmentType: a.type[0] + a.type.substring(1).toLowerCase(),
@@ -64,9 +60,38 @@ export default function AssessmentOverview() {
     // Show stage/total stages for progress status
     status: "Stage: " + (stages[a.assessmentStageId - 1]?.step ?? "0")
       + "/" + (stages?.filter(s => s.assessmentType === a.type)).length, //getStage(a.assessmentStageId),
-    type: a.isComplete ? "ok" : "warn"
+    type: a.isComplete ? "ok" : "warn",
+    hidden: showAll,
   }
   ))
+
+  const toggleAssessmentActivity = async (assessmentId) => {
+    try {
+      const url = `http://localhost:8080/api/assessments/${assessmentId}/activity`;
+
+      const response = await Axios.post(
+        url,
+        {}, // empty body
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+
+      console.log("Success:", response.data);
+
+      // Refresh the view
+      window.location.reload();
+    } catch (error) {
+      console.error("Failed to toggle assessment activity:", error);
+
+      if (error.response) {
+        console.error("Status:", error.response.status);
+        console.error("Data:", error.response.data);
+      }
+    }
+  };
 
   return (
     <>
@@ -76,7 +101,7 @@ export default function AssessmentOverview() {
         <hr />
 
         <div className="ao-grid">
-          {CARDS.map((c) => (
+          {CARDS.map((c) => (!c.hidden &&
             <div key={c.key} className="ao-card">
               <h4 className="ao-card-title">{c.title}</h4>
 
@@ -86,7 +111,7 @@ export default function AssessmentOverview() {
 
               <button
                 className="ao-delete"
-                onClick={() => navigate(`/modules/${moduleId}/assessments/${c.key}/progress`)}
+                onClick={() => toggleAssessmentActivity(c.key)}
                 aria-label={`Open ${c.title}`}
               >
                 Delete 🗑

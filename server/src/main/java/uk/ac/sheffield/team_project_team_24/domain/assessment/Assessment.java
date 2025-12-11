@@ -64,4 +64,5 @@ public class Assessment {
     @Column(length = 2000)
     private String description;
 
+    private Boolean isActive;
 }

@@ -190,4 +190,10 @@ public class AssessmentController {
             @PathVariable Long id) {
         return ResponseEntity.ok(assessmentService.getProgress(id));
     }
+
+    @PostMapping("/assessments/{id}/activity")
+    public ResponseEntity<AssessmentDTO> toggleActivity(
+            @PathVariable Long id) {
+        return ResponseEntity.ok(assessmentService.toggleActivity(id));
+    }
 }
