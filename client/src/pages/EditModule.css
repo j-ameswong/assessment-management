@@ -17,8 +17,9 @@
 
 .grid-container {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 450px 450px;
     gap: 150px;
+    margin-top: 70px;
 }
 
 
@@ -109,7 +110,51 @@
     color: #000000;
 }
 
-.edit-btn {
+
+.or {
+    text-align: center;
+    font-weight: 600;
+    margin: 0 auto;
+    width: 400px;
+    display: flex;
+    justify-content: center;
+}
+
+
+.csv-wrapper, .attach-wrapper {
+    position: relative;
+    width: 400px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    border: 1px solid #ccc;
+    background: white;
+    border-radius: 18px;
+    overflow: hidden;
+}
+
+
+.attach-btn{
+    position: absolute;
+    top: 50%;
+    right: 0;
+    transform: translateY(-50%);
+
+    padding: 12px 26px;
+    background: #392fa0;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 16px;
+    white-space: nowrap;
+    width: 150px;
+    height: 50px;
+    z-index: 2;
+
+}
+
+.create-btn {
     margin-left: 100px;
     padding: 12px 26px;
     background: #392fa0;
@@ -123,6 +168,34 @@
 
 }
 
+.csv-input, .attach-input {
+    position: absolute;
+    left: 0;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+    z-index: 3;
+}
+
+
+.file-display {
+    position: absolute;
+    left: 0;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    padding-left: 16px;
+    gap: 10px;
+    pointer-events: none;
+}
+
+.file-icon {
+    width: 20px;
+    height: 20px;
+    opacity: 0.7;
+}
+
+
 .attach-btn:hover,
 .create-btn:hover {
     background: #2e2480;
@@ -130,3 +203,17 @@
 .type-btn:hover {
     background: #6f935f;
 }
+
+/*Select fields styles*/
+.module-input {
+    width: 90%;
+    max-width: 460px;
+}
+
+.module-input .react-select__control {
+    width: 100%;
+    min-height: 50px;
+    border-radius: 20px;
+}
+
+

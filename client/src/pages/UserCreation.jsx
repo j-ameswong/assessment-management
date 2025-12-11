@@ -1,27 +1,62 @@
-import React from "react";
+import React, {useState} from "react";
 import Navbar from "../components/Navbar.jsx";
 import Footer from "../components/Footer.jsx";
 import {useNavigate} from "react-router-dom";
-import {Navigate} from "react-router-dom";
 import {useEffect} from "react";
-
 
 
 export default function UserCreation() {
 
   const navigate = useNavigate();
   const userRole = localStorage.getItem('role');
-  const auth = userRole === 'EXAMS_OFFICER' || userRole === 'ADMIN';
+  const auth = userRole === 'EXAMS_OFFICER' || userRole === 'ADMIN';  //ensures the user accessing the page is an admin/exam officer
+  const [message, setMessage] = useState("");
 
-  useEffect(() =>{
+  useEffect(() => {
     if (!auth) {
-      navigate("/home", {replace: true});
+      navigate("/home", {replace: true}); //navigates back to the home page if the user is unauthorised
     }
   }, [navigate]);
-  const [selectedRole, setSelectedRole] = React.useState("ADMIN");
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [forename, setForename] = useState("");
+  const [surname, setSurname] = useState("");
+  const [selectedRole, setSelectedRole] = useState("ADMIN"); //sets all the variables to form inputs
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+
+    try {
+      const response = await fetch("http://localhost:8080/api/users", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${localStorage.getItem("token")}`
+        },
+        body: JSON.stringify({forename, surname, email, password, role: selectedRole}) //passes the form inputs to the database
+      });
+
+      if (!response.ok) {
+        setMessage("Failed to create user");
+      } else {
+        setMessage("User created successfully");
+        navigate("/create-new-user", {replace: true});
+        setSurname("");
+        setForename("");
+        setEmail("");
+        setPassword(""); //clears the form when the new user is submitted
+      }
+    } catch (error) {
+      console.error(error);
+      setMessage("Cannot connect to server");
+    }
+  }
+
 
 return (
   <>
+    <Navbar left="COM2008 Systems Design and Security" right={userRole}></Navbar>
     {auth ? (
       <div className="login-page">
         <div className="login-card">
@@ -41,7 +76,7 @@ return (
           <section className="login-right">
             <div className="login-right-inner">
               <h1 className="login-title">New user details</h1>
-              <form className="login-form">
+              <form className="login-form" onSubmit={handleSubmit}>
                 <div className="login-field">
                   <label htmlFor="forename">Forename</label>
                   <input
@@ -49,6 +84,9 @@ return (
                     type="forename"
                     className="login-input"
                     placeholder="forename"
+                    value = {forename}
+                    onChange={(e) => setForename(e.target.value)}
+                    required
                     />
 
                   <label htmlFor="surname">Surname</label>
@@ -57,6 +95,9 @@ return (
                     type="surname"
                     className="login-input"
                     placeholder="surname"
+                    value = {surname}
+                    onChange={(e) => setSurname(e.target.value)}
+                    required
                   />
 
                   <label htmlFor="email">Email</label>
@@ -65,6 +106,9 @@ return (
                     type="email"
                     className="login-input"
                     placeholder="name@sheffield.ac.uk"
+                    value = {email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
                   />
                 </div>
 
@@ -74,22 +118,31 @@ return (
                     id="password"
                     type="password"
                     className="login-input"
+                    placeholder="password"
+                    value = {password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
                   />
                 </div>
                 <label htmlFor="role">Role </label>
                 <select value={selectedRole} onChange={(e) => setSelectedRole(e.target.value)}>
                   <option value="ADMIN">Admin</option>
-                  <option value="EXAMS_OFFICER">Exams Officer</option>
                   <option value="ACADEMIC_STAFF">Academic Staff</option>
+                  <option value="EXTERNAL_EXAMINER">External Examiner</option>
                   </select>
+
+                <button type="submit" className="login-submit">
+                  Submit
+                </button>
+                <p>{message}</p>
+
               </form>
             </div>
           </section>
           </div>
       </div>
             
-    ) : (
-      <p>Access denied {userRole}</p>
+    ) : (<></>
     )}
     <div className = "footer-box">
       <Footer/>

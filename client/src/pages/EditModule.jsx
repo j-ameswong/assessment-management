@@ -2,10 +2,11 @@
 import {useEffect, useState} from "react";
 import axios from "axios";
 import Select from "react-select";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import "./EditModule.css";
 import Navbar from "../components/Navbar.jsx";
 import Footer from "../components/Footer.jsx";
+
 
 export default function EditModule() {
     // Module Fields
@@ -17,7 +18,7 @@ export default function EditModule() {
     const [modLead, setModLead] = useState("");
     const [modModerator, setModModerator] = useState("");
     const [modStaff, setModStaff] = useState([]);
-
+    const navigate = useNavigate();
 
     // Fetch Staff
     const [staffList, setStaffList] = useState([]);
@@ -105,6 +106,7 @@ export default function EditModule() {
 
             console.log("Module edited!:", response.data);
             alert("module edited!");
+            navigate("/modules");
         } catch (err) {
             console.error(err);
             alert("Failed to edit module.");
@@ -116,6 +118,13 @@ export default function EditModule() {
             <div className="module-page">
                 <div className="module-container">
                     <h1 className="title">Editing module: {currentModule?.moduleCode}- {currentModule?.moduleName}</h1>
+                    <button
+                        type="button"
+                        className="back-btn"
+                        onClick={() => navigate("/modules")}
+                        >
+                        Back to modules
+                    </button>
                     <div className="grid-container">
                         {/* left area */}
                         <div className="left-column">
@@ -203,7 +212,7 @@ export default function EditModule() {
                             />
 
                             <button className="create-btn" onClick={Edit}>
-                                Create
+                                Update
                             </button>
                         </div>
 
