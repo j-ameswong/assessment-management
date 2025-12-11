@@ -44,3 +44,15 @@
     padding: 6px 8px;
     vertical-align: top;
 }
+
+.table-wrapper {
+    margin-top: 8px;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid #e0d5ff;
+    width: 60%
+}
+
+.page{
+    align-content: center;
+}
