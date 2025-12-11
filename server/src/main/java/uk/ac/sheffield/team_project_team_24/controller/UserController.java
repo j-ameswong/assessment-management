@@ -1,10 +1,6 @@
 package uk.ac.sheffield.team_project_team_24.controller;
 
 import java.util.List;
-import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -52,6 +48,7 @@ public class UserController {
     }
 
     // Delete user
+    @PreAuthorize("hasAnyRole('ADMIN','EXAMS_OFFICER')")
     @DeleteMapping("/users/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         userService.deleteUser(id);

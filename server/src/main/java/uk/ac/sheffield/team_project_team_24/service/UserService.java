@@ -56,7 +56,7 @@ public class UserService {
     }
 
     public List<User> getAllUsers() {
-        List<User> users = userRepository.findAll();
+        List<User> users = userRepository.findAllByDeletedFalse();
         if (users.isEmpty()) {
             throw new EmptyRepositoryException("UserRepository");
         } else {
@@ -75,7 +75,7 @@ public class UserService {
     }
 
     public List<User> getUsers(UserRole userRole) {
-        return userRepository.findAllByRole(userRole);
+        return userRepository.findAllByRoleAndDeletedFalse(userRole);
     }
 
     public User getUser(Long id) {
@@ -105,11 +105,24 @@ public class UserService {
     }
 
     public void deleteUser(Long id) {
-        if (!userRepository.existsById(id)) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, USER_NOT_FOUND);
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, USER_NOT_FOUND));
+
+        if (user.getRole() == UserRole.EXAMS_OFFICER) {
+            throw new ResponseStatusException(
+                    HttpStatus.CONFLICT,
+                    "Cannot delete exams officer user. Please assign a new exams officer and demote the old one first.");
         }
-        userRepository.deleteById(id);
+
+        if (user.isDeleted()) {
+            return;
+        }
+
+        user.setDeleted(true);
+
+        userRepository.save(user);
     }
+
 
     public User getUserByEmail(String email) {
         return userRepository.findByEmail(email).orElse(null);

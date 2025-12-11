@@ -1,26 +1,31 @@
 package uk.ac.sheffield.team_project_team_24.service;
 
-import org.junit.jupiter.api.Test;
-import org.springframework.web.server.ResponseStatusException;
-import uk.ac.sheffield.team_project_team_24.domain.user.User;
-import uk.ac.sheffield.team_project_team_24.dto.UserSignupDTO;
-import uk.ac.sheffield.team_project_team_24.exception.EmptyRepositoryException;
-import uk.ac.sheffield.team_project_team_24.exception.user.UsernameExistsException;
-import uk.ac.sheffield.team_project_team_24.repository.UserRepository;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import static org.mockito.ArgumentMatchers.any;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
-
+import uk.ac.sheffield.team_project_team_24.domain.user.User;
 import uk.ac.sheffield.team_project_team_24.domain.user.UserRole;
-
-import java.util.*;
+import uk.ac.sheffield.team_project_team_24.exception.EmptyRepositoryException;
+import uk.ac.sheffield.team_project_team_24.repository.UserRepository;
 
 @ExtendWith(MockitoExtension.class)
 class UserServiceTest {
@@ -182,20 +187,44 @@ class UserServiceTest {
     // delete user tests
     // success
     @Test
-    void deleteUser_shouldCallDeleteById_whenUserExists() {
+    void deleteUser_shouldSoftDeleteNonExamsOfficer_whenUserExists() {
         User savedUser = dummyUser1();
         savedUser.setId(1L);
-        when(userRepository.existsById(1L)).thenReturn(true);
+        savedUser.setRole(UserRole.ACADEMIC_STAFF);
+
+        when(userRepository.findById(1L)).thenReturn(Optional.of(savedUser));
+
         classUnderTest.deleteUser(1L);
 
-        // both delete by id and exists by id were called
-        verify(userRepository, times(1)).deleteById(1L);
-        verify(userRepository, times(1)).existsById(1L);
+        assertTrue(savedUser.isDeleted());
+        verify(userRepository, times(1)).save(savedUser);
     }
 
     // failure
     @Test
     void deleteUser_shouldThrowException_whenUserDoesNotExist() {
-        ResponseStatusException ex = assertThrows(ResponseStatusException.class, () -> classUnderTest.deleteUser(1L));
+        when(userRepository.findById(1L)).thenReturn(Optional.empty());
+
+        ResponseStatusException ex =
+                assertThrows(ResponseStatusException.class, () -> classUnderTest.deleteUser(1L));
+
+        assertEquals(HttpStatus.NOT_FOUND, ex.getStatusCode());
     }
+
+    // failure exams officer user can not be deleted
+    @Test
+    void deleteUser_shouldThrowException_whenUserIsExamsOfficer() {
+        User examsOfficer = dummyUser1();
+        examsOfficer.setId(1L);
+        examsOfficer.setRole(UserRole.EXAMS_OFFICER);
+
+        when(userRepository.findById(1L)).thenReturn(Optional.of(examsOfficer));
+
+        ResponseStatusException ex =
+                assertThrows(ResponseStatusException.class, () -> classUnderTest.deleteUser(1L));
+
+        assertEquals(HttpStatus.CONFLICT, ex.getStatusCode());
+        verify(userRepository, never()).save(any());
+    }
+
 }
