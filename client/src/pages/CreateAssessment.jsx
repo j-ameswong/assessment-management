@@ -1,10 +1,13 @@
 import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 
 import axios from "axios";
 import "./CreateAssessment.css"
 
 export default function CreateAssessment() {
+  const navigate = useNavigate();
+  if (!localStorage.getItem("token")) { navigate("/login") }
+
   const [name, setName] = useState("");
   const [type, setType] = useState(null);
   const [description, setDescription] = useState("");
@@ -15,13 +18,13 @@ export default function CreateAssessment() {
   // Module list
   const [modules, setModules] = useState([]);
   const { moduleId: routeModuleId } = useParams();
-  const [moduleId, setModuleId] = useState(routeModuleId  ? Number(routeModuleId) : 0);
+  const [moduleId, setModuleId] = useState(routeModuleId ? Number(routeModuleId) : 0);
 
 
   // Staff lists
   const [moduleStaff, setModuleStaff] = useState([]);
   const [checkerCandidates, setCheckerCandidates] = useState([]);
-  const [externalExaminers, setExternalExaminers] = useState([]); 
+  const [externalExaminers, setExternalExaminers] = useState([]);
 
   // Setter/Checker/External Examiner
   const [setterId, setSetterId] = useState('');
@@ -40,24 +43,24 @@ export default function CreateAssessment() {
 
 
     const url =
-          role === "ADMIN" || role === "EXAMS_OFFICER"
-              ? "http://localhost:8080/api/modules"
-              : `http://localhost:8080/api/modules/user/${userId}`;
-      fetch(url, {
-        method: "GET",
-        headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`
+      role === "ADMIN" || role === "EXAMS_OFFICER"
+        ? "http://localhost:8080/api/modules"
+        : `http://localhost:8080/api/modules/user/${userId}`;
+    fetch(url, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+      }
+    })
+      .then(res => {
+        if (!res.ok) {
+          throw new Error("Failed to fetch modules");
         }
+        return res.json();
       })
-        .then(res => {
-            if (!res.ok) {
-                throw new Error("Failed to fetch modules");
-            }
-            return res.json();
-        })
-        .then(data => setModules(data))
-        .catch(err => console.error(err));
+      .then(data => setModules(data))
+      .catch(err => console.error(err));
 
   }, []);
 
@@ -121,7 +124,7 @@ export default function CreateAssessment() {
       setExternalExaminers(externalList);
 
       let checkerList = allUsers.filter(u =>
-        ["ACADEMIC_STAFF", "EXAMS_OFFICER"].includes(u.role) && 
+        ["ACADEMIC_STAFF", "EXAMS_OFFICER"].includes(u.role) &&
         !staff.some(ms => ms.staffId === u.id)
       );
 
@@ -152,240 +155,240 @@ export default function CreateAssessment() {
 
 
   const Create = () => {
-      if (!name || !type || !moduleId || !setterId || !checkerId) {
-          alert("Please enter name and select a type.");
-          return;
-      }
-
-      const payload = {
-          name: name,
-          type: type.toUpperCase(),
-          moduleId: moduleId,
-          setterId: setterId,
-          checkerId: checkerId,
-          externalExaminer: externalExaminerId,
-          description: description,
-          deadline: deadline ? new Date(deadline).toISOString() : null
-
-      };
-
-      console.log("payload send:", payload);
-
-      axios.post("http://localhost:8080/api/assessments", payload, {
-        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
-      })
-        .then(response => {
-          console.log("Created:", response.data);
-          alert("Assessment created!");
-        })
-        .catch(error => {
-          console.error(error);
-          alert("Failed to create assessment.");
-        });
-    };
-
-    // Upload CSV
-    const CsvUpload = () => {
-      const formData = new FormData();
-      formData.append("file", csvFile);
-
-      axios.post("http://localhost:8080/api/assessments/uploadCsv", formData, {
-        headers: { "Content-Type": "multipart/form-data" }
-      })
-        .then(() => alert("CSV uploaded!"))
-        .catch(() => alert("Failed to upload CSV."));
-    };
-
-    // Upload Attachment
-    const AttachmentUpload = () => {
-      const formData = new FormData();
-      formData.append("file", attachment);
-      axios.post("http://localhost:8080/api/assessments/uploadAttachment", formData, {
-        headers: { "Content-Type": "multipart/form-data" }
-      })
-      alert("Attachment uploaded!");
+    if (!name || !type || !moduleId || !setterId || !checkerId) {
+      alert("Please enter name and select a type.");
+      return;
     }
 
-    return (
-      <>
-        <div className="assessment-page">
-          <div className="assessment-container">
+    const payload = {
+      name: name,
+      type: type.toUpperCase(),
+      moduleId: moduleId,
+      setterId: setterId,
+      checkerId: checkerId,
+      externalExaminerId: externalExaminerId,
+      description: description,
+      deadline: deadline ? new Date(deadline).toISOString() : null
 
-            <h1 className="title">Create New Assessment</h1>
+    };
 
-            <div className="grid-container">
+    console.log("payload send:", payload);
 
-              {/* left area */}
-              <div className="left-column">
+    axios.post("http://localhost:8080/api/assessments", payload, {
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
+    })
+      .then(response => {
+        console.log("Created:", response.data);
+        alert("Assessment created!");
+      })
+      .catch(error => {
+        console.error(error);
+        alert("Failed to create assessment.");
+      });
+  };
 
-                {/* Name */}
-                <label className="label">Assessment Name</label>
-                <input
-                  className="input"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                />
-                
+  // Upload CSV
+  const CsvUpload = () => {
+    const formData = new FormData();
+    formData.append("file", csvFile);
 
-                {/*Assessment Type*/}
-                <label className="label">Assessment Type</label>
-                <div className="type-buttons">
-                    <button
-                      className={`type-btn ${type === "COURSEWORK" ? "selected" : ""}`}
-                      onClick={() => setType("COURSEWORK")}
-                      onDoubleClick={() => setType(null)}
-                    >
-                      <span>Coursework</span>
-                      <span className={`circle ${type === "COURSEWORK" ? "checked" : ""}`}>
-                          {type === "COURSEWORK" && <span className="tick">✔</span>}
-                      </span>
-                    </button>
-                    <button
-                      className={`type-btn ${type === "test" ? "selected" : ""}`}
-                      onClick={() => setType("test")}
-                      onDoubleClick={() => setType(null)}
-                    >
-                      <span>In-semester quiz</span>
-                      <span className={`circle ${type === "test" ? "checked" : ""}`}>
-                          {type === "test" && <span className="tick">✔</span>}
-                      </span>
-                    </button>
-                    <button
-                      className={`type-btn ${type === "exam" ? "selected" : ""}`}
-                      onClick={() => setType("exam")}
-                      onDoubleClick={() => setType(null)}
-                    >
-                      <span>Exam</span>
-                      <span className={`circle ${type === "exam" ? "checked" : ""}`}>
-                          {type === "exam" && <span className="tick">✔</span>}
-                      </span>
-                    </button>
-                </div>
+    axios.post("http://localhost:8080/api/assessments/uploadCsv", formData, {
+      headers: { "Content-Type": "multipart/form-data" }
+    })
+      .then(() => alert("CSV uploaded!"))
+      .catch(() => alert("Failed to upload CSV."));
+  };
 
-                <div className="or">
-                  <p>OR</p>
-                </div>
+  // Upload Attachment
+  const AttachmentUpload = () => {
+    const formData = new FormData();
+    formData.append("file", attachment);
+    axios.post("http://localhost:8080/api/assessments/uploadAttachment", formData, {
+      headers: { "Content-Type": "multipart/form-data" }
+    })
+    alert("Attachment uploaded!");
+  }
 
-                <label className="label">Upload .csv file</label>
-                <div className="csv-wrapper">
-                  <input
-                    className="csv-input"
-                    type="file"
-                    accept=".csv"
-                    onChange={(e) => setCsvFile(e.target.files[0])}
+  return (
+    <>
+      <div className="assessment-page">
+        <div className="assessment-container">
 
-                  />
+          <h1 className="title">Create New Assessment</h1>
 
-                  <div className="file-display">
-                    <img src="/icons/file.svg" alt="file upload icon" className="file-icon" />
-                  </div>
+          <div className="grid-container">
 
-                  <button className="attach-btn" onClick={CsvUpload}>
-                    Attach
-                  </button>
-                </div>
+            {/* left area */}
+            <div className="left-column">
 
-                <label className="label">Attachments</label>
-                <div className="attach-wrapper">
-                  <input
-                    className="attach-input"
-                    type="file"
-                    onChange={(e) => setAttachment(e.target.files[0])}
-                  />
+              {/* Name */}
+              <label className="label">Assessment Name</label>
+              <input
+                className="input"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+              />
 
-                  <div className="file-display">
-                    <img src="/icons/file.svg" alt="file upload icon" className="file-icon" />
-                  </div>
 
-                  <button className="attach-btn" onClick={AttachmentUpload}>Attach</button>
-                </div>
-
-                <label className="label">Deadline</label>
-                <input
-                  type="datetime-local"
-                  className="input"
-                  value={deadline}
-                  onChange={e => setDeadline(e.target.value)}
-                />
-
+              {/*Assessment Type*/}
+              <label className="label">Assessment Type</label>
+              <div className="type-buttons">
+                <button
+                  className={`type-btn ${type === "COURSEWORK" ? "selected" : ""}`}
+                  onClick={() => setType("COURSEWORK")}
+                  onDoubleClick={() => setType(null)}
+                >
+                  <span>Coursework</span>
+                  <span className={`circle ${type === "COURSEWORK" ? "checked" : ""}`}>
+                    {type === "COURSEWORK" && <span className="tick">✔</span>}
+                  </span>
+                </button>
+                <button
+                  className={`type-btn ${type === "test" ? "selected" : ""}`}
+                  onClick={() => setType("test")}
+                  onDoubleClick={() => setType(null)}
+                >
+                  <span>In-semester quiz</span>
+                  <span className={`circle ${type === "test" ? "checked" : ""}`}>
+                    {type === "test" && <span className="tick">✔</span>}
+                  </span>
+                </button>
+                <button
+                  className={`type-btn ${type === "exam" ? "selected" : ""}`}
+                  onClick={() => setType("exam")}
+                  onDoubleClick={() => setType(null)}
+                >
+                  <span>Exam</span>
+                  <span className={`circle ${type === "exam" ? "checked" : ""}`}>
+                    {type === "exam" && <span className="tick">✔</span>}
+                  </span>
+                </button>
               </div>
 
-              {/* right area */}
-              <div className="right-column">
+              <div className="or">
+                <p>OR</p>
+              </div>
 
-                  {/* Module */}
-                  <label className="label">For Module</label>
-                  <select
-                    value={Number.isNaN(moduleId) ? "" : moduleId}
-                    onChange={onModuleSelect}
-                  >
-                    <option value="">-- Select Module --</option>
-                    {modules.map((m) => (
-                      <option key={m.id} value={m.id}>
-                        {m.moduleName}
+              <label className="label">Upload .csv file</label>
+              <div className="csv-wrapper">
+                <input
+                  className="csv-input"
+                  type="file"
+                  accept=".csv"
+                  onChange={(e) => setCsvFile(e.target.files[0])}
+
+                />
+
+                <div className="file-display">
+                  <img src="/icons/file.svg" alt="file upload icon" className="file-icon" />
+                </div>
+
+                <button className="attach-btn" onClick={CsvUpload}>
+                  Attach
+                </button>
+              </div>
+
+              <label className="label">Attachments</label>
+              <div className="attach-wrapper">
+                <input
+                  className="attach-input"
+                  type="file"
+                  onChange={(e) => setAttachment(e.target.files[0])}
+                />
+
+                <div className="file-display">
+                  <img src="/icons/file.svg" alt="file upload icon" className="file-icon" />
+                </div>
+
+                <button className="attach-btn" onClick={AttachmentUpload}>Attach</button>
+              </div>
+
+              <label className="label">Deadline</label>
+              <input
+                type="datetime-local"
+                className="input"
+                value={deadline}
+                onChange={e => setDeadline(e.target.value)}
+              />
+
+            </div>
+
+            {/* right area */}
+            <div className="right-column">
+
+              {/* Module */}
+              <label className="label">For Module</label>
+              <select
+                value={Number.isNaN(moduleId) ? "" : moduleId}
+                onChange={onModuleSelect}
+              >
+                <option value="">-- Select Module --</option>
+                {modules.map((m) => (
+                  <option key={m.id} value={m.id}>
+                    {m.moduleName}
+                  </option>
+                ))}
+              </select>
+
+              {/*Setter / Checker / External Examiner dropdowns (only show if module selected)*/}
+              {moduleId !== 0 && (
+                <>
+                  <label className="label">Setter</label>
+                  <select value={setterId} onChange={e => setSetterId(e.target.value)}>
+                    <option value="">-- Select Setter --</option>
+                    {moduleStaff
+                      .filter(s => s.moduleRole !== "MODERATOR")
+                      .map(s => (
+                        <option
+                          key={s.staffId}
+                          value={String(s.staffId)}
+                        >
+                          {s.forename} {s.surname} — {s.moduleRole}
+                        </option>
+                      ))}
+                  </select>
+
+
+                  <label className="label">Checker</label>
+                  <select value={checkerId} onChange={e => setCheckerId(e.target.value)}>
+                    <option value="">-- Select Checker --</option>
+                    {checkerCandidates.map(s => (
+                      <option key={s.id} value={s.id}>
+                        {s.forename} {s.surname} — {s.role}
                       </option>
                     ))}
                   </select>
 
-                  {/*Setter / Checker / External Examiner dropdowns (only show if module selected)*/}
-                  {moduleId !== 0 && (
-                    <>
-                      <label className="label">Setter</label>
-                      <select value={setterId} onChange={e => setSetterId(e.target.value)}>
-                        <option value="">-- Select Setter --</option>
-                        {moduleStaff
-                          .filter(s => s.moduleRole !== "MODERATOR") 
-                          .map(s => (
-                            <option
-                              key={s.staffId}
-                              value={String(s.staffId)}
-                            >
-                              {s.forename} {s.surname} — {s.moduleRole}
-                            </option>
-                          ))}
-                      </select>
+                  <label className="label">External Examiner</label>
+                  <select value={externalExaminerId} onChange={e => setExternalExaminerId(e.target.value)}>
+                    <option value="">-- Select External Examiner --</option>
+                    {externalExaminers.map(e => (
+                      <option key={e.id} value={e.id}>
+                        {e.forename} {e.surname}
+                      </option>
+                    ))}
+                  </select>
 
+                </>
+              )}
 
-                      <label className="label">Checker</label>
-                      <select value={checkerId} onChange={e => setCheckerId(e.target.value)}>
-                        <option value="">-- Select Checker --</option>
-                        {checkerCandidates.map(s => (
-                          <option key={s.id} value={s.id}>
-                            {s.forename} {s.surname} — {s.role}
-                          </option>
-                        ))}
-                      </select>
+              <label className="label">Description</label>
+              <textarea
+                className="textarea"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+              ></textarea>
 
-                      <label className="label">External Examiner</label>
-                      <select value={externalExaminerId} onChange={e => setExternalExaminerId(e.target.value)}>
-                        <option value="">-- Select External Examiner --</option>
-                        {externalExaminers.map(e => (
-                          <option key={e.id} value={e.id}>
-                            {e.forename} {e.surname}
-                          </option>
-                        ))}
-                      </select>
-
-                    </>
-                  )}
-
-                  <label className="label">Description</label>
-                  <textarea
-                    className="textarea"
-                    value={description}
-                    onChange={(e) => setDescription(e.target.value)}
-                  ></textarea>
-
-                  <button className="create-btn" onClick={Create}>
-                    Create
-                  </button>
-              </div>
-
+              <button className="create-btn" onClick={Create}>
+                Create
+              </button>
             </div>
 
           </div>
 
         </div>
-      </>
-    );
+
+      </div>
+    </>
+  );
 }

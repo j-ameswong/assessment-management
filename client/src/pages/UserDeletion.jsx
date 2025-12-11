@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
-import {Link, useNavigate} from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import api from "../api/axiosConfig";
 import "./UserDeletion.css";
 
 export default function UserDeletion() {
   const navigate = useNavigate();
+  if (!localStorage.getItem("token")) { navigate("/login") }
 
   const role = localStorage.getItem("role");
   const canManageUsers = role === "ADMIN" || role === "EXAMS_OFFICER";
@@ -46,7 +47,7 @@ export default function UserDeletion() {
     if (user.role === "EXAMS_OFFICER") {
       window.alert(
         "You cannot delete an Exams Officer directly.\n" +
-          "Please assign a new Exams Officer and demote this user first."
+        "Please assign a new Exams Officer and demote this user first."
       );
       return;
     }
@@ -67,8 +68,8 @@ export default function UserDeletion() {
       if (err.response?.status === 409) {
         window.alert(
           "The server reported that this user cannot be deleted.\n" +
-            "Most likely they are still an Exams Officer.\n" +
-            "Please assign a new Exams Officer and demote this user first."
+          "Most likely they are still an Exams Officer.\n" +
+          "Please assign a new Exams Officer and demote this user first."
         );
       } else if (err.response?.status === 403) {
         window.alert("You do not have permission to delete users.");

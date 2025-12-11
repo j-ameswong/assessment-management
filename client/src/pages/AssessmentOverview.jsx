@@ -8,6 +8,7 @@ import StatusLegend from "../components/StatusLegend.jsx";
 
 export default function AssessmentOverview() {
   const navigate = useNavigate();
+  if (!localStorage.getItem("token")) { navigate("/login") }
   // example url: /modules/assessments/1
   const moduleId = useParams().moduleId;
   const role = localStorage.getItem("role");
@@ -20,7 +21,7 @@ export default function AssessmentOverview() {
     const fetchOverview = async () => {
       try {
         const response = await Axios.get(
-          ((role === "ADMIN" || role === "EXAMS_OFFICER") && (moduleId)
+          ((role === "ADMIN" || role === "EXAMS_OFFICER") && (!moduleId)
             ? `http://localhost:8080/api/assessments`
             : `http://localhost:8080/api/modules/${moduleId}/assessments`),
           {
@@ -65,7 +66,8 @@ export default function AssessmentOverview() {
     status: "Stage: " + (stages[a.assessmentStageId - 1]?.step ?? "0")
       + "/" + (stages?.filter(s => s.assessmentType === a.type)).length, //getStage(a.assessmentStageId),
     type: (a.isActive ? (a.isComplete ? "ok" : "warn") : "danger"),
-    show: a.isActive || (role === "ADMIN" || role === "EXAMS_OFFICER")
+    show: a.isActive || (role === "ADMIN" || role === "EXAMS_OFFICER"),
+    moduleId: a.moduleId
   }
   ))
 
@@ -141,7 +143,7 @@ export default function AssessmentOverview() {
               <button
                 className="ao-details"
                 onClick={() =>
-                  navigate(`/modules/${moduleId}/assessments/${c.key}/progress`)
+                  navigate(`/modules/${c.moduleId}/assessments/${c.key}/progress`)
                 }
                 aria-label={`Open ${c.title}`}
               >
@@ -163,12 +165,12 @@ export default function AssessmentOverview() {
 
         </div>
 
-        <button
+        {(role == "ADMIN" || role == "EXAMS_OFFiCER") && (<button
           className="ao-primary"
           onClick={() => navigate(`/modules/${moduleId}/assessments/new`)}
         >
           Create New Assessment
-        </button>
+        </button>)}
       </div>
     </>
   );

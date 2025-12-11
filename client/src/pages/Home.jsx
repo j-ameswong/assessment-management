@@ -1,8 +1,9 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 console.log(localStorage);
 export default function Home() {
-
+  const navigate = useNavigate();
+  if (!localStorage.getItem("token")) { navigate("/login") }
   return (
     <div>
       <h1>Home Page</h1>
@@ -16,8 +17,8 @@ export default function Home() {
       <br></br>
       <Link to="/modules/create">Create Module</Link>
       <br></br>
-      <Link to ="/modules/edit/:moduleCode">Edit Module</Link>
-      <br/>
+      <Link to="/modules/edit/:moduleCode">Edit Module</Link>
+      <br />
       <Link to="/role-management">Manage Roles</Link>
     </div>
   );

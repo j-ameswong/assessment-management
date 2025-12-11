@@ -11,6 +11,7 @@ function Modules() {
   const [openDropdown, setOpenDropdown] = useState(null);
   const [modules, setModules] = useState([]);
   const navigate = useNavigate();
+  if (!localStorage.getItem("token")) { navigate("/login") }
 
   const GetModules = async () => {
     const role = localStorage.getItem("role");
@@ -76,9 +77,9 @@ function Modules() {
           modules.map((mod) => (
             <ModuleCard
               key={mod.moduleCode}
-              moduleId={mod.id}
-              moduleCode={mod.moduleCode}
-              moduleTitle={mod.moduleName}
+              userId={localStorage.getItem("userId")}
+              role={localStorage.getItem("role")}
+              module={mod}
               isOpen={openDropdown === mod.moduleCode}
               onToggle={() => setOpenDropdown(openDropdown === mod.moduleCode ? null : mod.moduleCode)}
             />

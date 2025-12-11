@@ -5,6 +5,7 @@ import Footer from "../components/Footer.jsx";
 
 function UpdatePassword() {
   const navigate = useNavigate();
+  if (!localStorage.getItem("token")) { navigate("/login") }
 
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -13,13 +14,13 @@ function UpdatePassword() {
   const [ok, setOk] = useState(false);
   const [loading, setLoading] = useState(false);
 
-    useEffect(() => {
+  useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token) {
       navigate("/", { replace: true });
     }
   }, [navigate]);
-  
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setMsg("");

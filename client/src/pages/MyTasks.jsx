@@ -1,8 +1,11 @@
 import { useEffect, useMemo, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import api from "../api/axiosConfig";
 
 export default function MyTasks() {
+  const navigate = useNavigate();
+  if (!localStorage.getItem("token")) { navigate("/login") }
+
   const [loading, setLoading] = useState(true);
   const [modules, setModules] = useState([]);
   const [tasks, setTasks] = useState([]);
@@ -54,7 +57,7 @@ export default function MyTasks() {
 
               const moduleDto = progress.module;
               const assessment = progress.assessment;
-              const assessmentStages = progress.assessmentStages || []; 
+              const assessmentStages = progress.assessmentStages || [];
               const currentStage = assessmentStages.find(s => s.id === assessment.assessmentStageId);
 
               const roles = [primaryRole, "ANY"];
@@ -135,7 +138,7 @@ export default function MyTasks() {
       <ul style={{ listStyle: "none", paddingLeft: 0 }}>
         {filtered.map(item => (
           <li key={item.assessmentId}
-              style={{ border: "1px solid #eee", borderRadius: 8, padding: 12, marginTop: 8 }}>
+            style={{ border: "1px solid #eee", borderRadius: 8, padding: 12, marginTop: 8 }}>
             <div style={{ fontWeight: 600 }}>
               {item.assessmentTitle} <span style={{ fontWeight: 400, color: "#666" }}>({item.assessmentType})</span>
             </div>

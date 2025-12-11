@@ -2,31 +2,33 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useEffect } from "react";
 import axios from "axios";
 
-export default function DeleteModule(){
-    const {moduleCode} = useParams();
-    const navigate = useNavigate();
+export default function DeleteModule() {
+  const { moduleCode } = useParams();
+  const navigate = useNavigate();
 
-    const handleDelete = async () => {
-        const response = await axios.delete(
-                `http://localhost:8080/api/modules/delete/${moduleCode}`,
-                {
-                    headers: {
-                        Authorization: `Bearer ${localStorage.getItem("token")}`,
-                        "Content-Type": "application/json"
-                    }
-                }
-            );
+  if (!localStorage.getItem("token")) { navigate("/login") }
 
-        if(response.status == 200){
-            navigate("/modules")
-        } else {
-            console.log("Failed to delete module")
+  const handleDelete = async () => {
+    const response = await axios.delete(
+      `http://localhost:8080/api/modules/delete/${moduleCode}`,
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          "Content-Type": "application/json"
         }
-    };
+      }
+    );
 
-    useEffect(() => {
-        handleDelete();
-    }, [moduleCode, navigate]);
+    if (response.status == 200) {
+      navigate("/modules")
+    } else {
+      console.log("Failed to delete module")
+    }
+  };
 
-    return <div>Deleting Module</div>
+  useEffect(() => {
+    handleDelete();
+  }, [moduleCode, navigate]);
+
+  return <div>Deleting Module</div>
 }
