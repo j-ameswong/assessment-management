@@ -9,6 +9,8 @@ export default function AssessmentOverview() {
   const navigate = useNavigate();
   // example url: /modules/assessments/1
   const moduleId = useParams().moduleId;
+  const role = localStorage.getItem("role");
+
   const [showAll, setShowAll] = useState(false);
 
   // fetch data from api
@@ -17,7 +19,9 @@ export default function AssessmentOverview() {
     const fetchOverview = async () => {
       try {
         const response = await Axios.get(
-          `http://localhost:8080/api/modules/${moduleId}/assessments`,
+          ((role === "ADMIN" || role === "EXAMS_OFFICER") && (!moduleId)
+            ? `http://localhost:8080/api/modules/${moduleId}/assessments`
+            : `http://localhost:8080/api/assessments`),
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -109,13 +113,15 @@ export default function AssessmentOverview() {
               <div className="ao-card-description">{c.description}</div>
               <div className={`ao-pill ${c.type}`}>{c.status}</div>
 
-              <button
-                className="ao-delete"
-                onClick={() => toggleAssessmentActivity(c.key)}
-                aria-label={`Open ${c.title}`}
-              >
-                Delete 🗑
-              </button>
+              {["ADMIN", "EXAMS_OFFICER"].includes(role) && (
+                <button
+                  className="ao-delete"
+                  onClick={() => toggleAssessmentActivity(c.key)}
+                  aria-label={`Open ${c.title}`}
+                >
+                  Delete 🗑
+                </button>
+              )}
 
               <button
                 className="ao-details"
