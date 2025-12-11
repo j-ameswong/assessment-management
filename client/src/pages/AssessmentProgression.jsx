@@ -3,6 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import Axios from "axios";
 import Navbar from "../components/Navbar.jsx";
 import "./AssessmentProgression.css";
+import AssessmentInfo from "../components/AssessmentInfo.jsx";
 import AssessmentStage from "../components/AssessmentStage.jsx";
 
 export default function AssessmentProgression() {
@@ -30,7 +31,8 @@ export default function AssessmentProgression() {
   if (!progress) return <p>Loading...</p>;
 
   // extract data from dto
-  const { module, assessment, assessmentStages, assessmentStageLogs } = progress;
+  const { module, assessment, assessmentStages, assessmentStageLogs,
+    examsOfficer } = progress;
 
   // always ensure placeholder if api missing data
   const moduleTitle = module
@@ -53,12 +55,6 @@ export default function AssessmentProgression() {
     }
   }
 
-  // const completedLogs = assessmentStageLogs?.filter(log => log.isComplete)
-  //   .sort((a, b) => new Date(a.changedAt) - new Date(b.changedAt)) ?? [];
-  //
-  // const lastCompletedStageId = completedLogs.at(-1)?.assessmentStageId ?? null;
-  // const lastCompletedStage = assessmentStages?.find(s => s.id === lastCompletedStageId) ?? {};
-  // const lastCompletedStep = lastCompletedStage?.step ?? 0;
   const currentStep = assessmentStages?.find(
     s => s.id === assessment.assessmentStageId)?.step ?? 0;
 
@@ -68,7 +64,22 @@ export default function AssessmentProgression() {
     s.staffId === Number(localStorage.getItem("userId")))?.moduleRole);
   if (assessment?.setterId === id) { roles.push("SETTER") };
   if (assessment?.checkerId === id) { roles.push("CHECKER") };
+  if (assessment?.externalExaminer.id === id) { roles.push("EXTERNAL_EXAMINER") };
 
+  // group logs by stageId
+  const logsByStage = {};
+  for (const log of assessmentStageLogs ?? []) {
+    const id = log.assessmentStageId;
+    if (!logsByStage[id]) logsByStage[id] = [];
+    logsByStage[id].push(log);
+  }
+
+  // sort logs oldest → newest
+  for (const key in logsByStage) {
+    logsByStage[key].sort((a, b) => new Date(a.changedAt) - new Date(b.changedAt));
+  }
+
+  // stages with status for AssessmentStage
   const stagesWithStatus = assessmentStages?.sort((a, b) => a.step - b.step)
     .map(stage => {
       let log = latestLogs[stage.id];
@@ -100,14 +111,32 @@ export default function AssessmentProgression() {
           actingStaff = module.moduleStaff.find(s => s.moduleRole === "MODERATOR");
           actorName = (actingStaff.forename + " " + actingStaff.surname);
           break;
+        case "EXAMS_OFFICER":
+          actorName = `${examsOfficer.forename} ${examsOfficer.surname}`;
+          break;
+        case "EXTERNAL_EXAMINER":
+          actorName = `${assessment.externalExaminer.forename} ${assessment.externalExaminer.surname}`;
+          break;
         case "ANY":
           actorName = ("Any staff member");
           break;
         default:
+          actorName = "ADMIN";
           break;
-        // TODO: EXAMS_OFFICER, ADMIN, SYSTEM, EXTERNAL_EXAMINER
       }
-      console.log(stage.actor, actorName);
+      // set deadline/exam date for this stage if relevant
+      let dateType = null;
+      let date = null;
+      switch (assessment.type) {
+        case "COURSEWORK":
+          dateType = "DEADLINE";
+          date = new Date(assessment.deadline);
+          break;
+        default: // exams and tests use assessmentDate
+          dateType = "ASSESSMENT_DATE"
+          date = new Date(assessment.assessmentDate);
+          break;
+      }
       // determine if enable button is true based on status & user
       let enableButton = false;
       let enableReverse = false;
@@ -132,7 +161,7 @@ export default function AssessmentProgression() {
         summaryRequired = true;
       }
 
-      return { ...stage, status, actorName, enableButton, log, summaryRequired, enableReverse };
+      return { ...stage, status, actorName, enableButton, log, summaryRequired, enableReverse, date, dateType };
     }) ?? [];
 
   const [furtherActionReq, setFurtherActionReq] = useState(false);
@@ -177,7 +206,14 @@ export default function AssessmentProgression() {
   return (
     <>
       <div className="assessment-progress-container">
+        <AssessmentInfo
+          assessment={assessment}
+          module={module}
+          currentStage={assessmentStages?.find(s => s.id === assessment.assessmentStageId)}
+        />
+
         <h2 className="assessment-progress-title">Assessment Progress</h2>
+        <hr />
 
         {stagesWithStatus.map(stage => (
           <AssessmentStage
@@ -195,6 +231,9 @@ export default function AssessmentProgression() {
             setNote={setNote}
             setFurtherActionReq={setFurtherActionReq}
             summaryRequired={stage.summaryRequired}
+            logs={logsByStage[stage.id] || []}
+            date={stage.date}
+            dateType={stage.dateType}
           />
         ))}
       </div>

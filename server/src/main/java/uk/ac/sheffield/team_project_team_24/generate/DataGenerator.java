@@ -1,5 +1,6 @@
 package uk.ac.sheffield.team_project_team_24.generate;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -63,6 +64,8 @@ public class DataGenerator {
         User admin = new User();
         admin.setEmail("admin@sheffield.ac.uk");
         admin.setPassword(passwordEncoder.encode("admin"));
+        admin.setForename("System");
+        admin.setSurname("Admin");
         admin.setRole(UserRole.ADMIN);
         users.add(admin);
 
@@ -141,6 +144,7 @@ public class DataGenerator {
                         ModuleRole.MODULE_LEAD));
                 newAssessment.setChecker(moduleStaffService.getUserByRole(m.getId(),
                         ModuleRole.MODERATOR));
+                newAssessment.setExternalExaminer(userService.getExternalExaminer());
                 newAssessment.setAssessmentType(AssessmentType.getAllTypes().get(
                         new Random().nextInt(3)));
                 // this will cause problems occasionally skull:
@@ -151,6 +155,18 @@ public class DataGenerator {
                         newAssessment.getAssessmentType()));
                 newAssessment.setIsComplete(false);
                 newAssessment.setDescription("This is a sample description");
+
+                switch (newAssessment.getAssessmentType()) {
+                    case EXAM:
+                        newAssessment.setExamDate(LocalDateTime.now().plusMinutes(1));
+                        break;
+                    case TEST:
+                        newAssessment.setExamDate(LocalDateTime.now().plusMinutes(1));
+                        break;
+                    case COURSEWORK:
+                        newAssessment.setDeadline(LocalDateTime.now().plusMinutes(1));
+                        break;
+                }
 
                 assessmentService.createAssessment(newAssessment);
                 assessmentService.log(newAssessment, userService.getAdmin(), "Initialized by system", false);
