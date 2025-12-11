@@ -25,13 +25,13 @@ import uk.ac.sheffield.team_project_team_24.dto.ModuleStaffDTO;
 
 import uk.ac.sheffield.team_project_team_24.service.*;
 
-
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor
 @CrossOrigin(origins = "http://localhost:5173")
 public class ModuleController {
 
+    private final UserService userService;
     private final ModuleService moduleService;
     private final ModuleStaffService moduleStaffService;
     private final ModuleCsvService moduleCsvService;
@@ -57,6 +57,14 @@ public class ModuleController {
     @GetMapping("/modules/{id}")
     public ResponseEntity<ModuleDTO> get(@PathVariable Long id) {
         return ResponseEntity.ok(ModuleDTO.fromEntity(moduleService.getModule(id)));
+    }
+
+    @GetMapping("/modules/user/{id}")
+    public ResponseEntity<List<ModuleDTO>> getUserModules(@PathVariable Long id) {
+        return ResponseEntity.ok(moduleStaffService.getModulesByUserId(id)
+                .stream()
+                .map(ModuleDTO::fromEntity)
+                .toList());
     }
 
     @GetMapping("/modules/edit/{moduleCode}")

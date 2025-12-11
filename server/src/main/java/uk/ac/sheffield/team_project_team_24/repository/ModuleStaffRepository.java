@@ -15,6 +15,9 @@ public interface ModuleStaffRepository extends JpaRepository<ModuleStaff, Module
     @Query("SELECT ms FROM ModuleStaff ms WHERE ms.id.moduleId = :moduleId")
     Optional<List<ModuleStaff>> findByModuleId(@Param("moduleId") Long moduleId);
 
+    @Query("SELECT ms FROM ModuleStaff ms WHERE ms.id.staffId = :userId")
+    Optional<List<ModuleStaff>> findByStaffId(@Param("userId") Long userId);
+
     // list all staff per ModuleRole
     ModuleStaff findByModuleRole(ModuleRole moduleRole);
 

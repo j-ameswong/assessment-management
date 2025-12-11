@@ -58,6 +58,13 @@ public class ModuleStaffService {
                 .orElseThrow(() -> new UserNotFoundException("No users in module"));
     }
 
+    public List<Module> getModulesByUserId(Long userId) {
+        List<ModuleStaff> entries = moduleStaffRepository.findByStaffId(userId)
+                .orElseThrow(() -> new UserNotFoundException("Nada"));
+
+        return entries.stream().map(e -> e.getModule()).toList();
+    }
+
     public ModuleStaff getUserInModule(Long userId, Long moduleId) {
         return moduleStaffRepository.findByUserAndModule(
                 userService.getUser(userId), moduleService.getModule(moduleId))

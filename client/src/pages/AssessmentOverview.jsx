@@ -21,8 +21,8 @@ export default function AssessmentOverview() {
       try {
         const response = await Axios.get(
           ((role === "ADMIN" || role === "EXAMS_OFFICER") && (moduleId)
-            ? `http://localhost:8080/api/modules/${moduleId}/assessments`
-            : `http://localhost:8080/api/assessments`),
+            ? `http://localhost:8080/api/assessments`
+            : `http://localhost:8080/api/modules/${moduleId}/assessments`),
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("token")}`,
