@@ -31,14 +31,16 @@ function Modules() {
 
         if (response.ok) {
             const data = await response.json();
-            setModules(data);
+            console.log("Modules fetched")
+            console.log(data)
+            setModules(Array.isArray(data) ? data.filter(m => m.isActive == true) : [])
         } else {
             console.log("Error: Cannot get modules")
         }
     };
 
     useEffect (() => {
-        GetModules();
+        GetModules()
     }, [])
 
     return(

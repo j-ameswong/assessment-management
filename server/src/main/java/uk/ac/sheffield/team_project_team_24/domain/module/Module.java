@@ -27,6 +27,8 @@ public class Module {
   @OneToMany(mappedBy = "module", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
   private List<ModuleStaff> moduleStaff;
 
+  private Boolean isActive;
+
   public Module(String moduleCode, String moduleName) {
     this.moduleCode = moduleCode;
     this.moduleName = moduleName;

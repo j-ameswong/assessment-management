@@ -12,6 +12,7 @@ import Logout from './pages/Logout.jsx';
 import EditModule from './pages/EditModule.jsx';
 import UpdatePassword from "./pages/UpdatePassword.jsx";
 import Layout from "./components/Layout.jsx";
+import DeleteModule from './pages/DeleteModule.jsx';
 import AssessmentLogs from "./pages/AssessmentLogs.jsx";
 import UserDeletion from "./pages/UserDeletion.jsx";
 
@@ -36,6 +37,7 @@ function App() {
         <Route path="/modules" element={<Modules />} />
         <Route path="/modules/create" element={<CreateModule />} />
         <Route path="/modules/edit/:moduleCode" element={<EditModule />} />
+        <Route path="/modules/delete/:moduleCode" element={<DeleteModule />} />
         <Route path="/modules/:moduleId/assessments/new" element={<CreateAssessment />} />
         <Route path="/modules/:moduleId/assessments" element={<AssessmentOverview />} />
         <Route path="/modules/:moduleId/assessments/:assessmentId/progress" element={<AssessmentProgression />} />

@@ -15,6 +15,7 @@ public class ModuleDTO {
     private Long id;
     private String moduleCode;
     private String moduleName;
+    private Boolean isActive;
     private List<ModuleStaffDTO> moduleStaff;
 
     public static ModuleDTO fromEntity(Module m) {
@@ -22,6 +23,7 @@ public class ModuleDTO {
         dto.id = m.getId();
         dto.moduleCode = m.getModuleCode();
         dto.moduleName = m.getModuleName();
+        dto.isActive = m.getIsActive();
 
         var staff = m.getModuleStaff();
         if (staff == null){

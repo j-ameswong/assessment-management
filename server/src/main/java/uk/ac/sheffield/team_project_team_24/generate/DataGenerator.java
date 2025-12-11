@@ -112,6 +112,7 @@ public class DataGenerator {
             Module newModule = new Module();
             newModule.setModuleCode(moduleCode);
             newModule.setModuleName(moduleName);
+            newModule.setIsActive(true);
             moduleService.createModule(newModule);
 
             int offset = i * STAFF_PER_MODULE;
