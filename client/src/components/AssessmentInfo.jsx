@@ -1,9 +1,14 @@
 import React from "react";
 import "./AssessmentInfo.css";
 
-export default function AssessmentInfo({ assessment, module, currentStage }) {
+export default function AssessmentInfo({ assessment, module, currentStage, goBack }) {
   return (
     <div className="assessment-info-card">
+      <button className="back-btn" onClick={() => goBack()}>
+        <span className="arrow">←</span>
+        <span>Back</span>
+      </button>
+      <hr />
       <h3 className="assessment-info-title">Assessment Information</h3>
 
       <div className="assessment-info-grid">

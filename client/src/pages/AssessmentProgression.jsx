@@ -17,6 +17,7 @@ export default function AssessmentProgression() {
   const role = (localStorage.getItem("role"));
 
   // example url: /modules/:moduleId/assessments/:assessmentId/progress
+  const moduleId = useParams().moduleId;
   const assessmentId = useParams().assessmentId;
   const [progress, setProgress] = useState([]);
 
@@ -239,13 +240,19 @@ export default function AssessmentProgression() {
     });
   };
 
+  const goBack = () => {
+    navigate(`/modules/${moduleId}/assessments`);
+  }
+
   return (
     <>
       <div className="assessment-progress-container">
+
         <AssessmentInfo
           assessment={assessment}
           module={module}
           currentStage={assessmentStages?.find(s => s.id === assessment.assessmentStageId)}
+          goBack={goBack}
         />
 
         <h2 className="assessment-progress-title">Assessment Progress</h2>
