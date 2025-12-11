@@ -47,11 +47,13 @@ function Login() {
           localStorage.setItem("mustChangePassword", String(!!me.mustChangePassword));
           if (me.mustChangePassword) {
             navigate("/update-password");
+            window.location.reload(true);
             return; // stop here so we do not go to /home
           }
         }
 
         navigate("/modules");
+        window.location.reload(true);
       }
 
     } catch (error) {
