@@ -1,0 +1,99 @@
+.user-delete-page {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+
+.user-delete-header h2 {
+  margin-bottom: 0.5rem;
+}
+
+.user-delete-header p {
+  margin: 0.25rem 0;
+}
+
+
+.user-delete-rules {
+  margin-top: 0.75rem;
+  margin-bottom: 1rem;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  background-color: #f5f1ff;
+  border-left: 4px solid #ad9aec;
+  font-size: 0.9rem;
+}
+
+.user-delete-rules h3 {
+  margin-top: 0;
+  margin-bottom: 0.4rem;
+}
+
+.user-delete-rules ol {
+  margin: 0.25rem 0 0.5rem 1.25rem;
+  padding: 0;
+}
+
+.user-delete-current-exams {
+  margin: 0.25rem 0;
+  font-weight: 600;
+}
+
+.user-delete-note {
+  margin: 0.25rem 0 0;
+  color: #555;
+}
+
+
+.user-delete-loading,
+.user-delete-error {
+  padding: 20px;
+}
+
+
+.user-delete-table-wrapper {
+  margin-top: 8px;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid #e0d5ff;
+}
+
+.user-delete-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.user-delete-table th,
+.user-delete-table td {
+  border: 1px solid #e0d5ff;
+  padding: 6px 8px;
+  vertical-align: top;
+}
+
+.user-delete-table th {
+  background-color: #ded3ff;
+  color: #2b2250;
+  text-align: left;
+}
+
+
+.user-delete-btn {
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: none;
+  background: #f9d5db;
+  color: #5a1420;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.user-delete-btn:hover:not(:disabled) {
+  background: #f2a9b6;
+}
+
+.user-delete-btn:disabled {
+  opacity: 0.6;
+  cursor: default;
+}

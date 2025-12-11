@@ -103,7 +103,7 @@ public class ModuleController {
                 .toList());
     }
 
-    // Delete Module
+    // Sets module as inactive
     @DeleteMapping("/modules/delete/{moduleCode}")
     public ResponseEntity<Void> deleteModule(@PathVariable String moduleCode) {
         moduleService.deleteModule(moduleCode);

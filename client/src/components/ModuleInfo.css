@@ -1,0 +1,56 @@
+.module-info-card {
+  background: #ffffff;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0px 4px 10px rgba(0,0,0,0.08);
+  margin: auto;
+  margin-bottom: 25px;
+  width: 90%;
+}
+
+.module-info-title {
+  margin-bottom: 12px;
+  font-size: 30px;
+  font-weight: 600;
+  color: #4b0082;
+}
+
+.module-info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px 20px;
+}
+
+.module-staff-card {
+  display: flex;
+  flex-direction: column;
+  padding: 12px;
+  background: #fafafa;
+  border: 1px solid #e0e0e0;
+  border-radius: 10px;
+}
+
+.module-staff-name {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #222;
+}
+
+.module-staff-email {
+  font-size: 0.9rem;
+  color: #555;
+  margin-top: 4px;
+}
+
+.module-staff-role {
+  margin-top: 6px;
+  padding: 4px 8px;
+  background: #e7f1ff;
+  color: #1a4fa3;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  display: inline-block;
+  text-transform: capitalize;
+}
+
+/* Full width*

@@ -7,6 +7,7 @@
 
   font-family: sans-serif;
   padding: 20px;
+  padding-bottom: 15px;
   width: 90%;
   margin: 20px auto;
   transition: transform 0.15s ease, box-shadow 0.15s ease;
@@ -158,6 +159,43 @@
   font-weight: bold;
   transition: background-color 0.2s ease;
 }
+
+.stage-expand-toggle {
+  margin-top: 5px;
+  cursor: pointer;
+  font-weight: 400;
+  text-align: center;
+  color: #444;
+  opacity: 0.5;
+}
+
+.stage-expand-toggle:hover {
+  color: black;
+}
+
+.stage-logs-container {
+  margin-top: 10px;
+  padding: 10px;
+  padding-bottom: 5px;
+  background: #f7f7f7;
+  border: 1px solid rgba(50, 50, 50, 0.1);
+  border-radius: 15px;
+}
+
+.stage-logs-container:hover {
+  border: 1px solid rgba(50, 50, 50, 0.5);
+}
+
+.stage-log-entry {
+  margin-bottom: 12px;
+}
+
+.stage-log-entry hr {
+  border: 0;
+  border-top: 1px solid #555;
+  margin-top: 8px;
+}
+
 @media (min-width: 768px) {
   .stage-card {
     width: 70%;

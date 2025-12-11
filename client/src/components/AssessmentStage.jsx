@@ -16,13 +16,30 @@ export default function AssessmentStage({
   note,
   setNote,
   summaryRequired,
+  logs,
+  date,
+  dateType
 }) {
 
   const [isChecked, setIsChecked] = useState(false);
 
+  const [expanded, setExpanded] = useState(false);
+
+  const toggleExpanded = () => setExpanded(e => !e);
+
   const onCheckHandler = () => {
     setIsChecked(!isChecked);
     setFurtherActionReq(!isChecked);
+  }
+
+  const formatTimeDiff = (ms) => {
+    if (ms < 0) { ms = 0; window.location.reload() };
+    const seconds = Math.floor(ms / 1000) % 60;
+    const minutes = Math.floor(ms / (1000 * 60)) % 60;
+    const hours = Math.floor(ms / (1000 * 60 * 60)) % 24;
+    const days = Math.floor(ms / (1000 * 60 * 60 * 24));
+
+    return `${days}d ${hours}h ${minutes}m ${seconds}s`;
   }
 
   const toCapitalize = (str) => {
@@ -36,7 +53,7 @@ export default function AssessmentStage({
   return (
     <div className={`stage-card stage-${status}`}>
       <div className="stage-header">
-        <h4 className="stage-title">{title}</h4>
+        <h4 className="stage-title">{`${step}. ${title}`}</h4>
         <span className={`stage-status-label stage-status-${status}`}>
           {status.toUpperCase()}
         </span>
@@ -82,6 +99,41 @@ export default function AssessmentStage({
         </div>
       )}
 
+      {date && ((date - Date.now()) / 1000 > -1) && (actor === "SYSTEM") && (
+        <div>
+          {(dateType === "ASSESSMENT_DATE")
+            ? ( // date of exam/test
+              <>
+                <span className="stage-info-label">Assessment date: </span>
+                {`${date.toLocaleString()} (${formatTimeDiff(date - Date.now())} remaining)`}
+              </>
+            )
+            : ( // deadline for coursework submission
+              <>
+                <span className="stage-info-label">Deadline: </span>
+                {`${date.toLocaleString()} (${formatTimeDiff(date - Date.now())} remaining)`}
+              </>
+            )
+          }
+        </div>)}
+
+      {date && ((date - Date.now()) < 0) && (actor === "SYSTEM") && (
+        <div>
+          {(dateType === "ASSESSMENT_DATE")
+            ? (
+              <>
+                <span className="stage-info-label">Assessment date:</span>
+                The exam/test has already been held
+              </>
+            )
+            : (
+              <>
+                <span className="stage-info-label">Deadline:</span>
+                The deadline has already passed
+              </>
+            )}
+        </div>)}
+
       {(status === "pending") && (
         <div className="stage-info-row">
           <span className="stage-info-label">Feedback:</span>
@@ -106,6 +158,31 @@ export default function AssessmentStage({
           Reverse Stage
         </button>)
       }
+
+      {/* expand button */}
+      {(logs.length > 0) && (
+        <div className="stage-expand-toggle" onClick={toggleExpanded}>
+          {expanded ? "▲ Hide Logs" : "▼ Show Logs"}
+        </div>
+      )}
+
+      {expanded && (logs.length > 0) && (
+        <div className="stage-logs-container">
+          {logs.length === 0 ? (
+            <p className="no-logs">No logs for this stage.</p>
+          ) : (
+            logs.map(log => (
+              <div key={log.id} className="stage-log-entry">
+                <p><strong>Actor:</strong> {`${log.actor.forename} ${log.actor.surname}`}</p>
+                <p><strong>Time:</strong> {new Date(log.changedAt).toLocaleString()}</p>
+                <p><strong>Status:</strong> {log.isComplete ? "Complete" : "Pending"}</p>
+                {log.note && <p><strong>Note:</strong> {log.note}</p>}
+                <hr />
+              </div>
+            ))
+          )}
+        </div>
+      )}
     </div>
   )
 }

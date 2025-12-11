@@ -14,7 +14,7 @@ public class AssessmentStageLogDTO {
     private Long id;
     private Long assessmentId;
     private Long assessmentStageId;
-    private Long actedById;
+    private UserDTO actor;
     private LocalDateTime changedAt;
     private Boolean isComplete;
     private String note; // feedback, response etc.
@@ -24,7 +24,7 @@ public class AssessmentStageLogDTO {
         dto.id = log.getId();
         dto.assessmentId = log.getAssessment().getId();
         dto.assessmentStageId = log.getAssessmentStage().getId();
-        dto.actedById = log.getActedBy().getId();
+        dto.actor = new UserDTO(log.getActedBy());
         dto.changedAt = log.getChangedAt();
         dto.isComplete = log.getIsComplete();
         dto.note = log.getNote();

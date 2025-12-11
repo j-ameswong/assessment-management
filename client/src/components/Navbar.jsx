@@ -1,5 +1,6 @@
 import { useContext } from "react";
 import { UserContext } from "../context/UserContext";
+import { Link } from "react-router-dom";
 import "./Navbar.css";
 
 export default function Navbar() {
@@ -20,11 +21,20 @@ export default function Navbar() {
 
       <div className="navbar-right">
         {primaryRole && (
-          <span className="navbar-role">
-            {primaryRole.replaceAll("_", " ")}
-          </span>
+          <>
+            <span className="navbar-role">
+              {primaryRole.replaceAll("_", " ")}
+            </span>
+
+            {(primaryRole === "ADMIN" || primaryRole === "EXAMS_OFFICER") && (
+              <Link className="navbar-link" to="/users/delete">
+                Manage users
+              </Link>
+            )}
+          </>
         )}
       </div>
+
     </header>
   );
 }

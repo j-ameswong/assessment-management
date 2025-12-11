@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./Modules.css";
+import "../index.css";
 import Navbar from "../components/Navbar.jsx";
 import Footer from "../components/Footer.jsx";
 import ModuleCard from "../components/ModuleCard.jsx";
@@ -30,20 +31,40 @@ function Modules() {
 
         if (response.ok) {
             const data = await response.json();
-            setModules(data);
+            console.log("Modules fetched")
+            console.log(data)
+            setModules(Array.isArray(data) ? data.filter(m => m.isActive == true) : [])
         } else {
             console.log("Error: Cannot get modules")
         }
     };
 
     useEffect (() => {
-        GetModules();
+        GetModules()
     }, [])
 
     return(
         <>
             <div className="modules-page">
 
+                <div className="top-container">
+                <h2>Assigned Modules</h2>
+
+                {/*Create module admin button */}
+                {
+                    localStorage.getItem("role") === "ADMIN" && (
+                        <button
+                            className="create-module-btn"
+                            onClick={() => window.location.href = "/modules/create"}
+                        >
+                            Create Module
+                        </button>
+                    )
+                }
+
+                </div>
+
+                {/*Module cards */}
                 {
                     modules.map((mod) => (
                         <ModuleCard
