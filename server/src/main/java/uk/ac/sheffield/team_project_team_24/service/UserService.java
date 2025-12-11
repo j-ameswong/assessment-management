@@ -96,6 +96,10 @@ public class UserService {
         return getUsers(UserRole.EXAMS_OFFICER).get(0);
     }
 
+    public User getExternalExaminer() {
+        return getUsers(UserRole.EXTERNAL_EXAMINER).get(0);
+    }
+
     public boolean existsUserByEmail(String email) {
         return userRepository.existsUserByEmail(email);
     }
@@ -111,7 +115,6 @@ public class UserService {
         return userRepository.findByEmail(email).orElse(null);
     }
 
-
     public void updatePassword(Long userId, uk.ac.sheffield.team_project_team_24.dto.UpdatePasswordDTO body) {
         if (body == null
                 || body.getOldPassword() == null
@@ -125,8 +128,8 @@ public class UserService {
         }
 
         Optional<uk.ac.sheffield.team_project_team_24.domain.user.User> opt = userRepository.findById(userId);
-        uk.ac.sheffield.team_project_team_24.domain.user.User user = opt.orElseThrow(() ->
-                new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+        uk.ac.sheffield.team_project_team_24.domain.user.User user = opt
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
 
         if (!passwordEncoder.matches(body.getOldPassword(), user.getPassword())) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Old password incorrect");
@@ -137,5 +140,4 @@ public class UserService {
         userRepository.save(user);
     }
 
-    
 }

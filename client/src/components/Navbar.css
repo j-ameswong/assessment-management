@@ -10,7 +10,6 @@
     box-sizing: border-box;
     position: fixed;
     top: 0;
-    z-index: 999;
 }
 
 .navbar-left {
