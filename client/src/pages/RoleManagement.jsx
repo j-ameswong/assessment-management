@@ -3,12 +3,13 @@ import Navbar from "../components/Navbar.jsx";
 import Footer from "../components/Footer.jsx";
 import {useNavigate} from "react-router-dom";
 import {useEffect} from "react";
+import "./RoleManagement.css";
 
 export default function RoleManagement () {
 
-  //const navigate = useNavigate();
+  const navigate = useNavigate();
   const userRole = localStorage.getItem('role');
-  const auth = userRole === 'EXAMS_OFFICER';
+  const auth = userRole === 'EXAMS_OFFICER'; //ensures the user accessing the page is an exam officer
   const [message, setMessage] = useState("");
   const [names, setNames] = useState([]);
 
@@ -17,13 +18,14 @@ export default function RoleManagement () {
           const response = await fetch("http://localhost:8080/api/users", {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("token")}`
-            }
+            } //fetches the users from the database
           });
           if (response.ok) {
             const data = await response.json();
+            const currentUser = localStorage.getItem("userId");
             const filter = data.filter(user =>
-              user.role === 'EXAMS_OFFICER' || user.role === 'ADMIN'
-            );
+              (user.role === 'EXAMS_OFFICER' || user.role === 'ADMIN') && user.id != currentUser
+            ); //selects all of the exam officers and admins excluding the user viewing the page
             setNames(filter);
           } else {
             setMessage("Failed to fetch users");
@@ -43,11 +45,11 @@ export default function RoleManagement () {
           "Content-Type": "application/json",
           "Authorization": `Bearer ${localStorage.getItem("token")}`
         },
-        body: JSON.stringify(newRole)
+        body: JSON.stringify(newRole) //changes the role for the selected user
       });
 
       if (response.ok) {
-        fetchNames();
+        fetchNames(); //updates the page to display new role
       }
 
     } catch {
@@ -55,11 +57,11 @@ export default function RoleManagement () {
     }
   }
 
-    //useEffect(() =>{
-    //if (!auth) {
-    //navigate("/home", {replace: true});
-    //}
-    //}, [navigate]);
+    useEffect(() =>{
+    if (!auth) {
+    navigate("/home", {replace: true});
+    }
+    }, [navigate]); //sends the user to home if they arent an exams officer
 
     useEffect(() => {
       fetchNames();
@@ -71,15 +73,20 @@ export default function RoleManagement () {
         <p>{message} </p>
         {auth ? (
           <>
-            <ul>
-              {names.map((user) => (
-                <li>{user.forename} {user.surname} - {user.role}
-                  <button onClick={() => handleRoleChange(user.id, user.role)}>
-                    Change Role
-                  </button>
-                </li>
-              ))}
-            </ul>
+            <div className="page">
+              <div className="card">
+                <div className="main">
+                    <ul>
+                      {names.map((user) => (
+                        <li>{user.forename} {user.surname} - {user.role}
+                          <button onClick={() => handleRoleChange(user.id, user.role)}>
+                            Change Role
+                          </button>
+                        </li>))}
+                    </ul>
+                </div>
+              </div>
+            </div>
           </>
         ) : (<></>
         )}

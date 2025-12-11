@@ -9,12 +9,12 @@ export default function UserCreation() {
 
   const navigate = useNavigate();
   const userRole = localStorage.getItem('role');
-  const auth = userRole === 'EXAMS_OFFICER' || userRole === 'ADMIN';
+  const auth = userRole === 'EXAMS_OFFICER' || userRole === 'ADMIN';  //ensures the user accessing the page is an admin/exam officer
   const [message, setMessage] = useState("");
 
   useEffect(() =>{
     if (!auth) {
-      navigate("/home", {replace: true});
+      navigate("/home", {replace: true}); //navigates back to the home page if the user is unauthorised
     }
   }, [navigate]);
 
@@ -22,7 +22,7 @@ export default function UserCreation() {
   const [password, setPassword] = useState("");
   const [forename, setForename] = useState("");
   const [surname, setSurname] = useState("");
-  const [selectedRole, setSelectedRole] = useState("ADMIN");
+  const [selectedRole, setSelectedRole] = useState("ADMIN"); //sets all the variables to form inputs
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -34,7 +34,7 @@ export default function UserCreation() {
           "Content-Type": "application/json",
           "Authorization": `Bearer ${localStorage.getItem("token")}`
         },
-        body: JSON.stringify({forename, surname, email, password, role: selectedRole})
+        body: JSON.stringify({forename, surname, email, password, role: selectedRole}) //passes the form inputs to the database
       });
 
       if (!response.ok) {
@@ -45,7 +45,7 @@ export default function UserCreation() {
         setSurname("");
         setForename("");
         setEmail("");
-        setPassword("");
+        setPassword(""); //clears the form when the new user is submitted
       }
     } catch (error) {
       console.error(error);
