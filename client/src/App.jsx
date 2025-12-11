@@ -16,6 +16,7 @@ import DeleteModule from './pages/DeleteModule.jsx';
 import AssessmentLogs from "./pages/AssessmentLogs.jsx";
 import UserDeletion from "./pages/UserDeletion.jsx";
 import MyTasks from "./pages/MyTasks.jsx";
+import RoleManagement from "./pages/RoleManagement.jsx";
 
 function App() {
   const location = useLocation();
@@ -51,6 +52,7 @@ function App() {
         <Route path="/update-password" element={<UpdatePassword />} />
         <Route path="/users/delete" element={<UserDeletion />} />
         <Route path="/my-tasks" element={<MyTasks />} />
+        <Route path="/role-management" element={<RoleManagement />} />
       </Routes>
     </Layout>
   );
