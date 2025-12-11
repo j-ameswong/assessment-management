@@ -17,11 +17,7 @@ import uk.ac.sheffield.team_project_team_24.dto.AssessmentStageDTO;
 import uk.ac.sheffield.team_project_team_24.dto.ModuleDTO;
 import uk.ac.sheffield.team_project_team_24.dto.AdvanceRequestDTO;
 import uk.ac.sheffield.team_project_team_24.security.CustomUserDetails;
-import uk.ac.sheffield.team_project_team_24.service.AssessmentService;
-import uk.ac.sheffield.team_project_team_24.service.AssessmentStageService;
-import uk.ac.sheffield.team_project_team_24.service.AttachmentService;
-import uk.ac.sheffield.team_project_team_24.service.CsvService;
-import uk.ac.sheffield.team_project_team_24.service.ModuleService;
+import uk.ac.sheffield.team_project_team_24.service.*;
 
 import java.util.List;
 
@@ -34,7 +30,7 @@ public class AssessmentController {
     private final AssessmentService assessmentService;
     private final AssessmentStageService assessmentStageService;
     private final ModuleService moduleService;
-    private final CsvService csvService;
+    private final AssessmentCsvService assessmentCsvService;
     private final AttachmentService attachmentService;
 
     // Create an assessment
@@ -125,7 +121,7 @@ public class AssessmentController {
     // Upload csv file
     @PostMapping("/assessments/uploadCsv")
     public ResponseEntity<?> uploadCsv(@RequestParam("file") MultipartFile file) {
-        List<Assessment> assessments = csvService.parse(file);
+        List<Assessment> assessments = assessmentCsvService.parse(file);
         assessmentService.saveAll(assessments);
         return ResponseEntity.ok(assessments);
     }

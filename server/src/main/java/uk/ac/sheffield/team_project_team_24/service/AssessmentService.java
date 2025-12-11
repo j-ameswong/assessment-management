@@ -10,10 +10,7 @@ import jakarta.transaction.Transactional;
 import uk.ac.sheffield.team_project_team_24.domain.assessment.Assessment;
 import uk.ac.sheffield.team_project_team_24.domain.assessment.AssessmentStage;
 import uk.ac.sheffield.team_project_team_24.domain.assessment.AssessmentStageLog;
-import uk.ac.sheffield.team_project_team_24.domain.assessment.enums.AssessmentRole;
-import uk.ac.sheffield.team_project_team_24.domain.assessment.enums.UserSource;
 import uk.ac.sheffield.team_project_team_24.domain.module.Module;
-import uk.ac.sheffield.team_project_team_24.domain.module.ModuleRole;
 import uk.ac.sheffield.team_project_team_24.domain.user.User;
 import uk.ac.sheffield.team_project_team_24.dto.AssessmentDTO;
 import uk.ac.sheffield.team_project_team_24.dto.AssessmentProgressDTO;
@@ -63,9 +60,9 @@ public class AssessmentService {
                 .getLogs(a);
 
         return AssessmentProgressDTO.from(
-                assessmentStages.stream().map(s -> AssessmentStageDTO.fromEntity(s))
+                assessmentStages.stream().map(AssessmentStageDTO::fromEntity)
                         .toList(),
-                assessmentStageLogs.stream().map(l -> AssessmentStageLogDTO.fromEntity(l))
+                assessmentStageLogs.stream().map(AssessmentStageLogDTO::fromEntity)
                         .toList(),
                 AssessmentDTO.fromEntity(a),
                 ModuleDTO.fromEntity(a.getModule()),
@@ -180,9 +177,7 @@ public class AssessmentService {
     public Assessment reverseStage(Long id, Long adminId) {
         Assessment a = getAssessment(id);
 
-        if (a.getAssessmentStage().getStep() == 1) {
-            return a;
-        } else {
+        if (a.getAssessmentStage().getStep() != 1) {
             // mark this current stage as incomplete then set stage to prev
             log(a, userService.getUser(adminId), "Reversed by admin/exams officer", false);
             AssessmentStage prevStage = assessmentStageService.getPrevStage(
@@ -192,8 +187,8 @@ public class AssessmentService {
             log(a, userService.getUser(adminId), "Reversed from next stage by admin/exams officer", false);
 
             assessmentRepository.save(a);
-            return a;
         }
+        return a;
 
     }
 

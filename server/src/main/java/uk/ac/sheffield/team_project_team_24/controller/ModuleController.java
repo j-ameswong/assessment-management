@@ -2,7 +2,6 @@ package uk.ac.sheffield.team_project_team_24.controller;
 
 import java.util.List;
 
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -13,20 +12,18 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 import uk.ac.sheffield.team_project_team_24.domain.module.Module;
 import uk.ac.sheffield.team_project_team_24.domain.module.ModuleRole;
 import uk.ac.sheffield.team_project_team_24.dto.CreateModuleDTO;
 import uk.ac.sheffield.team_project_team_24.dto.EditModuleDTO;
 import uk.ac.sheffield.team_project_team_24.dto.ModuleDTO;
 import uk.ac.sheffield.team_project_team_24.dto.ModuleStaffDTO;
-import uk.ac.sheffield.team_project_team_24.service.ModuleCsvService;
-import uk.ac.sheffield.team_project_team_24.service.ModuleService;
-import uk.ac.sheffield.team_project_team_24.service.ModuleStaffService;
+
+import uk.ac.sheffield.team_project_team_24.service.*;
 
 
 @RestController
@@ -47,19 +44,13 @@ public class ModuleController {
         return ResponseEntity.ok(ModuleDTO.fromEntity(module));
     }
 
-    @PostMapping(
-            path = "/modules/uploadCsv",
-            consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
-            produces = MediaType.APPLICATION_JSON_VALUE
-    )
+    // Upload csv file
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<List<ModuleDTO>> uploadModulesCsv(@RequestPart("file") MultipartFile file) {
-
-        if (file.isEmpty()) {
-            return ResponseEntity.badRequest().build();
-        }
-
-        return ResponseEntity.ok(moduleCsvService.processCsv(file));
+    @PostMapping("/modules/uploadCsv")
+    public ResponseEntity<?> uploadCsv(@RequestParam("file") MultipartFile file) {
+        List<Module> modules = moduleCsvService.parse(file);
+        moduleService.saveAll(modules);
+        return ResponseEntity.ok(modules);
     }
 
     // Get one module
