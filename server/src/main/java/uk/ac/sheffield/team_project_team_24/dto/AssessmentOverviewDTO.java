@@ -10,14 +10,14 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AssessmentOverviewDTO {
-    private ModuleDTO module;
+    private List<ModuleDTO> modules;
     private List<AssessmentDTO> assessments;
     private List<AssessmentStageDTO> stages;
 
     public static AssessmentOverviewDTO combineEntities(
-            ModuleDTO moduleDTO, List<AssessmentDTO> assessmentDTOs, List<AssessmentStageDTO> stageDTOs) {
+            List<ModuleDTO> moduleDTO, List<AssessmentDTO> assessmentDTOs, List<AssessmentStageDTO> stageDTOs) {
         AssessmentOverviewDTO dto = new AssessmentOverviewDTO();
-        dto.module = moduleDTO;
+        dto.modules = moduleDTO;
         dto.assessments = assessmentDTOs;
         dto.stages = stageDTOs;
 

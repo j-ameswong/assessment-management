@@ -4,11 +4,14 @@ import Axios from "axios";
 import Navbar from "../components/Navbar.jsx";
 import "./AssessmentOverview.css";
 import ModuleInfo from "../components/ModuleInfo.jsx";
+import StatusLegend from "../components/StatusLegend.jsx";
 
 export default function AssessmentOverview() {
   const navigate = useNavigate();
   // example url: /modules/assessments/1
   const moduleId = useParams().moduleId;
+  const role = localStorage.getItem("role");
+
   const [showAll, setShowAll] = useState(false);
 
   // fetch data from api
@@ -17,7 +20,9 @@ export default function AssessmentOverview() {
     const fetchOverview = async () => {
       try {
         const response = await Axios.get(
-          `http://localhost:8080/api/modules/${moduleId}/assessments`,
+          ((role === "ADMIN" || role === "EXAMS_OFFICER") && (moduleId)
+            ? `http://localhost:8080/api/modules/${moduleId}/assessments`
+            : `http://localhost:8080/api/assessments`),
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -48,10 +53,9 @@ export default function AssessmentOverview() {
 
   // Always check if exists first else empty/temp value
   const assessments = overview?.assessments ?? [];
-  const activeAssessments = assessments.filter(a => a.isActive);
   const stages = overview?.stages ?? [];
 
-  const CARDS = activeAssessments?.map(a => ({
+  const CARDS = assessments?.map(a => ({
     key: a.id,
     // capitalized assessment type
     assessmentType: a.type[0] + a.type.substring(1).toLowerCase(),
@@ -60,8 +64,8 @@ export default function AssessmentOverview() {
     // Show stage/total stages for progress status
     status: "Stage: " + (stages[a.assessmentStageId - 1]?.step ?? "0")
       + "/" + (stages?.filter(s => s.assessmentType === a.type)).length, //getStage(a.assessmentStageId),
-    type: a.isComplete ? "ok" : "warn",
-    hidden: showAll,
+    type: (a.isActive ? (a.isComplete ? "ok" : "warn") : "danger"),
+    show: a.isActive || (role === "ADMIN" || role === "EXAMS_OFFICER")
   }
   ))
 
@@ -96,12 +100,17 @@ export default function AssessmentOverview() {
   return (
     <>
       <div className="ao-wrap">
-        <ModuleInfo module={overview?.module} />
-        <h2 className="ao-subtitle">Assessment Overview</h2>
-        <hr />
+        {moduleId && (
+          <>
+            <ModuleInfo module={overview?.modules[0]} />
+            <h2 className="ao-subtitle">Assessment Overview</h2>
+            <hr />
+          </>
+        )}
+        <StatusLegend />
 
         <div className="ao-grid">
-          {CARDS.map((c) => (!c.hidden &&
+          {CARDS.map((c) => (c.show &&
             <div key={c.key} className="ao-card">
               <h4 className="ao-card-title">{c.title}</h4>
 
@@ -109,13 +118,25 @@ export default function AssessmentOverview() {
               <div className="ao-card-description">{c.description}</div>
               <div className={`ao-pill ${c.type}`}>{c.status}</div>
 
-              <button
-                className="ao-delete"
-                onClick={() => toggleAssessmentActivity(c.key)}
-                aria-label={`Open ${c.title}`}
-              >
-                Delete 🗑
-              </button>
+              {(c.type != "danger") && ["ADMIN", "EXAMS_OFFICER"].includes(role) && (
+                <button
+                  className="ao-delete"
+                  onClick={() => toggleAssessmentActivity(c.key)}
+                  aria-label={`Delete ${c.title}`}
+                >
+                  Delete 🗑
+                </button>
+              )}
+
+              {(c.type === "danger") && ["ADMIN", "EXAMS_OFFICER"].includes(role) && (
+                <button
+                  className="ao-delete"
+                  onClick={() => toggleAssessmentActivity(c.key)}
+                  aria-label={`Restore ${c.title}`}
+                >
+                  Restore ♲
+                </button>
+              )}
 
               <button
                 className="ao-details"

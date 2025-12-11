@@ -34,7 +34,7 @@ function App() {
   return (
     <Layout>
       <Routes>
-        <Route path="/" element={<Login />} />
+        <Route path="/login" element={<Login />} />
         <Route path="/home" element={<Home />} />
         <Route path="/modules" element={<Modules />} />
         <Route path="/modules/create" element={<CreateModule />} />
@@ -42,6 +42,7 @@ function App() {
         <Route path="/modules/delete/:moduleCode" element={<DeleteModule />} />
         <Route path="/modules/:moduleId/assessments/new" element={<CreateAssessment />} />
         <Route path="/modules/:moduleId/assessments" element={<AssessmentOverview />} />
+        <Route path="/modules/all/assessments" element={<AssessmentOverview />} />
         <Route path="/modules/:moduleId/assessments/:assessmentId/progress" element={<AssessmentProgression />} />
         <Route
           path="/modules/:moduleId/assessments/:assessmentId/logs"
