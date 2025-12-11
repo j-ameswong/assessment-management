@@ -86,7 +86,7 @@
   background-color: #ffffff;
   min-width: 180px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-  z-index: 10000; /* 比 navbar 自己略高一点 */
+  z-index: 10000;
 }
 
 .navbar-dropdown:hover .navbar-dropdown-content {
