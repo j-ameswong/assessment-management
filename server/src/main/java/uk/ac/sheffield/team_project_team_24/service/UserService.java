@@ -39,6 +39,7 @@ public class UserService {
     }
 
     public User createUser(User newUser) {
+        newUser.setPassword(passwordEncoder.encode(newUser.getPassword()));
         return userRepository.save(newUser);
     }
 
@@ -98,6 +99,12 @@ public class UserService {
 
     public User getExternalExaminer() {
         return getUsers(UserRole.EXTERNAL_EXAMINER).get(0);
+    }
+
+    public User updateUserRole(Long id, UserRole newRole) {
+        User user = getUser(id);
+        user.setRole(newRole);
+        return userRepository.save(user);
     }
 
     public boolean existsUserByEmail(String email) {

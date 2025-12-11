@@ -51,7 +51,7 @@ public class TeamProjectTeam24Application {
             if (!userService.existsUserByEmail("test@sheffield.ac.uk")) {
                 User testUser = new User();
                 testUser.setEmail("test@sheffield.ac.uk"); // input email
-                testUser.setPassword(passwordEncoder.encode("test")); // input password
+                testUser.setPassword("test"); // input password
                 testUser.setRole(UserRole.ADMIN); // can be changed for testing different roles
                 testUser.setForename("Test");
                 testUser.setSurname("User");

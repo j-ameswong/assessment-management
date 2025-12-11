@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Login.css";
 import Footer from "../components/Footer.jsx";
@@ -13,6 +13,13 @@ function UpdatePassword() {
   const [ok, setOk] = useState(false);
   const [loading, setLoading] = useState(false);
 
+    useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      navigate("/", { replace: true });
+    }
+  }, [navigate]);
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
     setMsg("");

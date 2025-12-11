@@ -16,10 +16,13 @@ import DeleteModule from './pages/DeleteModule.jsx';
 import AssessmentLogs from "./pages/AssessmentLogs.jsx";
 import UserDeletion from "./pages/UserDeletion.jsx";
 import MyTasks from "./pages/MyTasks.jsx";
+import RoleManagement from "./pages/RoleManagement.jsx";
 
 function App() {
   const location = useLocation();
-  const hideNavbar = location.pathname === "/" || location.pathname === "/create-new-user";
+  const hideNavbar =
+  location.pathname === "/" || location.pathname === "/update-password";
+
 
   if (hideNavbar) {
     return (
@@ -33,7 +36,7 @@ function App() {
   return (
     <Layout>
       <Routes>
-        <Route path="/" element={<Login />} />
+        <Route path="/login" element={<Login />} />
         <Route path="/home" element={<Home />} />
         <Route path="/modules" element={<Modules />} />
         <Route path="/modules/create" element={<CreateModule />} />
@@ -41,6 +44,7 @@ function App() {
         <Route path="/modules/delete/:moduleCode" element={<DeleteModule />} />
         <Route path="/modules/:moduleId/assessments/new" element={<CreateAssessment />} />
         <Route path="/modules/:moduleId/assessments" element={<AssessmentOverview />} />
+        <Route path="/modules/all/assessments" element={<AssessmentOverview />} />
         <Route path="/modules/:moduleId/assessments/:assessmentId/progress" element={<AssessmentProgression />} />
         <Route
           path="/modules/:moduleId/assessments/:assessmentId/logs"
@@ -51,6 +55,7 @@ function App() {
         <Route path="/update-password" element={<UpdatePassword />} />
         <Route path="/users/delete" element={<UserDeletion />} />
         <Route path="/my-tasks" element={<MyTasks />} />
+        <Route path="/role-management" element={<RoleManagement />} />
       </Routes>
     </Layout>
   );

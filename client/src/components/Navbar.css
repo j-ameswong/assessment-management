@@ -63,3 +63,44 @@
 .navbar-logout:hover {
   background-color: #f39797;
 }
+
+
+.navbar-dropdown {
+  position: relative;
+  display: inline-block;
+  margin-left: 1rem;
+}
+
+.navbar-dropbtn {
+  background: transparent;
+  color: #ffffff;
+  border: none;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.navbar-dropdown-content {
+  display: none;
+  position: absolute;
+  right: 0;
+  background-color: #ffffff;
+  min-width: 180px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  z-index: 10000; /* 比 navbar 自己略高一点 */
+}
+
+.navbar-dropdown:hover .navbar-dropdown-content {
+  display: block;
+}
+
+.navbar-dropdown-item {
+  display: block;
+  padding: 8px 14px;
+  text-decoration: none;
+  color: #2e006f;
+  font-size: 14px;
+}
+
+.navbar-dropdown-item:hover {
+  background-color: #f4eef9;
+}
