@@ -74,6 +74,7 @@ export default function RoleManagement () {
         {auth ? (
           <>
             <div className="page">
+              <h1>Role management</h1>
               <div className="table-wrapper">
                 <table class = "table">
                   <thead>
