@@ -16,7 +16,7 @@ public enum AssessmentStages {
     EXAM_CREATED(AssessmentRole.SETTER, "Exam created by assessment setter"),
     EXAM_CHECKED(AssessmentRole.CHECKER, "Paper checked by assessment checker"),
     EXAM_MODIFICATION(AssessmentRole.SETTER, "(If required) Modifications are made by assessment setter"),
-    EXAM_CHECKED_EXAMS_OFFICER(AssessmentRole.CHECKER, "Paper checked by exams officer"),
+    EXAM_CHECKED_EXAMS_OFFICER(AssessmentRole.EXAMS_OFFICER, "Paper checked by exams officer"),
     EXAM_MODIFICATION_EXAMS_OFFICER(AssessmentRole.SETTER, "(If required) Modifications are made by assessment setter"),
     EXAM_CHECKED_EXTERNAL_EXAMINER(AssessmentRole.EXTERNAL_EXAMINER,
             "Paper checked by external examiner and feedback is provided"),
